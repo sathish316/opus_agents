@@ -4,14 +4,14 @@ import typer
 from typing import Optional
 import sys
 
-from mycli.commands.flow import flow_run, flow_list, flow_info, flow_add
-from mycli.commands.plugin import plugin_list, plugin_info, plugin_add_core, plugin_add_community
-from mycli.commands.agent import agent_info, agent_list, agent_run
+from opus_cli.commands.flow import flow_run, flow_list, flow_info, flow_add
+from opus_cli.commands.plugin import plugin_list, plugin_info, plugin_add_core, plugin_add_community
+from opus_cli.commands.agent import agent_info, agent_list, agent_run
 
 # Create the main app
 app = typer.Typer(
-    name="mycli",
-    help="A feature-rich CLI library similar to Cobra in Go",
+    name="opus",
+    help="Opus CLI - A feature-rich CLI library similar to Cobra in Go",
     add_completion=False,
     rich_markup_mode="rich",
 )

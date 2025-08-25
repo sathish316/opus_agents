@@ -1,4 +1,4 @@
-from mycli.cli import main
+from opus_cli.cli import main
 
 if __name__ == "__main__":
     main()

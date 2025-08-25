@@ -1,7 +1,7 @@
 [project]
-name = "mycli"
+name = "opus-cli"
 version = "0.1.0"
-description = "A feature-rich CLI library similar to Cobra in Go"
+description = "Opus CLI - A feature-rich CLI library similar to Cobra in Go"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -10,7 +10,7 @@ dependencies = [
 ]
 
 [project.scripts]
-mycli = "mycli.cli:main"
+opus = "opus_cli.cli:main"
 
 [build-system]
 requires = ["hatchling"]
