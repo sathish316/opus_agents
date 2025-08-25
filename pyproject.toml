@@ -1,0 +1,17 @@
+[project]
+name = "mycli"
+version = "0.1.0"
+description = "A feature-rich CLI library similar to Cobra in Go"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "typer>=0.16.1",
+    "rich>=14.0.0",
+]
+
+[project.scripts]
+mycli = "mycli.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
