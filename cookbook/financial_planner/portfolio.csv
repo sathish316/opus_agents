@@ -1,0 +1,25 @@
+date,fund_code,fund_name,transaction_type,transaction_count
+2023-01-15,UTI_NIFTY,UTI Nifty Index Fund,BUY,5000
+2023-02-15,UTI_NIFTY,UTI Nifty Index Fund,BUY,5000
+2023-03-15,UTI_NIFTY,UTI Nifty Index Fund,BUY,5000
+2023-04-15,UTI_NIFTY,UTI Nifty Index Fund,BUY,5000
+2023-05-15,UTI_NIFTY,UTI Nifty Index Fund,BUY,5000
+2023-06-15,UTI_NIFTY,UTI Nifty Index Fund,BUY,5000
+2023-01-15,SBI_SENSEX,SBI Sensex Index Fund,BUY,3000
+2023-02-15,SBI_SENSEX,SBI Sensex Index Fund,BUY,3000
+2023-03-15,SBI_SENSEX,SBI Sensex Index Fund,BUY,3000
+2023-04-15,SBI_SENSEX,SBI Sensex Index Fund,BUY,3000
+2023-05-15,SBI_SENSEX,SBI Sensex Index Fund,BUY,3000
+2023-06-15,SBI_SENSEX,SBI Sensex Index Fund,BUY,3000
+2023-01-15,HDFC_DEBT,HDFC Short Term Debt Fund,BUY,2000
+2023-02-15,HDFC_DEBT,HDFC Short Term Debt Fund,BUY,2000
+2023-03-15,HDFC_DEBT,HDFC Short Term Debt Fund,BUY,2000
+2023-04-15,HDFC_DEBT,HDFC Short Term Debt Fund,BUY,2000
+2023-01-15,ICICI_HYBRID,ICICI Prudential Balanced Advantage Fund,BUY,1500
+2023-02-15,ICICI_HYBRID,ICICI Prudential Balanced Advantage Fund,BUY,1500
+2023-03-15,ICICI_HYBRID,ICICI Prudential Balanced Advantage Fund,BUY,1500
+2023-04-15,ICICI_HYBRID,ICICI Prudential Balanced Advantage Fund,BUY,1500
+2023-01-15,NIPPON_GOLD,Nippon India Gold Savings Fund,BUY,1000
+2023-02-15,NIPPON_GOLD,Nippon India Gold Savings Fund,BUY,1000
+2023-03-15,NIPPON_GOLD,Nippon India Gold Savings Fund,BUY,1000
+2023-04-15,NIPPON_GOLD,Nippon India Gold Savings Fund,BUY,1000
