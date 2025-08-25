@@ -1,0 +1,11 @@
+[project]
+name = "fastmcp-starter"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp>=2.11.3",
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.13.1",
+]

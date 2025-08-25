@@ -1,0 +1,23 @@
+-[ ] Readme with Goals of Opus
+-[ ] Agentic Workflows
+-[ ] Opinionated Workflows
+-[ ] Dynamic workflows guided by prompt 
+-[ ] Durable and Reliable Workflows
+-[ ] Containerized Workflows
+-[ ] Remote workflows that run on a DigitalOcean server
+-[ ] Scheduled Workflows
+-[ ] Event based Workflows
+-[ ] MCP Support
+-[ ] Prompt management
+-[ ] Input or Output Schema management
+-[ ] Integration with Coding Agents
+-[ ] CLI
+-[ ] Plugin system
+-[ ] Team and Personality
+-[ ] Model customization
+-[ ] Local Model or Bring your own model
+-[ ] Generate a tool to solve a Task
+-[ ] Integration with OSS tools
+-[ ] Integration with SaaS tools - Todoist, Github Issues, Linear, Jira etc
+-[ ] Integration test using ShoppingAgent and FinancialPlannerAgent
+-[ ] Misc - Monitoring, Usage, Audit logs, Visualization

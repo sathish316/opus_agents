@@ -1,0 +1,16 @@
+[project]
+name = "langgraph-starter"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastmcp>=2.11.3",
+    "jupyter>=1.1.1",
+    "langchain>=0.3.27",
+    "langchain-anthropic>=0.3.19",
+    "langchain-mcp-adapters>=0.1.9",
+    "langchain-openai>=0.3.30",
+    "langchain-tavily>=0.2.11",
+    "langgraph>=0.6.5",
+]
