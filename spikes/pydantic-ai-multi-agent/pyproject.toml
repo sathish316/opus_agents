@@ -1,0 +1,21 @@
+[project]
+name = "pydantic-ai-multi-agent-portfolio-planner"
+version = "0.1.0"
+description = "A multi-agent portfolio planner using PydanticAI."
+authors = ["Jules"]
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+
+dependencies = [
+    "pydantic-ai",
+    "pandas",
+    "numpy",
+    "numpy-financial",
+    "litellm",
+    "python-dotenv",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

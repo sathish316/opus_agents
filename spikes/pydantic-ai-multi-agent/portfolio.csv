@@ -1,0 +1,73 @@
+Date,fund_code,fund_name,transaction_type,units,unit_price
+2023-01-05,EQ001,Mirae Asset Large Cap Fund,buy,10,100
+2023-02-05,EQ001,Mirae Asset Large Cap Fund,buy,10,102
+2023-03-05,EQ001,Mirae Asset Large Cap Fund,buy,10,105
+2023-04-05,EQ001,Mirae Asset Large Cap Fund,buy,10,103
+2023-05-05,EQ001,Mirae Asset Large Cap Fund,buy,10,106
+2023-06-05,EQ001,Mirae Asset Large Cap Fund,buy,10,110
+2023-07-05,EQ001,Mirae Asset Large Cap Fund,buy,10,112
+2023-08-05,EQ001,Mirae Asset Large Cap Fund,buy,10,115
+2023-09-05,EQ001,Mirae Asset Large Cap Fund,buy,10,113
+2023-10-05,EQ001,Mirae Asset Large Cap Fund,buy,10,118
+2023-11-05,EQ001,Mirae Asset Large Cap Fund,buy,10,120
+2023-12-05,EQ001,Mirae Asset Large Cap Fund,buy,10,122
+2023-01-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,200
+2023-02-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,205
+2023-03-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,210
+2023-04-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,208
+2023-05-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,215
+2023-06-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,220
+2023-07-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,225
+2023-08-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,230
+2023-09-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,228
+2023-10-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,235
+2023-11-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,240
+2023-12-05,EQ002,Parag Parikh Flexi Cap Fund,buy,5,245
+2023-01-05,DT001,HDFC Corporate Bond Fund,buy,100,10
+2023-02-05,DT001,HDFC Corporate Bond Fund,buy,100,10.1
+2023-03-05,DT001,HDFC Corporate Bond Fund,buy,100,10.2
+2023-04-05,DT001,HDFC Corporate Bond Fund,buy,100,10.3
+2023-05-05,DT001,HDFC Corporate Bond Fund,buy,100,10.4
+2023-06-05,DT001,HDFC Corporate Bond Fund,buy,100,10.5
+2023-07-05,DT001,HDFC Corporate Bond Fund,buy,100,10.6
+2023-08-05,DT001,HDFC Corporate Bond Fund,buy,100,10.7
+2023-09-05,DT001,HDFC Corporate Bond Fund,buy,100,10.8
+2023-10-05,DT001,HDFC Corporate Bond Fund,buy,100,10.9
+2023-11-05,DT001,HDFC Corporate Bond Fund,buy,100,11
+2023-12-05,DT001,HDFC Corporate Bond Fund,buy,100,11.1
+2023-01-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,20
+2023-02-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,20.1
+2023-03-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,20.2
+2023-04-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,20.3
+2023-05-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,20.4
+2023-06-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,20.5
+2023-07-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,20.6
+2023-08-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,20.7
+2023-09-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,20.8
+2023-10-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,20.9
+2023-11-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,21
+2023-12-05,DT002,ICICI Prudential All Seasons Bond Fund,buy,50,21.1
+2023-01-05,HY001,SBI Equity Hybrid Fund,buy,20,50
+2023-02-05,HY001,SBI Equity Hybrid Fund,buy,20,51
+2023-03-05,HY001,SBI Equity Hybrid Fund,buy,20,52
+2023-04-05,HY001,SBI Equity Hybrid Fund,buy,20,51.5
+2023-05-05,HY001,SBI Equity Hybrid Fund,buy,20,53
+2023-06-05,HY001,SBI Equity Hybrid Fund,buy,20,54
+2023-07-05,HY001,SBI Equity Hybrid Fund,buy,20,55
+2023-08-05,HY001,SBI Equity Hybrid Fund,buy,20,56
+2023-09-05,HY001,SBI Equity Hybrid Fund,buy,20,55.5
+2023-10-05,HY001,SBI Equity Hybrid Fund,buy,20,57
+2023-11-05,HY001,SBI Equity Hybrid Fund,buy,20,58
+2023-12-05,HY001,SBI Equity Hybrid Fund,buy,20,59
+2023-01-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,60
+2023-02-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,61
+2023-03-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,62
+2023-04-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,61.5
+2023-05-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,63
+2023-06-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,64
+2023-07-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,65
+2023-08-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,66
+2023-09-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,65.5
+2023-10-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,67
+2023-11-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,68
+2023-12-05,HY002,Canara Robeco Equity Hybrid Fund,buy,15,69
