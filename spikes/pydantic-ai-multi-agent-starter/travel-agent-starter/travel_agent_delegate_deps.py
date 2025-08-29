@@ -42,7 +42,7 @@ async def find_places(ctx: RunContext[TravelSearchHelper], count: int) -> str:
     response = await ctx.deps.http_client.get(
         'https://example.com',
         params={'count': count},
-        headers={'Authorization': f'Bearer {ctx.deps.api_key}'},
+                headers={'Authorization': f'Bearer {ctx.deps.api_key}'},
     )
     response.raise_for_status()
     return response.text
