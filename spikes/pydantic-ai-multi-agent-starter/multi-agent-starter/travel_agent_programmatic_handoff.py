@@ -5,6 +5,7 @@ from rich.prompt import Prompt
 
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.messages import ModelMessage
+from llm_helper import trace_all_messages
 
 class FlightDetails(BaseModel):
     flight_number: str
@@ -35,6 +36,8 @@ async def find_flight() -> Union[FlightDetails, None]:
             prompt,
             message_history=message_history,
         )
+        print("=== Trace of find_flight ===")
+        trace_all_messages(result)
         if isinstance(result.output, FlightDetails):
             return result.output
         else:
@@ -66,6 +69,8 @@ async def find_seat() -> SeatPreference:
             answer,
             message_history=message_history,
         )
+        print("=== Trace of find_seat ===")
+        trace_all_messages(result)
         if isinstance(result.output, SeatPreference):
             return result.output
         else:

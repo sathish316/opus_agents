@@ -3,11 +3,14 @@ import asyncio
 import httpx
 
 from pydantic_ai import Agent, RunContext
+from llm_helper import trace_all_messages
 
 @dataclass
 class TravelSearchHelper:
     http_client: httpx.AsyncClient
     api_key: str
+    destination: str
+    month: str
 
 travel_planner_agent = Agent(
     'openai:gpt-4o',
@@ -24,7 +27,7 @@ trip_advisor_agent = Agent(
     deps_type=TravelSearchHelper,
     output_type=list[str],
     system_prompt=(
-        'Use the "find_places" tool to get some places to visit at a given place and month'
+        'Use the "find_places" tool to get some places to visit at a given place and month '
         'then extract each place into a list.'
     ),
 )
@@ -49,23 +52,14 @@ async def find_places(ctx: RunContext[TravelSearchHelper], count: int) -> str:
 
 async def main():
     async with httpx.AsyncClient() as client:
-        deps = TravelSearchHelper(client, "foobar")
+        deps = TravelSearchHelper(client, "foobar", "Paris", "August")
         result = await travel_planner_agent.run(
             "Suggest a place to visit in Paris in the month of August",
             deps = deps
         )
         print(result.output)
         print(result.usage())
-        print("\n=== All Messages ===")
-        for i, message in enumerate(result.all_messages(), 1):
-            # print(f"\nMessage {i}:")
-            # print(message)
-            
-            for j, part in enumerate(message.parts, 1):
-                if part.part_kind == 'system-prompt':
-                    print(f"(System): {part.content}\n")
-                elif part.part_kind == 'user-prompt':
-                    print(f"(User): {part.content}\n")
+        trace_all_messages(result)
 
 
 if __name__ == "__main__":

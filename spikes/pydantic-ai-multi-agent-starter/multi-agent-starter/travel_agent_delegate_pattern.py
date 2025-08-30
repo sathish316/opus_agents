@@ -1,5 +1,6 @@
 from pydantic_ai import Agent, RunContext
 from dataclasses import dataclass
+from llm_helper import trace_all_messages
         
 @dataclass
 class TravelSearchRequest:
@@ -37,23 +38,7 @@ result = travel_planner_agent.run_sync(
 )
 
 print(result.output)
-
-print("\n=== All Messages ===")
-for i, message in enumerate(result.all_messages(), 1):
-    # print(f"\nMessage {i}:")
-    # print(message)
-    
-    for j, part in enumerate(message.parts, 1):
-        if part.part_kind == 'system-prompt':
-            print(f"(System): {part.content}\n")
-        elif part.part_kind == 'user-prompt':
-            print(f"(User): {part.content}\n")
-        elif part.part_kind == 'tool-call':
-            print(f"(Tool Call): {part.tool_name} - {part.args}\n")
-        elif part.part_kind == 'tool-return':
-            print(f"(Tool Result): {part.content}\n")
-        elif part.part_kind == 'text':
-            print(f"(Model): {part.content}\n")
+trace_all_messages(result)
 
 
 
