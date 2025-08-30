@@ -1,4 +1,3 @@
-import random
 import pandas as pd
 import numpy_financial as npf
 from datetime import datetime
@@ -7,99 +6,87 @@ from pydantic_ai import Agent, RunContext
 import asyncio
 from dataclasses import dataclass
 from llm_helper import trace_all_messages
+from pyxirr import xirr
+from typing import Annotated, TypedDict, NotRequired
+import logging
+    
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
-@dataclass
-class Portfolio:
-    """Portfolio of the customer. 
-    Portfolio is a list of rows. Each row is a fund transaction record.
-    Each row has the following fields:
-    - Date: The date of the transaction
-    - Fund Category: The category of the fund
-    - Fund Code: The code of the fund
-    - Fund Name: The name of the fund
-    - Transaction Type: The type of transaction
-    - Units: The number of units transacted
-    - Unit Price: The price per unit at the time of transaction
-    Portfolio details also contains the age bracket of the customer.
+
+class FundTransaction(TypedDict):
+    date: NotRequired[Annotated[datetime, Field(description="The date of the transaction")]]
+    fund_category: Annotated[str, Field(description="The category of the fund (EQ for Equity, DT for Debt, HY for Hybrid)")]
+    fund_code: Annotated[str, Field(description="The unique code identifier of the fund")]
+    fund_name: Annotated[str, Field(description="The name of the fund")]
+    transaction_type: Annotated[str, Field(description="The type of transaction (buy, sell, etc.)")]
+    units: Annotated[float, Field(description="The number of units transacted")]
+    unit_price: Annotated[float, Field(description="The price per unit at the time of transaction")]
+
+class PortfolioAnalysis(BaseModel):
     """
-    age_bracket: str = Field(..., description="The age bracket of the customer")
-    portfolio: list[dict] = Field(..., description="The portfolio of the customer. Portfolio is a list of rows."
-                                  "Each row is a fund transaction record.")
+    Portfolio Analysis for a customer. 
+    Portfolio is a list of rows. Each row is a FundTransaction object.
+    """
+    portfolio: list[FundTransaction] = Field(..., description="The portfolio of the customer. Portfolio is a list of FundTransaction records.")
+    age_range: str = Field(..., description="The age range of the customer")
 
-def portfolio_to_dataframe(portfolio: Portfolio) -> pd.DataFrame:
+# Util functions
+def portfolio_to_dataframe(portfolio: PortfolioAnalysis) -> pd.DataFrame:
     """Convert a Portfolio object to a pandas DataFrame."""
     df = pd.DataFrame(portfolio.portfolio)
-    if 'Date' in df.columns:
-        df['Date'] = pd.to_datetime(df['Date'])
+    if 'date' in df.columns:
+        df['date'] = pd.to_datetime(df['date'])
     return df
-
-# class FundTransaction(BaseModel):
-#     """Represents a single fund transaction record."""
-#     date: datetime = Field(..., description="The transaction date")
-#     fund_category: str = Field(..., description="The category of the fund")
-#     fund_code: str = Field(..., description="The code of the fund")
-#     fund_name: str = Field(..., description="The name of the fund")
-#     transaction_type: str = Field(..., description="The type of transaction")
-#     units: float = Field(..., description="Number of units transacted")
-#     unit_price: float = Field(..., description="Price per unit at the time of transaction")
-#     transaction_amount: float = Field(..., description="The amount of the transaction")
-
-# def dict_to_fund_transaction(data: dict) -> FundTransaction:
-#     """Convert a dictionary to a FundTransaction object."""
-#     return FundTransaction(
-#         date=pd.to_datetime(data['Date']).to_pydatetime(),
-#         fund_category=data['fund_category'],
-#         fund_code=data['fund_code'],
-#         fund_name=data['fund_name'],
-#         transaction_type=data['transaction_type'],
-#         units=float(data['units']),
-#         unit_price=float(data['unit_price']),
-#         transaction_amount=float(data['units']) * float(data['unit_price'])
-#     )
-
 
 # Planner agent that co-ordinates with the expert agents
 financial_planner_agent = Agent(
-    'openai:gpt-4o',
-    deps_type=Portfolio,
+    'claude-sonnet-4-20250514',
+    deps_type=PortfolioAnalysis,
     output_type=str,
     system_prompt=(
         'You are a Financial Planner.'
-        # 'You are given a portfolio of the customer.'
-        # 'You are also given a customer profile like age range.'
-        # 'You have a team of Expert agents for each fund category - Equit, Debt, Hybrid.'
+        'You are given the portfolio of a customer for analysis.'
+        'You are also given customer profile details like age range.'
+        'You have a team of Expert agents for analysis of each fund category - Equity(EQ), Debt(DT), Hybrid(HY).'
         'Use the tool `analyze_fund_category` to perform analysis on the portfolio across fund categories like Equity(EQ), Debt(DT), Hybrid(HY).'
-        # 'You have an Expert on Asset Allocation.' 
-        'Use the tool `analyze_asset_allocation` to perform Asset allocation ratio analysis on the portfolio, given a customer profile like age range.'
-        # 'Your job is to use the tools to perform analysis on the portfolio and provide a report of suggestions.'
-        # "Use the tool `roll_dice` to roll a six-sided die and rate how good the portfolio is."
+        'This tool will return XIRR for all funds in a fund category and a recommended fund if the XIRR of current funds is not optimal.'
+        # 'You have an Expert agent for Asset Allocation(AA).' 
+        # 'Use the tool `analyze_asset_allocation` to perform Asset allocation ratio analysis on the portfolio, given a customer profile like age range.'
+        # 'This tool will return a recommendation for rebalancing the portfolio if required.'
+        'Your job is to use the tools to perform analysis on the portfolio and provide a Financial report with recommendations.'
     ),
 )
 
-@financial_planner_agent.tool_plain
-def roll_dice() -> str:
-    """Roll a six-sided die"""
-    return str(random.randint(1, 6))
-
 # Tool to link planner agent with sub-agents
 @financial_planner_agent.tool
-async def analyze_fund_category(ctx: RunContext[Portfolio], fund_category: str) -> str:
+async def analyze_fund_category(ctx: RunContext[PortfolioAnalysis], fund_category: str) -> str:
     if fund_category == 'EQ':
-        response = await equity_fund_agent.run(ctx.deps)
-        return response.text
+        response = await equity_fund_agent.run(
+            "Analyze the portfolio for Equity funds",
+            deps=ctx.deps
+        )
+        return response.output
     elif fund_category == 'DT':
-        response = await debt_fund_agent.run(ctx.deps)
-        return response.text
+        response = await debt_fund_agent.run(
+            "Analyze the portfolio for Debt funds",
+            deps=ctx.deps
+        )
+        return response.output
     elif fund_category == 'HY':
-        response = await hybrid_fund_agent.run(ctx.deps)
-        return response.text
+        response = await hybrid_fund_agent.run(
+            "Analyze the portfolio for Hybrid funds",
+            deps=ctx.deps
+        )
+        return response.output
     else:
         return 'Invalid fund category'
 
 # Another Tool to link planner agent with sub-agent
-@financial_planner_agent.tool
-async def analyze_asset_allocation(ctx: RunContext[Portfolio], age_range: str) -> str:
-    return await asset_allocation_agent.run(ctx.deps, age_range)
+# @financial_planner_agent.tool
+# async def analyze_asset_allocation(ctx: RunContext[PortfolioAnalysis]) -> str:
+#     return await asset_allocation_agent.run(ctx.deps)
 
 # Generic tools for the expert sub-agents
 async def calculate_optimal_xirr(fund_category: str) -> float:
@@ -128,8 +115,8 @@ async def get_fund_recommendation(fund_category: str) -> str:
         
 # Expert sub-agent for Equity funds
 equity_fund_agent = Agent(
-    'openai:gpt-4o',
-    deps_type=Portfolio,
+    'claude-sonnet-4-20250514',
+    deps_type=PortfolioAnalysis,
     output_type=str,
     system_prompt=(
         'You are an expert at analyzing Equity funds in India.'
@@ -146,11 +133,11 @@ equity_fund_agent = Agent(
 
 # agent specific tools using context
 @equity_fund_agent.tool
-async def calculate_equity_xirr(ctx: RunContext[Portfolio]) -> float:
+async def calculate_equity_xirr(ctx: RunContext[PortfolioAnalysis]) -> float:
     return calculate_fundwise_xirr(ctx.deps, 'EQ')
 
 # Util functions which are indirectly used by the tools
-def calculate_fundwise_xirr(portfolio: Portfolio, fund_category: str) -> dict[str, float]:
+def calculate_fundwise_xirr(portfolio: PortfolioAnalysis, fund_category: str) -> dict[str, float]:
     """Calculate XIRR of each fund in a given fund category. Fund category values are EQ, DT, HY"""
     portfolio_df = portfolio_to_dataframe(portfolio)
     fund_category_df = portfolio_df[portfolio_df['fund_category'] == fund_category]
@@ -164,7 +151,7 @@ def calculate_xirr(transactions: pd.DataFrame) -> float:
     dates = []
     for _, row in transactions.iterrows():
         values.append(-row['units'] * row['unit_price'])
-        dates.append(row['Date'])
+        dates.append(row['date'])
 
     # Add the current value of the investment
     current_price = transactions['unit_price'].iloc[-1]
@@ -173,14 +160,17 @@ def calculate_xirr(transactions: pd.DataFrame) -> float:
     dates.append(datetime.now())
 
     try:
-        return npf.xirr(values, dates) * 100
-    except:
+        result = xirr(dates, values)
+        logger.info(f"XIRR for {transactions['fund_code'].iloc[0]} is {result}")
+        return result
+    except Exception as e:
+        print(f"XIRR calculation failed: {e}")
         return 0.0
 
 # More sub-agents called in parallel
 debt_fund_agent = Agent(
-    'openai:gpt-4o',
-    deps_type=Portfolio,
+    'claude-sonnet-4-20250514',
+    deps_type=PortfolioAnalysis,
     output_type=str,
     system_prompt=(
         'You are an expert at analyzing Debt funds in India.'
@@ -198,8 +188,8 @@ debt_fund_agent = Agent(
 
 # More sub-agents called in parallel
 hybrid_fund_agent = Agent(
-    'openai:gpt-4o',
-    deps_type=Portfolio,
+    'claude-sonnet-4-20250514',
+    deps_type=PortfolioAnalysis,
     output_type=str,
     system_prompt=(
         'You are an expert at analyzing Hybrid funds in India.'
@@ -217,12 +207,12 @@ hybrid_fund_agent = Agent(
 
 # agent specific tools using context
 @debt_fund_agent.tool
-async def calculate_debt_xirr(ctx: RunContext[Portfolio]) -> float:
+async def calculate_debt_xirr(ctx: RunContext[PortfolioAnalysis]) -> float:
     return calculate_fundwise_xirr(ctx.deps, 'DT')
 
 # agent specific tools using context
 @hybrid_fund_agent.tool
-async def calculate_hybrid_xirr(ctx: RunContext[Portfolio]) -> float:
+async def calculate_hybrid_xirr(ctx: RunContext[PortfolioAnalysis]) -> float:
     return calculate_fundwise_xirr(ctx.deps, 'HY')
 
 # Pydantic Models - to be used for structured output later
@@ -233,10 +223,6 @@ async def calculate_hybrid_xirr(ctx: RunContext[Portfolio]) -> float:
 #     is_performing: bool = Field(..., description="Whether the fund is performing as per ideal returns.")
 #     suggestion: str = Field(None, description="Suggestion for a better fund if not performing well.")
 
-# class PortfolioAnalysis(BaseModel):
-#     """Represents the analysis of a portfolio."""
-#     funds: list[FundAnalysis] = Field(..., description="A list of fund analyses.")
-
 # class RatioAnalysis(BaseModel):
 #     """Represents the analysis of the portfolio's asset allocation."""
 #     current_ratio: dict = Field(..., description="The current asset allocation ratio.")
@@ -244,64 +230,73 @@ async def calculate_hybrid_xirr(ctx: RunContext[Portfolio]) -> float:
 #     suggestion: str = Field(..., description="Suggestion to rebalance the portfolio.")
 
 # Generic tools for expert sub-agent
-def calculate_current_asset_allocation_ratio(portfolio_input: Portfolio) -> dict:
-    portfolio = portfolio_to_dataframe(portfolio_input)
-    total_investment = (portfolio['units'] * portfolio['unit_price']).sum()
-    equity_investment = (portfolio[portfolio['fund_category'] == 'EQ']['units'] * portfolio[portfolio['fund_category'] == 'EQ']['unit_price']).sum()
-    debt_investment = (portfolio[portfolio['fund_category'] == 'DT']['units'] * portfolio[portfolio['fund_category'] == 'DT']['unit_price']).sum()
-    hybrid_investment = (portfolio[portfolio['fund_category'] == 'HY']['units'] * portfolio[portfolio['fund_category'] == 'HY']['unit_price']).sum()
+# def calculate_current_asset_allocation_ratio(portfolio_input: PortfolioAnalysis) -> dict:
+#     portfolio = portfolio_to_dataframe(portfolio_input)
+#     total_investment = (portfolio['units'] * portfolio['unit_price']).sum()
+#     equity_investment = (portfolio[portfolio['fund_category'] == 'EQ']['units'] * portfolio[portfolio['fund_category'] == 'EQ']['unit_price']).sum()
+#     debt_investment = (portfolio[portfolio['fund_category'] == 'DT']['units'] * portfolio[portfolio['fund_category'] == 'DT']['unit_price']).sum()
+#     hybrid_investment = (portfolio[portfolio['fund_category'] == 'HY']['units'] * portfolio[portfolio['fund_category'] == 'HY']['unit_price']).sum()
 
-    return {
-        "EQ": equity_investment / total_investment,
-        "DT": debt_investment / total_investment,
-        "HY": hybrid_investment / total_investment,
-    }
+#     return {
+#         "EQ": equity_investment / total_investment,
+#         "DT": debt_investment / total_investment,
+#         "HY": hybrid_investment / total_investment,
+#     }
 
-def ideal_asset_allocation_ratio() -> dict:
-    ideal_ratios = {
-        "0-20": {"EQ": 0.8, "DT": 0.1, "HY": 0.1},
-        "20-30": {"EQ": 0.7, "DT": 0.2, "HY": 0.1},
-        "30-40": {"EQ": 0.6, "DT": 0.2, "HY": 0.2},
-        "40-50": {"EQ": 0.5, "DT": 0.4, "HY": 0.1},
-        "50-60": {"EQ": 0.4, "DT": 0.5, "HY": 0.1},
-        ">60": {"EQ": 0.3, "DT": 0.6, "HY": 0.1},
-    }
+# def ideal_asset_allocation_ratio() -> dict:
+#     ideal_ratios = {
+#         "0-20": {"EQ": 0.8, "DT": 0.1, "HY": 0.1},
+#         "20-30": {"EQ": 0.7, "DT": 0.2, "HY": 0.1},
+#         "30-40": {"EQ": 0.6, "DT": 0.2, "HY": 0.2},
+#         "40-50": {"EQ": 0.5, "DT": 0.4, "HY": 0.1},
+#         "50-60": {"EQ": 0.4, "DT": 0.5, "HY": 0.1},
+#         ">60": {"EQ": 0.3, "DT": 0.6, "HY": 0.1},
+#     }
 
 # More sub-agents called in sequence
-asset_allocation_agent = Agent(
-    'openai:gpt-4o',
-    deps_type=Portfolio,
-    output_type=str,
-    system_prompt=(
-        'You are an expert at analyzing Asset allocation in India.'
-        'Use the tool `calculate_current_asset_allocation_ratio` to find the asset allocation across fund categories. Fund categories are EQ, DT, HY'
-        'Use the tool `ideal_asset_allocation_ratio` to find the ideal asset allocation across fund categories. Fund categories are EQ, DT, HY'
-        'If the current asset allocation is not close to the ideal asset allocation, Suggest a rebalancing plan'
-    ),
-    tools=[
-        calculate_current_asset_allocation_ratio,
-        ideal_asset_allocation_ratio,
-    ],
-)
+# asset_allocation_agent = Agent(
+#     'openai:gpt-4o',
+#     deps_type=PortfolioAnalysis,
+#     output_type=str,
+#     system_prompt=(
+#         'You are an expert at analyzing Asset allocation in India.'
+#         'Use the tool `calculate_current_asset_allocation_ratio` to find the asset allocation across fund categories. Fund categories are Equity(EQ), Debt(DT), Hybrid(HY)'
+#         'Use the tool `ideal_asset_allocation_ratio` to find the ideal asset allocation across fund categories. Fund categories are Equity(EQ), Debt(DT), Hybrid(HY)'
+#         'If the current asset allocation is not close to the ideal asset allocation, Suggest a rebalancing plan'
+#     ),
+#     tools=[
+#         calculate_current_asset_allocation_ratio,
+#         ideal_asset_allocation_ratio,
+#     ],
+# )
 
 # util functions
 def load_portfolio(filepath: str) -> pd.DataFrame:
     """Loads the portfolio from a CSV file."""
     df = pd.read_csv(filepath)
-    df['Date'] = pd.to_datetime(df['Date'])
+    df['date'] = pd.to_datetime(df['date'])
     return df
 
 async def main():
     """Main function to run the portfolio planner."""
-    # Set the age bracket
-    age_bracket = "30-40"
-
     # Load the portfolio
-    portfolio_df = load_portfolio("./data/portfolio.csv")
-    deps = Portfolio(portfolio=portfolio_df.to_dict(orient='records'), age_bracket=age_bracket)
-
+    portfolio_df = load_portfolio("./data/portfolio.csv")    
+    logger.info(f"Loading portfolio from ./data/portfolio.csv")
+    logger.info(f"Portfolio loaded with {len(portfolio_df)} records")
+    logger.info("Sample records:")
+    logger.info(portfolio_df.head())
+    deps = PortfolioAnalysis(
+        portfolio=[FundTransaction(**record) for record in portfolio_df.to_dict(orient='records')], 
+        age_range="30-40"
+    )
     result = await financial_planner_agent.run(
-        "Analyze my portfolio and provide suggestions for improvement.",
+        f"""Analyze my portfolio and provide recommendations:
+        Portfolio:
+        {deps.portfolio}
+        
+        Age group:
+        {deps.age_range}        
+        """,
         deps = deps
     )
     print(result.output)

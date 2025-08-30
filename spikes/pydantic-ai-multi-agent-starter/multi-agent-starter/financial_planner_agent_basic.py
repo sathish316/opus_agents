@@ -1,4 +1,3 @@
-import random
 import pandas as pd
 import numpy_financial as npf
 from datetime import datetime

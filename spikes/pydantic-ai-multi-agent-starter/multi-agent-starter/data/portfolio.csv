@@ -1,4 +1,4 @@
-Date,fund_category,fund_code,fund_name,transaction_type,units,unit_price
+date,fund_category,fund_code,fund_name,transaction_type,units,unit_price
 2023-01-05,EQ,EQ001,Mirae Asset Large Cap Fund,buy,10,100
 2023-02-05,EQ,EQ001,Mirae Asset Large Cap Fund,buy,10,102
 2023-03-05,EQ,EQ001,Mirae Asset Large Cap Fund,buy,10,105
