@@ -52,9 +52,9 @@ financial_planner_agent = Agent(
         'You have a team of Expert agents for analysis of each fund category - Equity(EQ), Debt(DT), Hybrid(HY).'
         'Use the tool `analyze_fund_category` to perform analysis on the portfolio across fund categories like Equity(EQ), Debt(DT), Hybrid(HY).'
         'This tool will return XIRR for all funds in a fund category and a recommended fund if the XIRR of current funds is not optimal.'
-        # 'You have an Expert agent for Asset Allocation(AA).' 
-        # 'Use the tool `analyze_asset_allocation` to perform Asset allocation ratio analysis on the portfolio, given a customer profile like age range.'
-        # 'This tool will return a recommendation for rebalancing the portfolio if required.'
+        'You have an Expert agent for Asset Allocation.' 
+        'Use the tool `analyze_asset_allocation` to perform Asset allocation ratio analysis on the portfolio, given a customer profile like age range.'
+        'This tool will return a recommendation for rebalancing the portfolio if required.'
         'Your job is to use the tools to perform analysis on the portfolio and provide a Financial report with recommendations.'
     ),
 )
@@ -84,9 +84,14 @@ async def analyze_fund_category(ctx: RunContext[PortfolioAnalysis], fund_categor
         return 'Invalid fund category'
 
 # Another Tool to link planner agent with sub-agent
-# @financial_planner_agent.tool
-# async def analyze_asset_allocation(ctx: RunContext[PortfolioAnalysis]) -> str:
-#     return await asset_allocation_agent.run(ctx.deps)
+@financial_planner_agent.tool
+async def analyze_asset_allocation(ctx: RunContext[PortfolioAnalysis]) -> str:
+    """Analyze the portfolio for optimal Asset Allocation based on the customer's age range"""
+    result = await asset_allocation_agent.run(
+        "Analyze the portfolio for optimal Asset Allocation based on the customer's age range {ctx.deps.age_range}",
+        deps=ctx.deps
+    )
+    return result.output
 
 # Generic tools for the expert sub-agents
 async def calculate_optimal_xirr(fund_category: str) -> float:
@@ -208,11 +213,13 @@ hybrid_fund_agent = Agent(
 # agent specific tools using context
 @debt_fund_agent.tool
 async def calculate_debt_xirr(ctx: RunContext[PortfolioAnalysis]) -> float:
+    """Calculate XIRR of each fund in Debt(DT) fund category"""
     return calculate_fundwise_xirr(ctx.deps, 'DT')
 
 # agent specific tools using context
 @hybrid_fund_agent.tool
 async def calculate_hybrid_xirr(ctx: RunContext[PortfolioAnalysis]) -> float:
+    """Calculate XIRR of each fund in Hybrid(HY) fund category"""
     return calculate_fundwise_xirr(ctx.deps, 'HY')
 
 # Pydantic Models - to be used for structured output later
@@ -229,46 +236,49 @@ async def calculate_hybrid_xirr(ctx: RunContext[PortfolioAnalysis]) -> float:
 #     ideal_ratio: dict = Field(..., description="The ideal asset allocation ratio for the age bracket.")
 #     suggestion: str = Field(..., description="Suggestion to rebalance the portfolio.")
 
-# Generic tools for expert sub-agent
-# def calculate_current_asset_allocation_ratio(portfolio_input: PortfolioAnalysis) -> dict:
-#     portfolio = portfolio_to_dataframe(portfolio_input)
-#     total_investment = (portfolio['units'] * portfolio['unit_price']).sum()
-#     equity_investment = (portfolio[portfolio['fund_category'] == 'EQ']['units'] * portfolio[portfolio['fund_category'] == 'EQ']['unit_price']).sum()
-#     debt_investment = (portfolio[portfolio['fund_category'] == 'DT']['units'] * portfolio[portfolio['fund_category'] == 'DT']['unit_price']).sum()
-#     hybrid_investment = (portfolio[portfolio['fund_category'] == 'HY']['units'] * portfolio[portfolio['fund_category'] == 'HY']['unit_price']).sum()
-
-#     return {
-#         "EQ": equity_investment / total_investment,
-#         "DT": debt_investment / total_investment,
-#         "HY": hybrid_investment / total_investment,
-#     }
-
-# def ideal_asset_allocation_ratio() -> dict:
-#     ideal_ratios = {
-#         "0-20": {"EQ": 0.8, "DT": 0.1, "HY": 0.1},
-#         "20-30": {"EQ": 0.7, "DT": 0.2, "HY": 0.1},
-#         "30-40": {"EQ": 0.6, "DT": 0.2, "HY": 0.2},
-#         "40-50": {"EQ": 0.5, "DT": 0.4, "HY": 0.1},
-#         "50-60": {"EQ": 0.4, "DT": 0.5, "HY": 0.1},
-#         ">60": {"EQ": 0.3, "DT": 0.6, "HY": 0.1},
-#     }
-
 # More sub-agents called in sequence
-# asset_allocation_agent = Agent(
-#     'openai:gpt-4o',
-#     deps_type=PortfolioAnalysis,
-#     output_type=str,
-#     system_prompt=(
-#         'You are an expert at analyzing Asset allocation in India.'
-#         'Use the tool `calculate_current_asset_allocation_ratio` to find the asset allocation across fund categories. Fund categories are Equity(EQ), Debt(DT), Hybrid(HY)'
-#         'Use the tool `ideal_asset_allocation_ratio` to find the ideal asset allocation across fund categories. Fund categories are Equity(EQ), Debt(DT), Hybrid(HY)'
-#         'If the current asset allocation is not close to the ideal asset allocation, Suggest a rebalancing plan'
-#     ),
-#     tools=[
-#         calculate_current_asset_allocation_ratio,
-#         ideal_asset_allocation_ratio,
-#     ],
-# )
+asset_allocation_agent = Agent(
+    'claude-sonnet-4-20250514',
+    deps_type=PortfolioAnalysis,
+    output_type=str,
+    system_prompt=(
+        'You are an expert at analyzing Asset allocation in India.'
+        'Use the tool `calculate_current_asset_allocation_ratio` to find the asset allocation across fund categories. Fund categories are Equity(EQ), Debt(DT), Hybrid(HY)'
+        'Use the tool `ideal_asset_allocation_ratio` to find the ideal asset allocation across fund categories. Fund categories are Equity(EQ), Debt(DT), Hybrid(HY)'
+        'If the current asset allocation is not close to the ideal asset allocation, Suggest a rebalancing plan'
+    )
+)
+
+@asset_allocation_agent.tool
+async def calculate_current_asset_allocation_ratio(ctx: RunContext[PortfolioAnalysis]) -> dict:
+    """Calculate the current asset allocation ratio across fund categories"""
+    portfolio = portfolio_to_dataframe(ctx.deps)
+    total_investment = (portfolio['units'] * portfolio['unit_price']).sum()
+    equity_investment = (portfolio[portfolio['fund_category'] == 'EQ']['units'] * portfolio[portfolio['fund_category'] == 'EQ']['unit_price']).sum()
+    debt_investment = (portfolio[portfolio['fund_category'] == 'DT']['units'] * portfolio[portfolio['fund_category'] == 'DT']['unit_price']).sum()
+    hybrid_investment = (portfolio[portfolio['fund_category'] == 'HY']['units'] * portfolio[portfolio['fund_category'] == 'HY']['unit_price']).sum()
+
+    result = {
+        "EQ": equity_investment / total_investment,
+        "DT": debt_investment / total_investment,
+        "HY": hybrid_investment / total_investment,
+    }
+    logger.info(f"Current asset allocation ratio: {result}")
+    return result
+
+@asset_allocation_agent.tool_plain
+async def ideal_asset_allocation_ratio() -> dict:
+    """Calculate the ideal asset allocation ratio across fund categories"""
+    ideal_ratios = {
+        "0-20": {"EQ": 0.8, "DT": 0.1, "HY": 0.1},
+        "20-30": {"EQ": 0.7, "DT": 0.2, "HY": 0.1},
+        "30-40": {"EQ": 0.6, "DT": 0.2, "HY": 0.2},
+        "40-50": {"EQ": 0.5, "DT": 0.4, "HY": 0.1},
+        "50-60": {"EQ": 0.4, "DT": 0.5, "HY": 0.1},
+        ">60": {"EQ": 0.3, "DT": 0.6, "HY": 0.1},
+    }
+    logger.info(f"Ideal asset allocation ratio: {ideal_ratios}")
+    return ideal_ratios
 
 # util functions
 def load_portfolio(filepath: str) -> pd.DataFrame:
