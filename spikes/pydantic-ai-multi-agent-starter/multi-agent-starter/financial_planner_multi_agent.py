@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy_financial as npf
 from datetime import datetime
 from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
