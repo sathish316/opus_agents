@@ -7,7 +7,7 @@ def trace_all_messages(result):
     """
     print("\n=== All Messages ===")
     for i, message in enumerate(result.all_messages(), 1):
-        # print(f"\nMessage {i}:")
+        print(f"\nMessage {i}:")
         # print(message)
         
         for j, part in enumerate(message.parts, 1):

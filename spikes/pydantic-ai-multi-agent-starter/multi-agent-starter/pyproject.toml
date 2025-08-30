@@ -9,4 +9,5 @@ dependencies = [
     "numpy-financial>=1.0.0",
     "pandas>=2.3.2",
     "pydantic-ai>=0.8.1",
+    "pyxirr>=0.10.7",
 ]

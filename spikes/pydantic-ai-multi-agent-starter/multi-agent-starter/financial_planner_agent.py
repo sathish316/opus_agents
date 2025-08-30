@@ -6,9 +6,22 @@ from pydantic import BaseModel, Field
 from pydantic_ai import Agent, RunContext
 import asyncio
 from dataclasses import dataclass
+from llm_helper import trace_all_messages
 
 @dataclass
 class Portfolio:
+    """Portfolio of the customer. 
+    Portfolio is a list of rows. Each row is a fund transaction record.
+    Each row has the following fields:
+    - Date: The date of the transaction
+    - Fund Category: The category of the fund
+    - Fund Code: The code of the fund
+    - Fund Name: The name of the fund
+    - Transaction Type: The type of transaction
+    - Units: The number of units transacted
+    - Unit Price: The price per unit at the time of transaction
+    Portfolio details also contains the age bracket of the customer.
+    """
     age_bracket: str = Field(..., description="The age bracket of the customer")
     portfolio: list[dict] = Field(..., description="The portfolio of the customer. Portfolio is a list of rows."
                                   "Each row is a fund transaction record.")
@@ -52,12 +65,13 @@ financial_planner_agent = Agent(
     output_type=str,
     system_prompt=(
         'You are a Financial Planner.'
-        'You are given a portfolio of the customer.'
-        'You are also given a customer profile like age range.'
-        'You have a team of Expert agents for each fund category - Equit, Debt, Hybrid.'
-        'Use the tool `analyze_fund_category` to perform analysis on the portfolio for a given fund category.'
-        'You have an Expert on Asset Allocation. Use the tool `analyze_asset_allocation` to perform analysis on the portfolio given a customer profile like age range.'
-        'Your job is to use the tools to perform analysis on the portfolio and provide a report of suggestions.'
+        # 'You are given a portfolio of the customer.'
+        # 'You are also given a customer profile like age range.'
+        # 'You have a team of Expert agents for each fund category - Equit, Debt, Hybrid.'
+        'Use the tool `analyze_fund_category` to perform analysis on the portfolio across fund categories like Equity(EQ), Debt(DT), Hybrid(HY).'
+        # 'You have an Expert on Asset Allocation.' 
+        'Use the tool `analyze_asset_allocation` to perform Asset allocation ratio analysis on the portfolio, given a customer profile like age range.'
+        # 'Your job is to use the tools to perform analysis on the portfolio and provide a report of suggestions.'
         # "Use the tool `roll_dice` to roll a six-sided die and rate how good the portfolio is."
     ),
 )
@@ -71,11 +85,14 @@ def roll_dice() -> str:
 @financial_planner_agent.tool
 async def analyze_fund_category(ctx: RunContext[Portfolio], fund_category: str) -> str:
     if fund_category == 'EQ':
-        return await equity_fund_agent.run(ctx.deps)
+        response = await equity_fund_agent.run(ctx.deps)
+        return response.text
     elif fund_category == 'DT':
-        return await debt_fund_agent.run(ctx.deps)
+        response = await debt_fund_agent.run(ctx.deps)
+        return response.text
     elif fund_category == 'HY':
-        return await hybrid_fund_agent.run(ctx.deps)
+        response = await hybrid_fund_agent.run(ctx.deps)
+        return response.text
     else:
         return 'Invalid fund category'
 
@@ -281,33 +298,15 @@ async def main():
 
     # Load the portfolio
     portfolio_df = load_portfolio("./data/portfolio.csv")
-    portfolio = Portfolio(portfolio=portfolio_df.to_dict(orient='records'), age_bracket=age_bracket)
+    deps = Portfolio(portfolio=portfolio_df.to_dict(orient='records'), age_bracket=age_bracket)
 
     result = await financial_planner_agent.run(
         "Analyze my portfolio and provide suggestions for improvement.",
-        deps = portfolio
+        deps = deps
     )
     print(result.output)
     print(result.usage())
-    print("\n=== All Messages ===")
-    for i, message in enumerate(result.all_messages(), 1):
-        # print(f"\nMessage {i}:")
-        # print(message)
-        
-        for j, part in enumerate(message.parts, 1):
-            if part.part_kind == 'system-prompt':
-                print(f"(System): {part.content}\n")
-            elif part.part_kind == 'user-prompt':
-                print(f"(User): {part.content}\n")
-            
-            # print("\n=== Tool Calls ===")
-            # if message.hasattr('tool_calls'): 
-            #     for tool_call in message.tool_calls:
-            #         print(f"  Tool Call: {tool_call}")
-            #         print(f"    Tool Name: {tool_call.name}")
-            #         print(f"    Tool Args: {tool_call.args}")
-            #         print(f"    Tool Result: {tool_call.result}")
-    # print(result.all_messages())
+    trace_all_messages(result)
 
 if __name__ == "__main__":
     asyncio.run(main())
