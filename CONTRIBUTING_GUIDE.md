@@ -6,6 +6,17 @@
 4. Run tests: `uv run pytest`
 5. Submit a pull request
 
+## Tech stacks
+
+Tech stacks used are:
+1. Language - Python
+2. uv
+3. Agent orchestration - PydanticAI
+4. CLI - PydanticAI CLI
+5. Admin CLI - Typer
+6. Vector store - Chromadb
+7. MCP servers and clients - PydanticAI and FastMCP
+
 ## Development
 
 **Adding New Custom Tools:**

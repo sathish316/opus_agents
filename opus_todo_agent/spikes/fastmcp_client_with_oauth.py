@@ -19,7 +19,7 @@ def wrap_tool(name: str, description: str, inputSchema: dict, session: ClientSes
         elif hasattr(result, 'data'):
             return {"data": result.data}
         return {"data": str(result)}
-    
+
     return Tool.from_schema(
         name=name,
         description=description,

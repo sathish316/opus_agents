@@ -1,82 +1,59 @@
 # Opus Agents
 
-Opus Agents is an Open-source Agentic AI framework that comes with a collection of AI agents and Custom/Personalized tools to supercharge your productivity in different areas like Productivity tools, Collaboration tools, Software development etc.
+Opus Agents is an open-source agentic AI framework featuring a suite of AI agents and customizable tools designed to enhance your productivity across multiple domains including productivity apps, collaboration tools, and software development.
 
-It is inspired by the views of Neil DeGrasse Tyson in his Podcast "Why AI is overrated" - https://www.youtube.com/watch?v=BYizgB2FcAQ. TLDR - AI is expected to bring exponential growth and superpowers similar to Humanity's transition from Horses to Cars. Humanity has always been in exponential growth phase ever since the start of Industrial revolution and Internet or AI is no different. The current viewpoints on AI fall either on the spectrum that "AI will replace humans" or on the other end of the spectrum that "AI is a stochastic parrot". Neil DeGrasse Tyson takes a balanced view that AI will bring the superpowers of Jarvis to every human and trigger the next phase of Exponential growth.
+The project draws inspiration from Neil DeGrasse Tyson's views in the podcast "Why AI is overrated" (https://www.youtube.com/watch?v=BYizgB2FcAQ). In summary, AI is anticipated to result in transformative capabilities comparable to humanity's shift from horses to cars. The exponential growth anticipated from AI is no different from the exponential growth we have seen in Industrial Revolution, Internet etc. Neil DeGrasse Tyson advocates for a balanced perspective, suggesting that AI will enable Jarvis-like capabilities for everyone, catalyzing the next wave of exponential growth.
 
-Opus Agents is an attempt to make the tools we use everyday for Productivity, Collaboration, Software development etc feel almost like Jarvis. It's features are:
+Opus Agents is an attempt to make the tools we use everyday for Productivity, Collaboration, Software development etc feel almost like Jarvis. Key features are:
 * Productivity tools
-   * Todo lists - Asking your Todo lists what you did yesterday, last week, help you plan your day and to help you do Task prioritization according to your custom workflows
+   * Todo lists - Ask your Todo lists what you did yesterday, last week, help you plan your day and prioritize Tasks according to your custom workflows
    * Notetaking - Ask questions to your notes
 * Collaboration software
-   * Google Calendar - Find out where your time is going and optimize your meetings
-   * Slack - Catch up on team-specific and project-specific Slack channels without being in a deluge by Slack messages
-   * Gmail - Catch up on important emails quickly, categorize emails and don't get bogged down by Inbox Zero
-   * Clockwise - Same as Google Calendar, but more powerful
-   * Zoom / Loom - Skip that meeting and ask follow-up questions to your meeting transcripts directly
+   * Google Calendar or Clockwise - Find out where your time is spent in meetings
+   * Slack - Catch up on team-specific and project-specific Slack channels
+   * Gmail - Catch up on important emails, categorize emails and achieve Inbox Zero
+   * Zoom or Loom - Ask follow-up questions to your meeting transcripts
 * Software development
    * More powers coming soon...
 * Security
-   * All of this comes with Data security built in. You can only Authenticate and Authorize tools that are approved by your Workplace admin or by Remote MCP servers or by yourself using OAuth
-   * The data does not leave your laptop and some of the sensitive tools/features can run only using Local LLMs like gpt-oss, Qwen3, Ollama3 etc
+   * Built-in data security ensures you can only authenticate and authorize tools through workplace-approved methods, Remote MCP servers, or OAuth
+   * Your data remains on your local machine, and sensitive tools/features can be configured to run exclusively with Local LLMs such as gpt-oss, Qwen3, Ollama3.
 
-If you don't find a software or tool that you use everyday, It is meant to be a hackable framework to add customizations that suit your day-to-day workflows.
+Opus Agents provides capabilities beyond simply integrating MCP tools into Cursor. As an extensible and hackable framework, it allows you to add and customize your frequently-used software and tools to match your unique daily workflows.
 
-The name is inspired by the latin phrase "magnum opus" that means "great work". 
+Check out Setup and User guide in [Installation and User Guide](USER_GUIDE.md)
 
-Check out Setup and User guide in TOLINK.
-Check out Contribution guide in TOLINK
+Check out [Contributing Guide](CONTRIBUTING_GUIDE.md)
 
-## Features
+## Core Features
 
 Opus Agents comes with the following generic features that work across all tools:
 * Framework for AI Agents for managing orchestration, Models, MCP servers, Custom tools, Higher order tools, Prompts etc 
-* CLI for Agents
-* CLI for Admin features and Slash commands like Config
-* Model management using Frontier models by OpenAI, Anthropic
-* Model management using Local models like gpt-oss, Qwen3, Ollama3 for protecting secure data
+* CLI for Agents, CLI for Slash commands like Config
+* Model management using Frontier models by OpenAI, Anthropic. Model management using Local models like gpt-oss, Qwen3, Ollama3
 * MCP server integrations
+* Custom tools and Higher order tools that enhance MCP servers
 * Config management to enable/disable any category or MCP server or custom tool
-* Prompt library to help you optimize your workflows in Productivity, Collaboration, Software development etc.
-* Custom tools and Higher order tools for Productivity, Collaboration, Software development etc.
-* Coming soon - Plugins to build and add tools that suit your custom workflows
-* Coming soon - Integration with your existing AI tools like Cursor, Claude code etc
-* Coming soon - Using Local LLMs end-to-end
-
-Opus Agents enhances Productivity software to do the following:
-- **✅ Todo Lists (Todoist)**: Daily/Weekly review of completed tasks, Plan your day using Task prioritization techniques
-- **📝 Notetaking (Obsidian)**: Index your notes, Ask questions to your notes
-
-Opus Agents enhances Collaboration software to do the following:
-- **📧 Gmail**: Coming soon
-- **📅 Calendar (Google calendar, Clockwise)**: Ask questions about your past meetings (yesterday or last week) to find out where your time is going, Optimize your future meetings to spend more time doing Deep work
-- **💬 Chat (Slack)**: Catch up on Slack channels for a team for any duration (last one day, one week, x days/weeks), Convert Slack mentions for important messages to Todo list action items
-- **🎥 Meeting recorders (Zoom/Loom)**: Ask follow-up questions to meeting transcripts to find out what was decided.
-
-For Setup and User guide, check out TOLINK.
-
-If your favourite software or custom workflow is not present here, please see the Contributing guide TOLINK and raise a Pull request
-
+* Prompt library to customize your workflows
+* Coming soon - Plugins, Integration with existing AI tools, Local modeld end-to-end and more
 
 ## Installation and User Guide
 
-TOLINK
+[Installation and User Guide](USER_GUIDE.md)
 
 ## Development and Contributing Guide
 
-TOLINK
+[Contributing Guide](CONTRIBUTING_GUIDE.md)
 
-## Tech stacks
+If your favourite software or custom workflow is not present here, please see the [Contributing Guide](CONTRIBUTING_GUIDE.md) and raise a Pull request
 
-Tech stacks used are:
-1. Language - Python
-2. Agent orchestration - PydanticAI
-3. CLI - PydanticAI CLI
-4. Admin CLI - Typer
-5. Vector store - Chromadb
-6. MCP servers and clients - PydanticAI and FastMCP
+## License
 
-## LICENSE
+Opus Agents is designed as a highly customizable and hackable framework.
+The project will remain open source under the [MIT LICENSE](LICENSE.md)
 
-TOLINK
+## About
+
+The name is inspired by the latin phrase "magnum opus" that means "great work". 
+
 

@@ -1,44 +1,50 @@
--[ ] CLI
-    -[ ] list categories
-    -[ ] add tool in category
-    -[ ] login to tool
 -[ ] MCP servers and Tools
+    -[X] Todo list
+        -[X] Todoist
+    -[X] Chat
+        -[X] Slack
+    -[X] Calendar
+        -[X] Google calendar
+        -[X] Clockwise
+    -[X] Meeting transcript
+        -[X] Zoom
+        -[X] Loom
     -[ ] Email
         -[ ] Gmail
-    -[ ] Chat
-        -[ ] Slack
-    -[ ] Meetings
-        -[ ] Zoom
-    -[ ] Calendar
-        -[ ] Google calendar
-    -[ ] Meeting transcript
-        -[ ] Zoom transcript
     -[ ] Docs
-        -[ ] Confluence docs for a filter
-    -[ ] Todo list
-        -[ ] Todoist
-    -[ ] Notetaking
-        -[ ] Obsidian
+        -[ ] Confluence docs
+        -[ ] Google docs
+    -[X] Notetaking
+        -[X] Obsidian
 -[ ] Custom tools
-    -[ ] Todoist in category:Todo
-        -[X] Todoist custom tools for get completed tasks, with predefined date ranges
-        -[X] Todoist custom tools for daily review with AI summary
-        -[X] Todoist custom tools for weekly review with AI summary
-        -[ ] Todoist daily and weekly review for specific day or week with date or daterange
-        -[ ] Todoist custom tools for task recommendation and Triflow focus technique
--[ ] Todoist integration
-    -[X] API key from env
-    -[X] Todoist MCP integration
--[ ] Slack integration
--[ ] Google calendar integration
--[ ] Gmail integration
--[ ] Google docs and confluence integration
--[ ] Test data generation
-    -[ ] Email
-    -[ ] Chat
-    -[ ] Meetings
-    -[ ] Calendar
-    -[ ] Meeting transcript
-    -[ ] Docs
-    -[ ] Todo list
-    -[ ] Notetaking
+    -[X] Todoist
+        -[X] daily review, weekly review
+        -[X] Task recommendation
+    -[X] Calendar
+        -[X] daily review, weekly review
+        -[X] briefing for future meetings
+        -[ ] calendar metrics
+        -[ ] optimize meetings
+    -[X] Slack
+        -[X] brief about single channel and summarize
+        -[X] brief about team or project specific channels and summarize
+    -[X] Notetaking
+        -[X] Ask question or chat with your notes
+    -[X] Meeting transcript
+        -[X] Ask follow-up question to Loom transcript
+        -[X] Ask follow-up question to Zoom transcript
+-[ ] Common capabilities
+    -[X] CLI
+        -[X] pydantic cli
+        -[X] typer cli with help, exit, status, env commands
+        -[X] config command
+    -[X] Config
+        -[X] init config file
+        -[X] list, get, set, show config in yml
+        -[X] nested yml get, set, show. dot notation for get and set
+    -[ ] Memory
+    -[X] Local model support
+        -[X] Meeting transcript
+        -[X] Slack
+        -[ ] Calendar
+        -[ ] Tool calling
