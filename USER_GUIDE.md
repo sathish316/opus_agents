@@ -108,9 +108,9 @@ If running from the Git repo
 uv run opus_todo_agent/main.py
 ```
 
-## Productivity tools Usage - Todo, Notetaking
+# Productivity tools Usage - Todo, Notetaking
 
-### Todoist
+## Todoist
 1. Enable Todoist in ~/.opusai/opus-config.yaml
 ```
 mcp_config.productivity.todo.todoist.enabled=true
@@ -129,7 +129,7 @@ OpusCLI> Find open tasks in Test project (in Todoist)
 
 The power of OpusCLI is in the advanced workflows that it supports to suit your needs. For custom tools and workflows possible with Todoist, check Custom Tools and Prompt library section
 
-### Obsidian
+## Obsidian
 Obsidian is a notetaking tool.
 Opus Agents support indexing your notes one-time or periodically and asking questions to your notes
 
@@ -168,9 +168,9 @@ OpusCLI> Ask notes - what is X?
 
 For advanced tools and workflows possible with Obsidian, check Custom Tools and Prompt library section
 
-## Collaboration tools Usage - Mail, Calendar, Chat, Meetings
+# Collaboration tools Usage - Mail, Calendar, Chat, Meetings
 
-### Calendar - Google Calendar
+## Calendar - Google Calendar
 
 1. Enable Google Calendar in ~/.opusai/opus-config.yaml
 A higher order tool is a special type of custom tool that uses the MCP server to build advanced functionalities.
@@ -208,7 +208,7 @@ OpusCLI> What meetings do i have tomorrow?
 
 7. The power of OpusCLI is in the advanced and hackable Google Calendar workflows that it supports to suit your needs. For advanced tools and workflows possible with Google Calendar, check Custom Tools and Prompt library section
 
-### Calendar - Clockwise
+## Calendar - Clockwise
 
 In case your Google workspace permission does not allow you to use Google calendar, Clockwise provides Remote MCP servers with access to your Calendar and more optimization tools.
 
@@ -228,7 +228,7 @@ OpusCLI> What meetings do i have tomorrow?
 
 The power of OpusCLI is in the advanced and hackable Clockwise workflows that it supports to suit your needs. For advanced tools and workflows possible with Clockwise, check Custom Tools and Prompt library section
 
-### Chat - Slack
+## Chat - Slack
 1. Enable Slack in ~/.opusai/opus-config.yaml
 ```
 mcp_config.productivity.chat.slack.enabled=true
@@ -280,7 +280,7 @@ chat.slack.use_local_model=true
 
 OpusCLI> Update me on the recent messages in Test slack channel in last one week
 
-### Meetings Recording and Transcript - Zoom and Loom
+## Meetings Recording and Transcript - Zoom and Loom
 
 OpusCLI does not direcly integrate with Zoom or Loom APIs. It expects you to download the transcript in a specific location and uses a Local model to answer follow-up questions about the meeting
 
@@ -322,9 +322,9 @@ To download transcript: Go to loom.com > Sign-in > Click on meeting > View Recor
 
 > Ask question about meeting id 123 - Summarize the meeting
 
-## Custom Tools and Prompt Library
+# Custom Tools and Prompt Library
 
-### Todo > Todoist
+## Todo > Todoist
 
 ```
 ** Task management
@@ -356,9 +356,14 @@ To download transcript: Go to loom.com > Sign-in > Click on meeting > View Recor
 > TODO - find tasks with the tag urgent | important | urgent and important
 ```
 
-### Notes > Obsidian
+## Notes > Obsidian
 
-### Calendar > Google Calendar, Clockwise
+```
+** Chat with your notes
+> Ask notes - what is X?
+```
+
+## Calendar > Google Calendar, Clockwise
 
 ```
 ** Meetings management
@@ -393,7 +398,7 @@ To download transcript: Go to loom.com > Sign-in > Click on meeting > View Recor
 ** Meetings metrics - percentage of time spent in meetings
 ```
 
-### Chat > Slack
+## Chat > Slack
 
 ```
 ** Catchup on Slack channel
@@ -410,18 +415,11 @@ To download transcript: Go to loom.com > Sign-in > Click on meeting > View Recor
 > List recent messages in Bar team's slack channels (from last x days)
 ```
 
-* Obsidian
-
-```
-** Chat with your notes
-> Ask notes - what is X?
-```
-
-### Meeting recorder > Zoom or Loom
+## Meeting recorder > Zoom or Loom
 
 ```
 > Ask question about meeting id 123 - what is the final decision on X from this meeting?
 ```
 
-## Troubleshooting
+# Troubleshooting
 
