@@ -1,69 +1,69 @@
 model_config:
   - provider: "openai"
     model: "gpt-4o"
-    enabled: False
+    enabled: false
   - provider: "openai"
     model: "gpt-5"
-    enabled: True
+    enabled: true
   - provider: "anthropic"
     model: "claude-sonnet-4-20250514"
-    enabled: False
+    enabled: false
   - provider: "anthropic"
     model: "claude-sonnet-4-5-20250929"
-    enabled: False
+    enabled: false
   - provider: "ollama"
     model: "gpt-oss:20b"
-    enabled: False
-    is_local: True
+    enabled: false
+    is_local: true
     base_url: "http://127.0.0.1:8080/v1"
     # run locally using $ llama-server -hf ggml-org/gpt-oss-20b-GGUF -c 32768
   - provider: "ollama"
     model: "qwen3:1.7b-q8_0"
-    enabled: True
-    is_local: True
+    enabled: true
+    is_local: true
     base_url: "http://127.0.0.1:8080/v1"
     # run locally using $ llama-server -hf Qwen/Qwen3-1.7B-GGUF:Q8_0 -c 32768
   - provider: "ollama"
     model: "microsoft/Phi-3-mini-4k-instruct"
-    enabled: False
-    is_local: True
+    enabled: false
+    is_local: true
     base_url: "http://127.0.0.1:8080/v1"
     # run locally using $ llama-server -hf microsoft/Phi-3-mini-4k-instruct-gguf -c 32768
 mcp_config:
   general:
     filesystem:
-      enabled: True
+      enabled: true
     search:
-      enabled: True
+      enabled: true
     code_execution:
-      enabled: True
+      enabled: true
   productivity:
     todo:
       todoist:
-        enabled: False
+        enabled: false
     calendar:
       google_calendar:
-        enabled: False
-        higher_order_tools_enabled: False
+        enabled: false
+        higher_order_tools_enabled: false
       clockwise:
-        enabled: False
-        higher_order_tools_enabled: False
+        enabled: false
+        higher_order_tools_enabled: false
     chat:
       slack:
-        enabled: False
+        enabled: false
         auth_method: "xoxp"
-        higher_order_tools_enabled: False
+        higher_order_tools_enabled: false
     notes:
       obsidian:
-        enabled: False
+        enabled: false
     meeting_transcript:
       loom:
-        enabled: False
+        enabled: false
       zoom:
-        enabled: False
+        enabled: false
 chat:
   slack:
-    use_local_model: False
+    use_local_model: false
     project_to_channels: {
       "foo": ["bar", "baz"]
     }
@@ -84,11 +84,11 @@ notes:
 meeting_transcript:
   zoom:
     storage_dir: "/path/to/zoom_transcripts"
-    use_local_model: True
+    use_local_model: true
     max_transcript_size: 32000 # 0 means no limit, otherwise token limit
   loom:
     storage_dir: "/path/to/loom_transcripts"
-    use_local_model: True
+    use_local_model: true
     max_transcript_size: 32000 # 0 means no limit, otherwise token limit
 debug:
-  inspect_tools: false
+  inspect_tools: true

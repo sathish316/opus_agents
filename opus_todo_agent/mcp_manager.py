@@ -85,7 +85,7 @@ class MCPManager:
             "args": ["mcp-datetime"],
             "tool_prefix": "mcp-datetime",
         }
-        if self.config["calendar"]["google_calendar"]["higher_order_tools_enabled"]:
+        if self._is_mcp_enabled("productivity", "calendar", "google_calendar"):
             # Google calendar is run as stdio local mcp server using https://github.com/taylorwilsdon/google_workspace_mcp
             self.config["mcpServers"]["google_calendar"] = {
                 "transport": "stdio",
@@ -103,7 +103,7 @@ class MCPManager:
                 "cwd": f"{os.getenv('GOOGLE_WORKSPACE_MCP_PATH')}",
                 "tool_prefix": "google_calendar",
             }
-        if self.config["calendar"]["clockwise"]["higher_order_tools_enabled"]:
+        if self._is_mcp_enabled("productivity", "calendar", "clockwise"):
             # Clockwise is run as Remote mcp server using https://mcp.getclockwise.com/mcp
             self.config["mcpServers"]["clockwise"] = {
                 "transport": "streamable-http",
@@ -111,7 +111,7 @@ class MCPManager:
                 "tool_prefix": "clockwise",
                 "auth": "oauth",
             }
-        if self.config["chat"]["slack"]["higher_order_tools_enabled"]:
+        if self._is_mcp_enabled("productivity", "chat", "slack"):
             # Slack is run as stdio local mcp server using https://github.com/korotovsky/slack-mcp-server
             self.config["mcpServers"]["slack"] = {
                 "transport": "stdio",

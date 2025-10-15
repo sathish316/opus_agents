@@ -33,6 +33,10 @@ dependencies = [
     "httpx>=0.24.0", # For HTTP client customization
     "singleton-decorator>=1.0.0",
     "fastmcp>=2.12.4",
+    "typer>=0.19.2",
+    "tiktoken>=0.12.0",
+    "chromadb>=1.1.1",
+    "rapidfuzz>=3.14.1",
 ]
 
 [project.optional-dependencies]

@@ -12,7 +12,7 @@ class ConfigManager:
 
     # Configuration file path
     CONFIG_DIR = Path.home() / ".opusai"
-    CONFIG_FILE = CONFIG_DIR / "opus-config-productivity.yaml"
+    CONFIG_FILE = CONFIG_DIR / "opus-config.yaml"
 
     def __init__(self):
         self.config_dir = ConfigManager.CONFIG_DIR
