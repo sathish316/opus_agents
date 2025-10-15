@@ -280,94 +280,148 @@ chat.slack.use_local_model=true
 
 OpusCLI> Update me on the recent messages in Test slack channel in last one week
 
-### Meetings Recording and Transcript - Zoom
+### Meetings Recording and Transcript - Zoom and Loom
 
-### Meetings Recording and Transcript - Zoom
+OpusCLI does not direcly integrate with Zoom or Loom APIs. It expects you to download the transcript in a specific location and uses a Local model to answer follow-up questions about the meeting
+
+1. Enable Zoom or Loom in ~/.opusai/opus-config.yaml
+```
+mcp_config.productivity.meeting_transcript.zoom.enabled=true
+mcp_config.productivity.meeting_transcript.loom.enabled=true
+```
+
+2. Configure storage directory for meeting trancript
+```
+meeting_transcript:
+  zoom:
+    storage_dir: "~/tmp/opusai/data/zoom"
+  loom:
+    storage_dir: "~/tmp/opusai/data/loom"
+```
+
+3. This step is for additional security. Enable local models and token limit for Meeting transcripts. 
+```
+meeting_transcript:
+  zoom:
+    use_local_model: true
+    max_transcript_size: 32000
+  loom:
+    use_local_model: true
+    max_transcript_size: 32000
+```
+
+4. Go to zoom and download meeting transcript to ~/tmp/opusai/data/zoom. Zoom meetings have *.vtt extension. If your meeting is is abc13371337, the filename where the transcript should be stored is ~/tmp/opusai/data/zoom/abc13371337.vtt
+
+To download transcript: Go to zoom.com > Sign-in > Recordings & Transcripts > Click on meeting id > Click on Audio transcript download
+
+5. Go to loom and download meeting transcript to ~/tmp/opusai/data/loom. Loom meetings have *.srt extension. If your meeting is is abc13371337, the filename where the transcript should be stored is ~/tmp/opusai/data/loom/abc13371337.srt
+
+To download transcript: Go to loom.com > Sign-in > Click on meeting > View Recording > Transcript > Download
+
+6. Test Zoom or Loom on OpusAI
+
+> Ask question about meeting id 123 - Summarize the meeting
 
 ## Custom Tools and Prompt Library
 
 ### Todo > Todoist
 
-### Notes > Obsidian
-
-### Calendar > Google Calendar
-
-### Calendar > Clockwise
-
-### Chat > Slack
-
-### Meeting recorder > Zoom
-
-### Meeting recorder > Loom
-
-* Todoist
+```
 ** Task management
-> Create task 'Order Curtains' in Interior project
+> Create task 'Order Cake' in Birthday project
+
 ** Task search
-> Find open tasks in Todoist project Interior
-** Task search - custom tools
-> Find out all the tasks i completed last week
-> Find out all the tasks i completed this week
-> Find out all the tasks i completed today
-> Find out all the tasks i completed yesterday
+> Find open tasks in Todoist project Birthday
+> Find out all the tasks i completed last week / this week / today / yesterday
+
 ** Daily review
-> Generate daily review
+> Generate daily review of Todoist tasks
 > Generate daily review, don't summarize
 > Generate daily review for 6-Sep-2025
+
 ** Weekly review
-> Generate weekly review
+> Generate weekly review of Todoist tasks
 > Generate weekly review, don't summarize
-> Generate weekly review from 1-Sep to 10-Sep
-> Generate weekly review for Sep 1st week
+> Generate weekly review from 1-Sep to 10-Sep / Sep 1st week
+
 ** Task recommendation and grouping
-> Suggest tasks from the project Interior
-> Recommend tasks from the project Interior
-> Pick 5 random tasks from the project Interior
+> Suggest/Recommend tasks from the project Orion
+> Pick 5 random tasks from the project Orion that i can work on
 > Suggest tasks with the tag deepwork
-** Task organizer
-> Organize by Todoist Inbox
-> Recommend project categories for 20 tasks in Todoist Inbox
+
 ** Due, Deadline, Urgent, Important tasks
 > TODO - find tasks due today
 > TODO - find tasks with deadline today
 > TODO - find tasks that are past deadline
 > TODO - find tasks with the tag urgent | important | urgent and important
+```
 
-* Google calendar
+### Notes > Obsidian
+
+### Calendar > Google Calendar, Clockwise
+
+```
 ** Meetings management
-> TODO - list all my meetings for today
-> TODO - list all my meetings for tomorrow
-> list all my meetings for date 1-Sep-2025
+> list all my meetings for today / tomorrow / yesterday
+> list all my meetings for this week / next week / last week
+> list all my meetings on 1-Sep-2025
+
+** Meeting summary
+> generate summary of meetings that I have today
+> generate summary of meetings that i attended yesterday
+> Brief me about the meetings that are planned for tomorrow
+> Generate summary of meetings on 1-Oct-2025
+> Generate summary of meetings I have this week
+> Generate summary of meetings I attended last week
+> Brief me about the meetings I have next week / this week
+> Generate summary of my meetings from 22-Sep-2025 to 26-Sep-2025
+
 ** Daily review from accepted meetings
+> Generate daily review of meetings (Defaults to today)
+> Generate daily review of my meetings for today
+> Generate daily review of my meetings for yesterday
+> Generate daily review of my meetings on 1-Oct-2025
+
 ** Weekly review from accepted meetings
+> Generate weekly review of meetings (Defaults to current week)
+> Generate weekly review of my meetings for this week
+> Generate weekly review of my meetings for last week
+> Generate weekly review of my meetings from 1-Sep-2025 to 10-Sep-2025
+
 ** Meetings optimizer - batching, focus time etc
-** Meetings metrics - percentage of time spent in meetings on a given day
+
+** Meetings metrics - percentage of time spent in meetings
 ```
 
-## Configure integrations
+### Chat > Slack
 
-### Configure Todoist
-TODO: steps for Todoist API key
+```
+** Catchup on Slack channel
+> List my slack channels
+> List recent messages in slack channel foo (and summarize them)
+> Brief me about slack channel foo from today / yesterday / custom date (and summarize them)
 
+** Catchup on Project specific slack channels
+> Brief me about Bar project's slack channels from last one day / last one week / last x days
+> List recent messages in Bar project's slack channels (from last x days)
 
-## Troubleshooting
-```bash
-export FASTMCP_LOG_LEVEL=DEBUG
-export PYDANTIC_AI_LOG_LEVEL=DEBUG
-opus-todo-agent
+** Catchup on Team specific slack channels
+> Brief me about Bar team's slack channels from last one day / last one week / last x days
+> List recent messages in Bar team's slack channels (from last x days)
 ```
 
-## Contributing
+* Obsidian
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests: `uv run pytest`
-5. Submit a pull request
+```
+** Chat with your notes
+> Ask notes - what is X?
+```
 
-## License
+### Meeting recorder > Zoom or Loom
 
-[Add your license here]
+```
+> Ask question about meeting id 123 - what is the final decision on X from this meeting?
+```
 
 ## Troubleshooting
 
