@@ -50,13 +50,28 @@ mkdir -p ~/.opusai
 cp opus_todo_agent/common/opus-config.sample.yaml ~/.opusai/opus-config.yaml
 ```
 
-5. Start Opus CLI
+5. Configure which model to use
+
+Frontier models can be configured in ~/.opusai/config.yaml
+```
+model_config.enabled=true (where provider="openai", model="gpt-5")
+```
+
+Local models can also be configured and enabled in ~/.opusai/config.yaml
+```
+model_config.enabled=true (where provider="ollama", model="qwen3:1.7b-q8_0", is_local=true)
+```
+
+6. Start Opus CLI
 
 ```bash
 $ uv run opus_todo_agent/main.py
 ```
 
-6. Install Opus CLI globally and start it - FIXME
+# Test with a simple command
+> Find open tasks in my todoist project Test
+
+7. Install Opus CLI globally and start it - FIXME
 
 ```bash
 uv tool install .
@@ -197,6 +212,56 @@ OpusCLI> What meetings do i have tomorrow?
 ### Calendar - Clockwise
 
 ### Chat - Slack
+1. Enable Slack in ~/.opusai/opus-config.yaml
+```
+mcp_config.productivity.chat.slack.enabled=true
+```
+
+2. Slack supports 2 different auth methods. Follow the below guide to get XOXC and XOXD token:
+https://github.com/korotovsky/slack-mcp-server/blob/master/docs/01-authentication-setup.md
+
+Enable xoxc in config:
+```
+mcp_config.productivity.chat.slack.auth_method: "xoxc"
+```
+
+Configure tokens in ENV
+```
+SLACK_MCP_XOXC_TOKEN=<your-token>
+SLACK_MCP_XOXD_TOKEN=<your-token>
+```
+
+The disadvantage of xoxc and xoxd is that they need to be frequently updated.
+
+3. For other auth methods, Slack integration works only if your workplace admin supports installation of custom apps. Perform the following steps to get the Auth config required for XOXP token:
+https://github.com/korotovsky/slack-mcp-server/blob/master/docs/01-authentication-setup.md
+
+Enable xoxp in config:
+```
+mcp_config.productivity.chat.slack.auth_method: "xoxp"
+```
+
+Configure tokens in ENV:
+```
+SLACK_MCP_XOXP_TOKEN=<your-token>
+```
+
+4. For advanced features, OpusCLI supports the following config for Slack to tell Opus about your specific teams and projects and their corresponding Slack channels:
+
+```
+chat.slack.project_to_channels.phoenix=["phoenix-dev","phoenix-product"]
+chat.slack.team_to_channels.neo=["neo-dev","neo-alerts"]
+```
+
+5. OpusCLI supports Local LLMs to secure Slack data. In order to use Local LLM with Slack, configure:
+
+```
+chat.slack.use_local_model=true
+```
+
+6. Test Slack from OpusSLI
+
+OpusCLI> Update me on the recent messages in Test slack channel in last one week
 
 ### Meetings Recording and Transcript - Zoom
 

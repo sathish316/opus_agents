@@ -253,8 +253,8 @@ class MCPManager:
 
     def _get_slack_auth_env(self):
         # setup slack tokens based on the auth method
-        auth_method = self.config["chat"]["slack"].get("auth_method")
-        if not auth_method or auth_method == "xoxp":
+        auth_method = self.config_manager.get_setting("mcp_config.productivity.chat.slack.auth_method")
+        if auth_method == "xoxp":
             slack_auth_env = {
                 "SLACK_MCP_XOXP_TOKEN": os.getenv("SLACK_MCP_XOXP_TOKEN"),
             }
