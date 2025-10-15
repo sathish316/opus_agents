@@ -113,7 +113,7 @@ OpusCLI> Find open tasks in Test project (in Todoist)
 
 (Restart OpusCLI if required)
 
-4. The power of OpusCLI is in the advanced workflows that it supports to suit your needs. For custom tools and workflows possible with Todoist, check Custom Tools and Prompt library section
+The power of OpusCLI is in the advanced workflows that it supports to suit your needs. For custom tools and workflows possible with Todoist, check Custom Tools and Prompt library section
 
 ### Obsidian
 Obsidian is a notetaking tool.
@@ -152,7 +152,7 @@ https://docs.trychroma.com/docs/overview/getting-started
 
 OpusCLI> Ask notes - what is X?
 
-6. For advanced tools and workflows possible with Obsidian, check Custom Tools and Prompt library section
+For advanced tools and workflows possible with Obsidian, check Custom Tools and Prompt library section
 
 ## Collaboration tools Usage - Mail, Calendar, Chat, Meetings
 
@@ -176,15 +176,23 @@ GOOGLE_OAUTH_CLIENT_SECRET="<your-key>"
 GOOGLE_USER_EMAIL="<your-email>"
 ```
 
-### Configure Google calendar
-TODO: Steps for Google calendar oauth client key and client secret from 
+4. Google workspace MCP requires an Stdio transport version of MCP to be configured.
+Clone this repo and configure an environment variable for Google workspace MCP to work.
 
-Configure the following env variables for Google calendar MCP to work
-GOOGLE_OAUTH_CLIENT_ID=*
-GOOGLE_OAUTH_CLIENT_SECRET=*
-GOOGLE_WORKSPACE_MCP_PATH="/path/to/google_workspace_mcp"
+http://github.com/taylorwilsdon/google_workspace_mcp
+
+```
+GOOGLE_WORKSPACE_MCP_PATH=/path/to/google_workspace_mcp
 OAUTHLIB_INSECURE_TRANSPORT=1
+```
 
+5. Test Google Calendar from OpusCLI
+
+OpusCLI> What meetings do i have tomorrow?
+
+6. Complete the OAuth handshake flow in your browser
+
+7. For advanced tools and workflows possible with Google Calendar, check Custom Tools and Prompt library section
 
 ### Calendar - Clockwise
 
