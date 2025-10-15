@@ -3,7 +3,6 @@
 ## Prerequisites
 1. Install Python3 and uv
 https://pypi.org/project/uv/
-2. 
 
 ## Installation
 
@@ -68,10 +67,10 @@ model_config.enabled=true (where provider="ollama", model="qwen3:1.7b-q8_0", is_
 $ uv run opus_todo_agent/main.py
 ```
 
-# Test with a simple command
+7. Test with a simple command
 > Find open tasks in my todoist project Test
 
-7. Install Opus CLI globally and start it - FIXME
+8. Install Opus CLI globally and start it - FIXME
 
 ```bash
 uv tool install .
@@ -207,9 +206,27 @@ OpusCLI> What meetings do i have tomorrow?
 
 6. Complete the OAuth handshake flow in your browser
 
-7. For advanced tools and workflows possible with Google Calendar, check Custom Tools and Prompt library section
+7. The power of OpusCLI is in the advanced and hackable Google Calendar workflows that it supports to suit your needs. For advanced tools and workflows possible with Google Calendar, check Custom Tools and Prompt library section
 
 ### Calendar - Clockwise
+
+In case your Google workspace permission does not allow you to use Google calendar, Clockwise provides Remote MCP servers with access to your Calendar and more optimization tools.
+
+1. Enable Calendar in ~/.opusai/opus-config.yaml
+A higher order tool is a special type of custom tool that uses the MCP server to build advanced functionalities.
+
+```
+mcp_config.productivity.calendar.clockwise.enabled=true
+mcp_config.productivity.calendar.clockwise.higher_order_tools.enabled=true
+```
+
+2. Clockwise does not require any additional work other than OAuth handshake. Start OpusCLI and Complete the OAuth handshake flow in your browser
+
+3. Test Clockwise from OpusCLI
+
+OpusCLI> What meetings do i have tomorrow?
+
+The power of OpusCLI is in the advanced and hackable Clockwise workflows that it supports to suit your needs. For advanced tools and workflows possible with Clockwise, check Custom Tools and Prompt library section
 
 ### Chat - Slack
 1. Enable Slack in ~/.opusai/opus-config.yaml
