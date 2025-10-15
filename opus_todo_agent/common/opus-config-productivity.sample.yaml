@@ -1,0 +1,94 @@
+model_config:
+  - provider: "openai"
+    model: "gpt-4o"
+    enabled: False
+  - provider: "openai"
+    model: "gpt-5"
+    enabled: True
+  - provider: "anthropic"
+    model: "claude-sonnet-4-20250514"
+    enabled: False
+  - provider: "anthropic"
+    model: "claude-sonnet-4-5-20250929"
+    enabled: False
+  - provider: "ollama"
+    model: "gpt-oss:20b"
+    enabled: False
+    is_local: True
+    base_url: "http://127.0.0.1:8080/v1"
+    # run locally using $ llama-server -hf ggml-org/gpt-oss-20b-GGUF -c 32768
+  - provider: "ollama"
+    model: "qwen3:1.7b-q8_0"
+    enabled: True
+    is_local: True
+    base_url: "http://127.0.0.1:8080/v1"
+    # run locally using $ llama-server -hf Qwen/Qwen3-1.7B-GGUF:Q8_0 -c 32768
+  - provider: "ollama"
+    model: "microsoft/Phi-3-mini-4k-instruct"
+    enabled: False
+    is_local: True
+    base_url: "http://127.0.0.1:8080/v1"
+    # run locally using $ llama-server -hf microsoft/Phi-3-mini-4k-instruct-gguf -c 32768
+mcp_config:
+  general:
+    filesystem:
+      enabled: True
+    search:
+      enabled: True
+    code_execution:
+      enabled: True
+  productivity:
+    todo:
+      todoist:
+        enabled: False
+    calendar:
+      google_calendar:
+        enabled: False
+        higher_order_tools_enabled: False
+      clockwise:
+        enabled: False
+        higher_order_tools_enabled: False
+    chat:
+      slack:
+        enabled: False
+        auth_method: "xoxp"
+        higher_order_tools_enabled: False
+    notes:
+      obsidian:
+        enabled: False
+    meeting_transcript:
+      loom:
+        enabled: False
+      zoom:
+        enabled: False
+chat:
+  slack:
+    use_local_model: False
+    project_to_channels: {
+      "foo": ["bar", "baz"]
+    }
+    team_to_channels: {
+      "foo": ["bar", "baz"]
+    }
+notes:
+  obsidian:
+    default_vault_name: "personal_notes"
+    vault_configurations:
+      - vault_name: "personal_notes"
+        vault_path: "/path/to/personal_notes"
+        vector_db_collection: "personal_notes"
+        vector_db_path: "/tmp/data/chroma/personal_notes"
+        exclude_dirs: ["ignore"]
+        exclude_files: ["ignore.md"]
+        num_results: 3
+meeting_transcript:
+  zoom:
+    storage_dir: "/path/to/zoom_transcripts"
+    use_local_model: True
+    max_transcript_size: 32000 # 0 means no limit, otherwise token limit
+  loom:
+    storage_dir: "/path/to/loom_transcripts"
+    use_local_model: True
+    max_transcript_size: 32000 # 0 means no limit, otherwise token limit
+debug:
+  inspect_tools: false

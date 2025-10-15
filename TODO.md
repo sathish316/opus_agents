@@ -1,0 +1,44 @@
+-[ ] CLI
+    -[ ] list categories
+    -[ ] add tool in category
+    -[ ] login to tool
+-[ ] MCP servers and Tools
+    -[ ] Email
+        -[ ] Gmail
+    -[ ] Chat
+        -[ ] Slack
+    -[ ] Meetings
+        -[ ] Zoom
+    -[ ] Calendar
+        -[ ] Google calendar
+    -[ ] Meeting transcript
+        -[ ] Zoom transcript
+    -[ ] Docs
+        -[ ] Confluence docs for a filter
+    -[ ] Todo list
+        -[ ] Todoist
+    -[ ] Notetaking
+        -[ ] Obsidian
+-[ ] Custom tools
+    -[ ] Todoist in category:Todo
+        -[X] Todoist custom tools for get completed tasks, with predefined date ranges
+        -[X] Todoist custom tools for daily review with AI summary
+        -[X] Todoist custom tools for weekly review with AI summary
+        -[ ] Todoist daily and weekly review for specific day or week with date or daterange
+        -[ ] Todoist custom tools for task recommendation and Triflow focus technique
+-[ ] Todoist integration
+    -[X] API key from env
+    -[X] Todoist MCP integration
+-[ ] Slack integration
+-[ ] Google calendar integration
+-[ ] Gmail integration
+-[ ] Google docs and confluence integration
+-[ ] Test data generation
+    -[ ] Email
+    -[ ] Chat
+    -[ ] Meetings
+    -[ ] Calendar
+    -[ ] Meeting transcript
+    -[ ] Docs
+    -[ ] Todo list
+    -[ ] Notetaking
