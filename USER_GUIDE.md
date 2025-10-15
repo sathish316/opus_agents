@@ -372,30 +372,24 @@ To download transcript: Go to loom.com > Sign-in > Click on meeting > View Recor
 > list all my meetings on 1-Sep-2025
 
 ** Meeting summary
-> generate summary of meetings that I have today
-> generate summary of meetings that i attended yesterday
-> Brief me about the meetings that are planned for tomorrow
+> generate summary of meetings that I have today / I attended yesterday / are planned for tomorrow
+> Generate summary of meetings I have this week / I attended last week / I have next week / I have this week
 > Generate summary of meetings on 1-Oct-2025
-> Generate summary of meetings I have this week
-> Generate summary of meetings I attended last week
-> Brief me about the meetings I have next week / this week
 > Generate summary of my meetings from 22-Sep-2025 to 26-Sep-2025
 
 ** Daily review from accepted meetings
 > Generate daily review of meetings (Defaults to today)
-> Generate daily review of my meetings for today
-> Generate daily review of my meetings for yesterday
-> Generate daily review of my meetings on 1-Oct-2025
+> Generate daily review of my meetings for today / yesterday / 1-Oct-2025
 
 ** Weekly review from accepted meetings
 > Generate weekly review of meetings (Defaults to current week)
-> Generate weekly review of my meetings for this week
-> Generate weekly review of my meetings for last week
-> Generate weekly review of my meetings from 1-Sep-2025 to 10-Sep-2025
+> Generate weekly review of my meetings for this week / last week / from 1-Sep-2025 to 10-Sep-2025
 
 ** Meetings optimizer - batching, focus time etc
+TODO
 
 ** Meetings metrics - percentage of time spent in meetings
+TODO
 ```
 
 ## Chat > Slack
