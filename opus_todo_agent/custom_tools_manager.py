@@ -1,5 +1,6 @@
 import logging
 
+from opus_agent_base.managers.custom_tools_manager import BaseCustomToolsManager
 from opus_todo_agent.custom_tools.meeting_transcript.loom_tools import LoomTools
 from opus_todo_agent.custom_tools.meeting_transcript.zoom_tools import ZoomTools
 from opus_todo_agent.custom_tools.notes.obsidian_tools import ObsidianTools
@@ -8,17 +9,12 @@ from opus_todo_agent.custom_tools.todo.todoist_tools import TodoistTools
 logger = logging.getLogger(__name__)
 
 
-class CustomToolsManager:
+class CustomToolsManager(BaseCustomToolsManager):
     """
-    Manager for custom tools
+    Domain-specific manager for custom tools in opus_todo_agent.
+    
+    Extends BaseCustomToolsManager to register productivity-specific tools.
     """
-
-    def __init__(self, config_manager, instructions_manager, model_manager, agent):
-        self.config_manager = config_manager
-        self.agent = agent
-        self.instructions_manager = instructions_manager
-        self.model_manager = model_manager
-        self.initialize_tools()
 
     def initialize_tools(self):
         if self._is_mcp_enabled("productivity", "todo", "todoist"):
@@ -40,12 +36,3 @@ class CustomToolsManager:
             logger.info("Zoom Custom tools initialized")
 
         logger.info("Custom tools initialized")
-
-    def _is_mcp_enabled(self, domain, category, mcp):
-        """
-        Check if the MCP server is enabled in a given domain and category.
-        Examples of domain are: general, productivity
-        Examples of category are: todo, calendar etc.
-        Examples of mcp are: todoist, google_calendar, slack etc.
-        """
-        return self.config_manager.get_setting(f"mcp_config.{domain}.{category}.{mcp}.enabled")

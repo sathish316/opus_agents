@@ -4,7 +4,7 @@ from typing import List
 from pydantic_ai import RunContext
 
 from opus_todo_agent.custom_tools.todo.todoist_client import TodoistClient
-from opus_todo_agent.helper.datetime_helper import DatetimeHelper
+from opus_agent_base.helpers.datetime_helper import DatetimeHelper
 from opus_todo_agent.helper.todo.todoist_helper import TodoistHelper
 from opus_todo_agent.models.todo.todoist_models import CompletedTask, Task
 

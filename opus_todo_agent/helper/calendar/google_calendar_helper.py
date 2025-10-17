@@ -1,8 +1,8 @@
 import logging
 import os
 
-from opus_todo_agent.helper.datetime_helper import DatetimeHelper
-from opus_todo_agent.helper.fastmcp_client_helper import FastMCPClientHelper
+from opus_agent_base.helpers.datetime_helper import DatetimeHelper
+from opus_agent_base.helpers.fastmcp_client_helper import FastMCPClientHelper
 from opus_todo_agent.models.calendar.google_calendar_models import GCalMeeting
 
 logger = logging.getLogger(__name__)

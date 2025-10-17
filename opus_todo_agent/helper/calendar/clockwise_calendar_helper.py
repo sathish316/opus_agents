@@ -1,8 +1,8 @@
 import json
 import logging
 
-from opus_todo_agent.helper.datetime_helper import DatetimeHelper
-from opus_todo_agent.helper.fastmcp_client_helper import FastMCPClientHelper
+from opus_agent_base.helpers.datetime_helper import DatetimeHelper
+from opus_agent_base.helpers.fastmcp_client_helper import FastMCPClientHelper
 from opus_todo_agent.models.calendar.clockwise_calendar_models import ClockwiseMeeting
 
 logger = logging.getLogger(__name__)

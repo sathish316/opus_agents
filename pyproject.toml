@@ -25,6 +25,10 @@ classifiers = [
     "Topic :: Software Development :: Testing",
 ]
 
+# Note: This project now includes two packages:
+# - opus_agent_base: Generic infrastructure for building AI agents
+# - opus_todo_agent: Domain-specific productivity agent implementation
+
 dependencies = [
     "boto3>=1.40.21",
     "pydantic-ai>=0.8.1",
@@ -58,7 +62,7 @@ Repository = "https://github.com/sathish316/opus_todo_agent.git"
 Issues = "https://github.com/sathish316/opus_todo_agent/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["opus_todo_agent"]
+packages = ["opus_agent_base", "opus_todo_agent"]
 
 [tool.black]
 line-length = 88

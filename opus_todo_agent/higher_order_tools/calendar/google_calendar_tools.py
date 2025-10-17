@@ -4,7 +4,7 @@ from typing import List
 from pydantic_ai import RunContext
 
 from opus_todo_agent.helper.calendar.google_calendar_helper import GoogleCalendarHelper
-from opus_todo_agent.helper.datetime_helper import DatetimeHelper
+from opus_agent_base.helpers.datetime_helper import DatetimeHelper
 from opus_todo_agent.models.calendar.google_calendar_models import GCalMeeting
 
 logger = logging.getLogger(__name__)
