@@ -6,7 +6,7 @@ from pydantic_ai import RunContext
 from opus_todo_agent.helper.calendar.clockwise_calendar_helper import (
     ClockwiseCalendarHelper,
 )
-from opus_todo_agent.helper.datetime_helper import DatetimeHelper
+from opus_agent_base.helpers.datetime_helper import DatetimeHelper
 from opus_todo_agent.models.calendar.clockwise_calendar_models import ClockwiseMeeting
 
 logger = logging.getLogger(__name__)

@@ -2,9 +2,10 @@ import logging
 
 from pydantic_ai import RunContext
 
-from opus_todo_agent.common.config_manager import ConfigManager
+from opus_agent_base.common.config_manager import ConfigManager
+from opus_agent_base.helpers.datetime_helper import DatetimeHelper
+
 from opus_todo_agent.helper.chat.slack_helper import SlackHelper
-from opus_todo_agent.helper.datetime_helper import DatetimeHelper
 from opus_todo_agent.higher_order_tools.chat.slack_assistant import SlackAssistant
 
 logger = logging.getLogger(__name__)

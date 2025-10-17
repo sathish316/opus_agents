@@ -1,36 +1,25 @@
 import logging
 
-from opus_agent_base.managers.instructions_manager import InstructionsManager as BaseInstructionsManager
-
 logger = logging.getLogger(__name__)
 
 
-class InstructionsManager(BaseInstructionsManager):
+class InstructionsManager:
     """
-    Domain-specific manager for instructions in opus_todo_agent.
+    Base Manager for static instructions and prompts.
     
-    Extends BaseInstructionsManager to provide productivity-specific instructions.
+    This class can be extended to provide domain-specific instructions.
     """
+
+    def __init__(self):
+        self.instructions = []
+        self.initialize_instructions()
 
     def initialize_instructions(self):
-        self.initialize_agent_instructions()
-        super().initialize_instructions()
+        """Initialize base instructions. Override this method in subclasses to add domain-specific instructions."""
+        logger.info("Instructions initialized")
 
-    def initialize_agent_instructions(self):
-        # Instructions
-        agent_instructions = """
-You are a specialised agent for improving the productivity of the user, when they are using Collaboration tools and Personal Productivity tools.
-
-## Guidelines:
-
-1. Use the tools provided to you to improve the productivity of the user:
-2. For Todo list management, use the tools provided by the user and custom workflows that the User uses to Getting things done.
-3. For Calendar management, use the tools provided by the user and custom workflows that the User uses to manage their calendar and optimize their time.
-4. For Chat management, use the tools provided by the user and custom workflows that the User uses to get upto-date on chat conversations.
-5. For Notetaking, use the tools provided by the user and custom workflows that the User uses to take notes, manage and search their notes.
-6. For Collaboration tools, use the tools provided by the user and custom workflows that the User uses to collaborate with their team and optimize their time.
-"""
-        self.instructions.append(agent_instructions)
+    def get_all_instructions(self):
+        return "\n".join(self.instructions)
 
     def get_obsidian_rag_instructions(self):
         obsidian_rag_instructions = """

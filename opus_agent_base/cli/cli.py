@@ -9,10 +9,9 @@ import sys
 from pathlib import Path
 
 import typer
+from opus_agent_base.cli.agent_runner import run_agent
 from opus_agent_base.common.config_command_manager import ConfigCommandManager
 from opus_agent_base.common.config_manager import ConfigManager
-
-from opus_todo_agent.agent_runner import run_agent
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import WordCompleter

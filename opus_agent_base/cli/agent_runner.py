@@ -3,14 +3,13 @@ import traceback
 from typing import Optional
 
 from opus_agent_base.managers.agent_manager import AgentManager
+from opus_agent_base.managers.custom_tools_manager import CustomToolsManager
+from opus_agent_base.managers.higher_order_tools_manager import HigherOrderToolsManager
+from opus_agent_base.managers.instructions_manager import InstructionsManager
+from opus_agent_base.common.logging_config import quick_setup
 from opus_agent_base.managers.mcp_manager import MCPManager
 from opus_agent_base.managers.model_manager import ModelManager
 from opus_agent_base.common.config_manager import ConfigManager
-from opus_agent_base.common.logging_config import quick_setup
-
-from opus_todo_agent.custom_tools_manager import CustomToolsManager
-from opus_todo_agent.higher_order_tools_manager import HigherOrderToolsManager
-from opus_todo_agent.instructions_manager import InstructionsManager
 
 # Setup logging first thing
 log_file_path = quick_setup()
