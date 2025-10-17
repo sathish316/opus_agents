@@ -3,9 +3,9 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "opus-todo-agent"
+name = "opus-agent-base"
 version = "0.1.0"
-description = "Collection of Opus TODO AI Agents with common Productivity workflows across a suite of TODO and Collaboration tools."
+description = "Base package for Opus AI Agents."
 readme = "README.md"
 requires-python = ">=3.12"
 authors = [
@@ -26,7 +26,17 @@ classifiers = [
 ]
 
 dependencies = [
-    "opus-agent-base @ file:./opus_agent_base",
+    "boto3>=1.40.21",
+    "pydantic-ai>=0.8.1",
+    "pydantic-ai-slim[anthropic,openai,retries]>=0.8.1",
+    "tenacity>=8.2.0", # For retry functionality
+    "httpx>=0.24.0", # For HTTP client customization
+    "singleton-decorator>=1.0.0",
+    "fastmcp>=2.12.4",
+    "typer>=0.19.2",
+    "tiktoken>=0.12.0",
+    "chromadb>=1.1.1",
+    "rapidfuzz>=3.14.1",
 ]
 
 [project.optional-dependencies]
@@ -39,7 +49,7 @@ dev = [
 ]
 
 [project.scripts]
-opus-todo-agent = "opus_todo_agent.main:main"
+opus-agent-base = "opus_agent_base.main:main"
 
 [project.urls]
 Homepage = "https://github.com/sathish316/opus_todo_agent"
@@ -47,11 +57,8 @@ Documentation = "https://github.com/sathish316/opus_todo_agent#readme"
 Repository = "https://github.com/sathish316/opus_todo_agent.git"
 Issues = "https://github.com/sathish316/opus_todo_agent/issues"
 
-[tool.hatch.metadata]
-allow-direct-references = true
-
 [tool.hatch.build.targets.wheel]
-packages = ["opus_todo_agent"]
+packages = ["src/opus_agent_base"]
 
 [tool.black]
 line-length = 88

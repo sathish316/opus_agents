@@ -1,25 +1,19 @@
 import logging
 
+from opus_agent_base.instructions_manager import (
+    InstructionsManager as BaseInstructionsManager,
+)
+
 logger = logging.getLogger(__name__)
 
 
-class InstructionsManager:
+class InstructionsManager(BaseInstructionsManager):
     """
     Manager for static instructions and prompts
     """
 
-    def __init__(self):
-        self.instructions = []
-        self.initialize_instructions()
-
-    def initialize_instructions(self):
-        self.initialize_agent_instructions()
-        logger.info("Instructions initialized")
-
-    def get_all_instructions(self):
-        return "\n".join(self.instructions)
-
     def initialize_agent_instructions(self):
+        super().initialize_agent_instructions()
         # Instructions
         agent_instructions = """
 You are a specialised agent for improving the productivity of the user, when they are using Collaboration tools and Personal Productivity tools.

@@ -2,27 +2,15 @@ import logging
 import traceback
 
 from opus_agent_base.cli import create_cli_app
-from opus_todo_agent.agent_runner import AgentInstance
-from opus_agent_base.logging_config import quick_setup
 
-# Setup logging first thing
-log_file_path = quick_setup()
 logger = logging.getLogger(__name__)
 
 
 def main():
     """Entry point for the CLI - now uses the new CLI module."""
     app = create_cli_app(
-        "Opus TODO Agent",
-        "AI-powered productivity assistant with MCP integrations",
-        "0.1.0",
+        "Opus Agent Base", "Base package for Opus AI Agents.", "0.1.0"
     )
-
-    # We need to override the agent runner to use the one from the todo agent
-    from opus_agent_base import cli as base_cli
-
-    base_cli.run_agent = AgentInstance
-
     app()
 
 
