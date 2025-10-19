@@ -15,19 +15,9 @@ class LoomMeetingAssistant:
     Assistant for loom meeting transcripts
     """
 
-    LOOM_MEETING_ASSISTANT_PROMPT_TEMPLATE = """
-You are a specialised meeting agent for answering questions based on a meeting transcript.
-
-Answer the question based only on the following context of a Meeting transcript:
-{context}
- - -
-Answer the question based on the above context:
-{question}
-"""
-
     LOOM_TRANSCRIPT_FILE_EXTENSION = "srt"
 
-    def __init__(self, config_manager, instructions_manager, model_manager):
+    def __init__(self, config_manager=None, instructions_manager=None, model_manager=None):
         self.config_manager = config_manager
         self.loom_storage_dir = config_manager.get_setting(
             "meeting_transcript.loom.storage_dir"
@@ -45,7 +35,7 @@ Answer the question based on the above context:
         else:
             model = self.model_manager.get_model()
         self.agent = Agent(
-            instructions=self.instructions_manager.get_loom_meeting_assistant_instructions(),
+            instructions=self.instructions_manager.get("loom_meeting_assistant_instructions"),
             model=model,
         )
 
@@ -72,7 +62,7 @@ Answer the question based on the above context:
             transcript, max_size
         )
         # generate context for the agent
-        prompt_template = LoomMeetingAssistant.LOOM_MEETING_ASSISTANT_PROMPT_TEMPLATE
+        prompt_template = self.instructions_manager.get("loom_meeting_assistant_prompt_template")
         response = self.meeting_assistant_helper.ask_transcript(
             self.agent, prompt_template, transcript, query
         )

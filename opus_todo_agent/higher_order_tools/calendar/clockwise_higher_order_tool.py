@@ -1,23 +1,25 @@
 import logging
 from typing import List
 
+from opus_agent_base.common.datetime_helper import DatetimeHelper
 from pydantic_ai import RunContext
 
+from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_todo_agent.helper.calendar.clockwise_calendar_helper import (
     ClockwiseCalendarHelper,
 )
-from opus_todo_agent.helper.datetime_helper import DatetimeHelper
 from opus_todo_agent.models.calendar.clockwise_calendar_models import ClockwiseMeeting
 
 logger = logging.getLogger(__name__)
 
 
-class ClockwiseCalendarHOTools:
+class ClockwiseHigherOrderTool(HigherOrderTool):
     """
     Clockwise calendar tools on top of Clockwise MCP that can be added to the agent
     """
 
-    def __init__(self):
+    def __init__(self, config_manager=None, instructions_manager=None, model_manager=None):
+        super().__init__("clockwise", "productivity.calendar.clockwise", config_manager, instructions_manager, model_manager)
         self.clockwise_calendar_helper = ClockwiseCalendarHelper()
         self.datetime_helper = DatetimeHelper()
 

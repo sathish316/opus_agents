@@ -1,17 +1,21 @@
-from pydantic_ai import RunContext
-from opus_todo_agent.custom_tools.notes.obsidian_rag import ObsidianRAG
 import logging
+
+from pydantic_ai import RunContext
+
+from opus_agent_base.tools.custom_tool import CustomTool
+from opus_todo_agent.custom_tools.notes.obsidian_rag import ObsidianRAG
 
 logger = logging.getLogger(__name__)
 
-class ObsidianTools:
+class ObsidianTools(CustomTool):
     """
     Tools for obsidian
     """
 
-    def __init__(self, config_manager, instructions_manager, model_manager):
-        vault_name = config_manager.get_setting("notes.obsidian.default_vault_name")
-        self.obsidian_rag = ObsidianRAG(config_manager, vault_name, instructions_manager, model_manager)
+    def __init__(self, config_manager=None, instructions_manager=None, model_manager=None):
+        super().__init__("obsidian", "productivity.notes.obsidian", config_manager, instructions_manager, model_manager)
+        vault_name = self.config_manager.get_setting("notes.obsidian.default_vault_name")
+        self.obsidian_rag = ObsidianRAG(config_manager, vault_name, self.instructions_manager, self.model_manager)
 
     def initialize_tools(self, agent):
         @agent.tool

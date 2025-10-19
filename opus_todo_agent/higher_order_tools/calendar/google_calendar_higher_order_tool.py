@@ -1,21 +1,23 @@
 import logging
 from typing import List
 
+from opus_agent_base.common.datetime_helper import DatetimeHelper
 from pydantic_ai import RunContext
 
+from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_todo_agent.helper.calendar.google_calendar_helper import GoogleCalendarHelper
-from opus_todo_agent.helper.datetime_helper import DatetimeHelper
 from opus_todo_agent.models.calendar.google_calendar_models import GCalMeeting
 
 logger = logging.getLogger(__name__)
 
 
-class GoogleCalendarHOTools:
+class GoogleCalendarHigherOrderTool(HigherOrderTool):
     """
     Google calendar tools on top of Google calendar MCP that can be added to the agent
     """
 
-    def __init__(self):
+    def __init__(self, config_manager=None, instructions_manager=None, model_manager=None):
+        super().__init__("google_calendar", "productivity.calendar.google_calendar", config_manager, instructions_manager, model_manager)
         self.datetime_helper = DatetimeHelper()
         self.google_calendar_helper = GoogleCalendarHelper()
 

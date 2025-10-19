@@ -2,7 +2,7 @@ from pathlib import Path
 import yaml
 from typing import Dict, Any, List
 import logging
-from opus_todo_agent.common.nested_config_manager import NestedConfigManager
+from opus_agent_base.config.nested_config_manager import NestedConfigManager
 
 logger = logging.getLogger(__name__)
 

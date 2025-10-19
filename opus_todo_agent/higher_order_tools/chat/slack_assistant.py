@@ -12,30 +12,6 @@ class SlackAssistant:
     Assistant for Slack message summarization
     """
 
-    SLACK_ASSISTANT_PROMPT_TEMPLATE = """
-You are a specialized Slack assistant for summarizing Slack channel conversations.
-
-You will be given a channal scope and a list of channels to summarize or brief the user about.
-Channel scope can be 'team' and team name.
-Channel scope can be 'project' and project name.
-Channel scope can be 'channel' and channel name.
-
-The following is a list of Channel ID to Channel Name mapping. 
-Make sure you use the channel names in the summary, instead of channel ids.
-
-Context:
-- Channel Scope and Name: {channel_scope_type} - {channel_scope_name}
-- Time Period: {time_limit}
-
-Channel ID to Channel name mapping:
-{channel_id_to_name_mapping}
-
-Conversation History:
-{conversation_history}
----
-Summarize the above Slack messages grouped by channel name. \
-"""
-
     def __init__(self, config_manager, instructions_manager, model_manager):
         self.config_manager = config_manager
         self.instructions_manager = instructions_manager
@@ -49,7 +25,7 @@ Summarize the above Slack messages grouped by channel name. \
         else:
             model = self.model_manager.get_model()
         self.agent = Agent(
-            instructions=self.instructions_manager.get_slack_assistant_instructions(),
+            instructions=self.instructions_manager.get("slack_assistant_instructions"),
             model=model,
         )
 
@@ -124,12 +100,13 @@ Summarize the above Slack messages grouped by channel name. \
         )
 
         # Generate prompt
-        prompt = self.SLACK_ASSISTANT_PROMPT_TEMPLATE.format(
+        prompt_template = self.instructions_manager.get("slack_assistant_prompt_template")
+        prompt = prompt_template.format(
             channel_scope_type=channel_scope_type,
             channel_scope_name=channel_scope_name,
-            channel_id_to_name_mapping=channel_mapping,
             time_limit=time_limit,
             conversation_history=str(conversation_history),
+            channel_id_to_name_mapping=channel_mapping,
         )
 
         # Call agent to summarize

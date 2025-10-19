@@ -1,22 +1,25 @@
 import logging
 from typing import List
 
+from opus_agent_base.common.datetime_helper import DatetimeHelper
+from opus_todo_agent import todo_agent_builder
 from pydantic_ai import RunContext
 
+from opus_agent_base.tools.custom_tool import CustomTool
 from opus_todo_agent.custom_tools.todo.todoist_client import TodoistClient
-from opus_todo_agent.helper.datetime_helper import DatetimeHelper
 from opus_todo_agent.helper.todo.todoist_helper import TodoistHelper
 from opus_todo_agent.models.todo.todoist_models import CompletedTask, Task
 
 logger = logging.getLogger(__name__)
 
-
-class TodoistTools:
+todo_agent_builder
+class TodoistTools(CustomTool):
     """
     Todoist tools that can be added to the agent
     """
 
-    def __init__(self):
+    def __init__(self, config_manager=None, instructions_manager=None, model_manager=None):
+        super().__init__("todoist", "productivity.todo.todoist", config_manager, instructions_manager, model_manager)
         self.todoist_client = TodoistClient()
         self.datetime_helper = DatetimeHelper()
         self.todoist_helper = TodoistHelper()

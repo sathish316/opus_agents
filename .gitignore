@@ -2,3 +2,4 @@ uv.lock
 node_modules
 skip
 *.json
+__pyccache__

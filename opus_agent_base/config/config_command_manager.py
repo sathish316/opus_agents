@@ -1,4 +1,4 @@
-from common.config_manager import ConfigManager
+from opus_agent_base.config.config_manager import ConfigManager
 from rich.table import Table
 from rich.console import Console
 from rich.syntax import Syntax

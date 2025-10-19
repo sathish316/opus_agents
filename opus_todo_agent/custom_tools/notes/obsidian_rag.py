@@ -1,7 +1,6 @@
 import chromadb
 from pydantic_ai import Agent
 import logging
-from pydantic_ai import RunContext
 
 logger = logging.getLogger(__name__)
 
@@ -10,14 +9,6 @@ class ObsidianRAG:
     """
     RAG for obsidian notes
     """
-
-    NOTES_RAG_PROMPT_TEMPLATE = """
-Answer the question based only on the following context:
-{context}
- - -
-Answer the question based on the above context:
-{question}
-"""
 
     def __init__(
         self, config_manager, obsidian_vault_name, instructions_manager, model_manager
@@ -54,7 +45,7 @@ Answer the question based on the above context:
 
     def _init_agent(self):
         self.agent = Agent(
-            instructions=self.instructions_manager.get_obsidian_rag_instructions(),
+            instructions=self.instructions_manager.get("obsidian_notes_instructions"),
             model=self.model_manager.get_model(),
         )
 
@@ -77,8 +68,7 @@ Answer the question based on the above context:
         if not notes:
             logger.error("No notes found for the query")
             return ""
-        prompt = ObsidianRAG.NOTES_RAG_PROMPT_TEMPLATE.format(
-            context=notes, question=query
-        )
+        prompt_template = self.instructions_manager.get("obsidian_notes_prompt_template")
+        prompt = prompt_template.format(context=notes, question=query)
         response = self.agent.run_sync(prompt)
         return response.output

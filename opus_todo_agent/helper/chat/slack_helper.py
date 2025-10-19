@@ -4,7 +4,7 @@ import os
 
 from rapidfuzz import fuzz, process
 
-from opus_todo_agent.helper.fastmcp_client_helper import FastMCPClientHelper
+from opus_agent_base.tools.fastmcp_client_helper import FastMCPClientHelper
 
 logger = logging.getLogger(__name__)
 

@@ -37,6 +37,8 @@ mcp_config:
       enabled: true
     code_execution:
       enabled: true
+    datetime:
+      enabled: true
   productivity:
     todo:
       todoist:

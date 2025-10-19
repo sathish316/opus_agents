@@ -2,6 +2,7 @@ import logging
 
 from pydantic_ai import RunContext
 
+from opus_agent_base.tools.custom_tool import CustomTool
 from opus_todo_agent.custom_tools.meeting_transcript.zoom_meeting_assistant import (
     ZoomMeetingAssistant,
 )
@@ -9,12 +10,13 @@ from opus_todo_agent.custom_tools.meeting_transcript.zoom_meeting_assistant impo
 logger = logging.getLogger(__name__)
 
 
-class ZoomTools:
+class ZoomTools(CustomTool):
     """
     Tools for Zoom meeting transcripts
     """
 
-    def __init__(self, config_manager, instructions_manager, model_manager):
+    def __init__(self, config_manager=None, instructions_manager=None, model_manager=None):
+        super().__init__("zoom", "productivity.meeting_transcript.zoom", config_manager, instructions_manager, model_manager)
         self.zoom_assistant = ZoomMeetingAssistant(
             config_manager, instructions_manager, model_manager
         )

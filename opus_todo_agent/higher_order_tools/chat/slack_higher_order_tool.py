@@ -1,29 +1,30 @@
 import logging
 
+from opus_agent_base.config.config_manager import ConfigManager
+from opus_agent_base.common.datetime_helper import DatetimeHelper
 from pydantic_ai import RunContext
 
-from opus_todo_agent.common.config_manager import ConfigManager
+from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_todo_agent.helper.chat.slack_helper import SlackHelper
-from opus_todo_agent.helper.datetime_helper import DatetimeHelper
 from opus_todo_agent.higher_order_tools.chat.slack_assistant import SlackAssistant
 
 logger = logging.getLogger(__name__)
 
 
-class SlackHOTools:
+class SlackHigherOrderTool(HigherOrderTool):
     """
     Slack tools on top of Slack MCP that can be added to the agent
     """
     def __init__(
         self,
-        config_manager: ConfigManager,
+        config_manager=None,
         instructions_manager=None,
         model_manager=None,
     ):
+        super().__init__("slack", "productivity.chat.slack", config_manager, instructions_manager, model_manager)
         self.slack_helper = SlackHelper()
         self.datetime_helper = DatetimeHelper()
-        self.config_manager = config_manager
-        self.slack_assistant = SlackAssistant(config_manager, instructions_manager, model_manager)
+        self.slack_assistant = SlackAssistant(self.config_manager, self.instructions_manager, self.model_manager)
 
     async def initialize_tools(self, agent, fastmcp_client_context):
         @agent.tool
