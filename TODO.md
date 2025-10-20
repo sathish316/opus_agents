@@ -1,4 +1,4 @@
--[ ] MCP servers and Tools
+-[ ] MCP servers and Tools - Productivity
     -[X] Todo list
         -[X] Todoist
     -[X] Chat
@@ -16,7 +16,7 @@
         -[ ] Google docs
     -[X] Notetaking
         -[X] Obsidian
--[ ] Custom tools
+-[ ] Custom tools - Productivity
     -[X] Todoist
         -[X] daily review, weekly review
         -[X] Task recommendation
@@ -33,6 +33,40 @@
     -[X] Meeting transcript
         -[X] Ask follow-up question to Loom transcript
         -[X] Ask follow-up question to Zoom transcript
+-[ ] MCP servers and Tools - SDE
+    -[ ] Git
+        -[ ] Github
+    -[ ] Containers
+        -[ ] Docker
+        -[ ] Kubernetes
+    -[ ] Monitoring
+        -[ ] Prometheus
+    -[ ] Logging
+        -[ ] Loki
+    -[ ] Oncall
+    -[ ] Projects
+        -[ ] Jira
+    -[ ] Databases
+    -[ ] Docs
+        -[ ] SDK docs
+        -[ ] Official docs
+    -[ ] Linux
+    -[ ] Languages
+    -[ ] Editors
+-[ ] Custom tools - SDE
+    -[ ] Github
+    -[ ] Docker
+    -[ ] Kubernetes
+    -[ ] Prometheus
+    -[ ] Loki
+    -[ ] Oncall
+    -[ ] Jira
+    -[ ] Databases
+    -[ ] SDK docs
+    -[ ] Official docs
+    -[ ] Linux
+    -[ ] Languages
+    -[ ] Editors
 -[ ] Common capabilities
     -[X] CLI
         -[X] pydantic cli

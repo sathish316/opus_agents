@@ -7,6 +7,7 @@ from pathlib import Path
 import typer
 
 from opus_todo_agent.todo_agent_runner import run_todo_agent
+from opus_sde_agent.sde_agent_runner import run_sde_agent
 from opus_agent_base.config.config_command_manager import ConfigCommandManager
 from opus_agent_base.config.config_manager import ConfigManager
 from prompt_toolkit import PromptSession
@@ -58,6 +59,8 @@ def create_cli_app(
             [
                 "/help",
                 "/agent",
+                "/todo-agent",
+                "/sde-agent",
                 "/config",
                 "/config init",
                 "/config list",
@@ -92,7 +95,10 @@ def create_cli_app(
         # Run agent on startup if requested
         if run_agent_on_startup:
             try:
-                asyncio.run(run_todo_agent())
+                if run_agent_code == "todo-agent":
+                    asyncio.run(run_todo_agent())
+                elif run_agent_code == "sde-agent":
+                    asyncio.run(run_sde_agent())
             except KeyboardInterrupt:
                 console.print("\n[dim]Agent interrupted. Returning to CLI...[/dim]")
             except Exception as e:
@@ -131,6 +137,8 @@ def create_cli_app(
                     show_admin_help()
                 elif cmd == "agent" or cmd == "todo-agent":
                     asyncio.run(run_todo_agent())
+                elif cmd == "sde-agent":
+                    asyncio.run(run_sde_agent())
                 elif cmd == "config":
                     config_command_manager.handle_config_command(args)
                 elif cmd == "status":
@@ -245,6 +253,18 @@ def create_cli_app(
             "-ai",
             help="Start in Agent mode with slash commands for configuration",
         ),
+        todo: bool = typer.Option(
+            False,
+            "--todo-agent",
+            "-todo",
+            help="Start in TODO Agent mode",
+        ),
+        sde: bool = typer.Option(
+            False,
+            "--sde-agent",
+            "-sde",
+            help="Start in SDE Agent mode",
+        ),
         admin: bool = typer.Option(
             False,
             "--admin",
@@ -267,9 +287,12 @@ def create_cli_app(
 
         if admin:
             run_cli_mode(run_agent_on_startup=False)
-        elif agent:
+        elif agent or todo:
             run_cli_mode(run_agent_on_startup=True, run_agent_code="todo-agent")
+        elif sde:
+            run_cli_mode(run_agent_on_startup=True, run_agent_code="sde-agent")
         else:
+            # default mode
             run_cli_mode(run_agent_on_startup=True, run_agent_code="todo-agent")
 
     return app

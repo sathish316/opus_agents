@@ -55,7 +55,9 @@ class AgentManager:
             instructions=instructions,
             model=self.model_manager.get_model(),
             toolsets=self.mcp_manager.servers,
+            tools=self.mcp_manager.tools,
         )
+
         # add custom tools to Agent
         self.custom_tools_manager = CustomToolsManager(
             self.config_manager,
