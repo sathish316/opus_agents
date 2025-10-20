@@ -30,7 +30,6 @@ model_config:
     base_url: "http://127.0.0.1:8080/v1"
     # run locally using $ llama-server -hf microsoft/Phi-3-mini-4k-instruct-gguf -c 32768
 mcp_config:
-  fastmcp_allowed_tools_prefix: ["github"]
   general:
     filesystem:
       enabled: true

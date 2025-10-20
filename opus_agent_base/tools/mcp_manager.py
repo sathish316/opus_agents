@@ -23,7 +23,6 @@ class MCPManager:
         self.servers = []
         self.fastmcp_client_instance = None
         self.fastmcp_client_instance_initialized = False
-        self.tools = []
 
     async def async_init(self):
         self.fastmcp_client = await self.initialize_higher_order_mcp_servers()
@@ -48,19 +47,6 @@ class MCPManager:
             else:
                 logger.info(f"FastMCP server {fastmcp_server_config.name} not enabled")
         logger.info("FastMCP servers added")
-
-    def wrap_tool(self, tool, session) -> Tool:
-        async def mcp_tool_function(**kwargs):
-            """Dynamically created tool function for MCP tool"""
-            result = await session.call_tool(tool.name, kwargs)
-            return result        
-        
-        return Tool.from_schema(
-            name=tool.name,
-            description=tool.description,
-            json_schema=tool.inputSchema,
-            function=mcp_tool_function
-        )
 
     async def initialize_fastmcp_client_context(self):
         async def fastmcp_client_context(func):
@@ -89,14 +75,6 @@ class MCPManager:
         #logger.info(f"Checking if MCP server is enabled - {config_key}")
         return self.config_manager.get_setting(f"mcp_config.{config_key}.enabled")
 
-    def _is_allowed_tool(self, tool_name):
-        """
-        Check allowed tools of MCP server
-        """
-        allowed_prefixes = self.config_manager.get_setting(f"mcp_config.fastmcp_allowed_tools_prefix")
-        allowed = any(tool_name.startswith(prefix) for prefix in allowed_prefixes)
-        return allowed
-
     async def _inspect_fastmcp_client_tools(self):
         inspect_fastmcp_client_tools_enabled = self.config_manager.get_setting("debug.inspect_tools", False)
         if inspect_fastmcp_client_tools_enabled:
@@ -104,11 +82,6 @@ class MCPManager:
                 await client.ping()
                 self.fastmcp_client = client
                 tools = await client.list_tools()
-                for tool in tools:
-                    if self._is_allowed_tool(tool.name):
-                        logger.info(f"Wrapping tool - {tool.name}")
-                        wrapped_tool = self.wrap_tool(tool=tool, session=client)
-                        self.tools.append(wrapped_tool)
                 logger.info("FastMCP Client - Available tools:")
                 for tool in tools:
                     logger.debug(f"Tool attributes: {list(tool.__dict__.keys())}")

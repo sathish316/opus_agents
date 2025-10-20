@@ -50,7 +50,7 @@ class SDEAgentBuilder:
             mcp_server_registry.get_filesystem_mcp_server(),
             mcp_server_registry.get_search_mcp_server(),
             mcp_server_registry.get_code_execution_mcp_server(),
-            # sde_mcp_server_registry.get_github_mcp_server(),
+            sde_mcp_server_registry.get_github_mcp_server(),
         ]
         self.mcp_manager.add_servers(mcp_servers_config)
 
