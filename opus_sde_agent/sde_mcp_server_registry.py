@@ -92,6 +92,7 @@ class SDEMCPServerRegistry:
         pydantic_ai_mcp_oauth_support = False
         if not pydantic_ai_mcp_oauth_support:
             return None
+        #FIXME: wrap selective jira tools
         return MCPServerConfig(
             name="jira",
             config_key="sde.project_management.jira",
@@ -111,6 +112,33 @@ class SDEMCPServerRegistry:
                 "transport": "streamable-http",
                 "tool_prefix": "jira",
                 "auth": "oauth",
+            }
+        )
+
+    def get_linear_mcp_server(self) -> MCPServerConfig:
+        pydantic_ai_mcp_oauth_support = False
+        if not pydantic_ai_mcp_oauth_support:
+            return None
+        #FIXME: wrap selective linear tools
+        return MCPServerConfig(
+            name="linear",
+            config_key="sde.project_management.linear",
+            type="stdio",
+            mcp_server=MCPServerStdio(
+                command="npx",
+                args=["-y", "mcp-remote", "https://mcp.linear.app/sse"],
+                tool_prefix="linear",
+            )
+        )
+
+    def get_linear_fastmcp_server(self) -> FastMCPServerConfig:
+        return FastMCPServerConfig(
+            "linear",
+            "sde.project_management.linear",
+            {
+                "command": "npx",
+                "args": ["-y", "mcp-remote", "https://mcp.linear.app/sse"],
+                "tool_prefix": "linear",
             }
         )
 
