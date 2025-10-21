@@ -41,7 +41,7 @@ class MCPManager:
     def add_fastmcp_servers(self, fastmcp_servers_config):
         self.config["mcpServers"] = {}
         for fastmcp_server_config in fastmcp_servers_config:
-            if self._is_mcp_enabled(fastmcp_server_config.config_key):
+            if self._is_mcp_enabled(fastmcp_server_config.config_key) or self._is_higher_order_tools_enabled(fastmcp_server_config.config_key):
                 logger.info(f"Adding FastMCP server: {fastmcp_server_config.name}")
                 self.config["mcpServers"][fastmcp_server_config.name] = fastmcp_server_config.mcp_server_config
             else:
@@ -74,6 +74,17 @@ class MCPManager:
         """
         #logger.info(f"Checking if MCP server is enabled - {config_key}")
         return self.config_manager.get_setting(f"mcp_config.{config_key}.enabled")
+
+    def _is_higher_order_tools_enabled(self, config_key):
+        """
+        Check if the MCP server or higher order tools is enabled in a given config key.
+        config_key is of the format "domain.category.tool" or "domain.category"
+        Examples of domain are: general, productivity
+        Examples of category are: todo, calendar etc.
+        Examples of tool are: todoist, google_calendar, slack etc.
+        """
+        #logger.info(f"Checking if MCP server is enabled - {config_key}")
+        return self.config_manager.get_setting(f"mcp_config.{config_key}.higher_order_tools_enabled")
 
     async def _inspect_fastmcp_client_tools(self):
         inspect_fastmcp_client_tools_enabled = self.config_manager.get_setting("debug.inspect_tools", False)
