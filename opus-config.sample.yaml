@@ -64,12 +64,24 @@ mcp_config:
       zoom:
         enabled: false
   sde:
+    project_management:
+      jira:
+        enabled: false
+        higher_order_tools_enabled: false
+      linear:
+        enabled: false
+        higher_order_tools_enabled: false
+      github:
+        enabled: false
+        higher_order_tools_enabled: false
     git:
       github:
-        enabled: true
+        enabled: false
+        higher_order_tools_enabled: false
     container:
       docker:
-        enabled: true
+        enabled: false
+        higher_order_tools_enabled: false
 chat:
   slack:
     use_local_model: false

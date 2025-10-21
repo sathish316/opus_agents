@@ -88,6 +88,32 @@ class SDEMCPServerRegistry:
             }
         )
 
+    def get_jira_mcp_server(self) -> MCPServerConfig:
+        pydantic_ai_mcp_oauth_support = False
+        if not pydantic_ai_mcp_oauth_support:
+            return None
+        return MCPServerConfig(
+            name="jira",
+            config_key="sde.project_management.jira",
+            type="streamable-http",
+            mcp_server=MCPServerSSE(
+                url="https://mcp.atlassian.com/v1/sse"
+            )
+        )
+
+    def get_jira_fastmcp_server(self) -> FastMCPServerConfig:
+        return FastMCPServerConfig(
+            "jira",
+            "sde.project_management.jira",
+            {
+                "type": "http",
+                "url": "https://mcp.atlassian.com/v1/sse",
+                "transport": "streamable-http",
+                "tool_prefix": "jira",
+                "auth": "oauth",
+            }
+        )
+
     def _get_github_auth_env(self):
         auth_env = {
             "GITHUB_PERSONAL_ACCESS_TOKEN": os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN"),
