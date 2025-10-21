@@ -50,7 +50,41 @@ class SDEMCPServerRegistry:
                 ],
                 "env": {
                     "GITHUB_PERSONAL_ACCESS_TOKEN": os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN")
-                }
+                },
+                "tool_prefix": "github",
+            }
+        )
+
+    def get_docker_mcp_server(self) -> MCPServerConfig:
+        return MCPServerConfig(
+            name="docker",
+            config_key="sde.container.docker",
+            type="stdio",
+            mcp_server=MCPServerStdio(
+                command="uvx",
+                args=[
+                    "mcp-server-docker"
+                ],
+                env={
+                    "DOCKER_HOST": os.getenv("DOCKER_HOST")
+                },
+                tool_prefix="docker",
+            )
+        )
+
+    def get_docker_fastmcp_server(self) -> FastMCPServerConfig:
+        return FastMCPServerConfig(
+            "docker",
+            "sde.container.docker",
+            {
+                "command": "uvx",
+                "args": [
+                    "mcp-server-docker"
+                ],
+                "env": {
+                    "DOCKER_HOST": os.getenv("DOCKER_HOST")
+                },
+                "tool_prefix": "docker",
             }
         )
 

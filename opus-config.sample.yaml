@@ -67,6 +67,9 @@ mcp_config:
     git:
       github:
         enabled: true
+    container:
+      docker:
+        enabled: true
 chat:
   slack:
     use_local_model: false

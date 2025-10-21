@@ -51,6 +51,7 @@ class SDEAgentBuilder:
             mcp_server_registry.get_search_mcp_server(),
             mcp_server_registry.get_code_execution_mcp_server(),
             sde_mcp_server_registry.get_github_mcp_server(),
+            sde_mcp_server_registry.get_docker_mcp_server(),
         ]
         self.mcp_manager.add_servers(mcp_servers_config)
 
@@ -60,6 +61,7 @@ class SDEAgentBuilder:
         fastmcp_servers_config = [
             mcp_server_registry.get_datetime_mcp_server(),
             sde_mcp_server_registry.get_github_fastmcp_server(),
+            sde_mcp_server_registry.get_docker_fastmcp_server(),
         ]
         self.mcp_manager.add_fastmcp_servers(fastmcp_servers_config)
 
