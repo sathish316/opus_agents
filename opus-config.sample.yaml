@@ -30,7 +30,17 @@ model_config:
     base_url: "http://127.0.0.1:8080/v1"
     # run locally using $ llama-server -hf microsoft/Phi-3-mini-4k-instruct-gguf -c 32768
 mcp_config:
-  general:
+  allowed_tool_prefixes:
+    - docker
+  allowed_tools:
+    docker:
+    - docker_list_containers
+    - docker_start_container
+    - docker_stop_container
+    - docker_list_images
+    - docker_list_networks
+    - docker_list_volumes
+  gene  ral:
     filesystem:
       enabled: true
     search:

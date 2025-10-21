@@ -72,23 +72,27 @@ class AgentManager:
         self.model_manager = ModelManager(self.config_manager)
 
         # initialize agent tools
+        self.tools = []
         fastmcp_client_context = (
             await self.mcp_manager.initialize_fastmcp_client_context()
         )
 
         async def tools_initializer(session: ClientSession):
             client_tools = await session.list_tools()
-            self.tools = [
-                self.wrap_tool(tool, fastmcp_client_context) for tool in client_tools
-            ]
-
+            for tool in client_tools:
+                tool_prefix = tool.name.split("_")[0]
+                if tool_prefix in self.config_manager.get_setting("mcp_config.allowed_tool_prefixes", []):
+                    if tool.name in self.config_manager.get_setting("mcp_config.allowed_tools").get(tool_prefix, []):
+                        self.tools.append(self.wrap_tool(tool, fastmcp_client_context))
+                else:
+                    self.tools.append(self.wrap_tool(tool, fastmcp_client_context))
         await fastmcp_client_context(tools_initializer)
 
         # agent
         self.agent = Agent(
             instructions=instructions,
             model=self.model_manager.get_model(),
-            # toolsets=self.mcp_manager.servers,
+            toolsets=self.mcp_manager.servers,
             tools=self.tools,
         )
 
