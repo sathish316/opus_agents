@@ -12,6 +12,9 @@ from opus_agent_base.tools.custom_tools_manager import CustomToolsManager
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_agent_base.tools.higher_order_tools_manager import HigherOrderToolsManager
 from opus_agent_base.tools.mcp_manager import MCPManager
+from fastmcp.client.client import ClientSession
+from pydantic_ai.tools import Tool
+from mcp.types import Tool as MCPTool
 
 logger = logging.getLogger(__name__)
 
@@ -41,6 +44,24 @@ class AgentManager:
         self.custom_tools = custom_tools
         self.higher_order_tools = higher_order_tools
 
+    def wrap_tool(self, tool: MCPTool, fastmcp_client_context) -> Tool:
+        async def mcp_tool_function(**kwargs):
+            """Dynamically created tool function for MCP tool"""
+
+            async def execute_tool(client: ClientSession):
+                result = await client.call_tool(tool.name, kwargs)
+                return result
+
+            result = await fastmcp_client_context(execute_tool)
+            return result
+
+        return Tool.from_schema(
+            name=tool.name,
+            description=tool.description,
+            json_schema=tool.inputSchema,
+            function=mcp_tool_function,
+        )
+
     async def initialize_agent(self):
         # setup agent instructions
         instructions = "\n".join(
@@ -50,11 +71,25 @@ class AgentManager:
         # model manager
         self.model_manager = ModelManager(self.config_manager)
 
+        # initialize agent tools
+        fastmcp_client_context = (
+            await self.mcp_manager.initialize_fastmcp_client_context()
+        )
+
+        async def tools_initializer(session: ClientSession):
+            client_tools = await session.list_tools()
+            self.tools = [
+                self.wrap_tool(tool, fastmcp_client_context) for tool in client_tools
+            ]
+
+        await fastmcp_client_context(tools_initializer)
+
         # agent
         self.agent = Agent(
             instructions=instructions,
             model=self.model_manager.get_model(),
-            toolsets=self.mcp_manager.servers,
+            # toolsets=self.mcp_manager.servers,
+            tools=self.tools,
         )
 
         # add custom tools to Agent
@@ -67,10 +102,8 @@ class AgentManager:
         self.custom_tools_manager.initialize_tools(self.custom_tools)
 
         # add higher order tools to Agent
-        fastmcp_client_context = await self.mcp_manager.initialize_fastmcp_client_context()
-        self.higher_order_tools_manager = HigherOrderToolsManager(self.config_manager,
-            self.agent,
-            fastmcp_client_context
+        self.higher_order_tools_manager = HigherOrderToolsManager(
+            self.config_manager, self.agent, fastmcp_client_context
         )
         await self.higher_order_tools_manager.initialize_tools(self.higher_order_tools)
         logger.info("Agent initialized")
@@ -79,7 +112,9 @@ class AgentManager:
         return self.agent
 
     async def inspect_tools(self):
-        agent_inspect_tools_enabled = self.config_manager.get_setting("debug.inspect_tools", False)
+        agent_inspect_tools_enabled = self.config_manager.get_setting(
+            "debug.inspect_tools", False
+        )
         if agent_inspect_tools_enabled:
             await self._inspect_mcp_tools()
             await self._inspect_function_tools()
@@ -89,12 +124,14 @@ class AgentManager:
             if isinstance(toolset, MCPServer):
                 tools = await toolset.list_tools()
                 for tool in tools:
-                    toolset_id = getattr(toolset, 'id', None)
-                    toolset_command = getattr(toolset, 'command', None)
-                    logger.info(f"AgentMCPTool: {toolset_id or toolset_command}-{tool.name}")
+                    toolset_id = getattr(toolset, "id", None)
+                    toolset_command = getattr(toolset, "command", None)
+                    logger.info(
+                        f"AgentMCPTool: {toolset_id or toolset_command}-{tool.name}"
+                    )
 
     async def _inspect_function_tools(self):
-        function_toolset = getattr(self.agent, '_function_toolset', None)
+        function_toolset = getattr(self.agent, "_function_toolset", None)
         if function_toolset:
-            for (function_tool_key, _) in function_toolset.tools.items():
+            for function_tool_key, _ in function_toolset.tools.items():
                 logger.info(f"AgentFunctionTool: {function_tool_key}")
