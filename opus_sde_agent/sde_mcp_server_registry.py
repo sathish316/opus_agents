@@ -103,16 +103,25 @@ class SDEMCPServerRegistry:
 
     def get_prometheus_fastmcp_server(self) -> FastMCPServerConfig:
         # Prometheus MCP server - https://github.com/pab1it0/prometheus-mcp-server
-        enabled = False
-        if not enabled:
-            return None
+        # configure PROMETHEUS_URL in the environment
+        # if Prometheus is running in docker, use the host.docker.internal IP address
+        # Test query: get one min rate of the metric beerservice.api.list.requests from prometheus. remember to append _total for counter metrics. remember to replace . with _
         return FastMCPServerConfig(
             "prometheus",
-            "sde.monitoring.prometheus",
+            "sde.observability.prometheus",
             {
-                "command": "uvx",
-                "args": ["-y", "@pab1it0/prometheus-mcp-server"],
-                "tool_prefix": "prometheus",
+                "command": "docker",
+                "args": [
+                    "run",
+                    "-i",
+                    "--rm",
+                    "-e",
+                    "PROMETHEUS_URL",
+                    "prometheus-mcp-server:local"
+                ],
+                "env": {
+                    "PROMETHEUS_URL": f"{os.getenv('PROMETHEUS_URL')}"
+                }
             },
         )
 
@@ -123,7 +132,7 @@ class SDEMCPServerRegistry:
             return None
         return FastMCPServerConfig(
             "loki",
-            "sde.monitoring.loki",
+            "sde.observability.loki",
             {
                 "command": "docker",
                 "args": [
@@ -153,7 +162,7 @@ class SDEMCPServerRegistry:
             return None
         return FastMCPServerConfig(
             "grafana",
-            "sde.monitoring.grafana",
+            "sde.observability.grafana",
             {
                 "command": "docker",
                 "args": [

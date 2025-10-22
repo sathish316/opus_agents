@@ -116,6 +116,10 @@ mcp_config:
       k8s:
         enabled: false
         higher_order_tools_enabled: false
+    observability:
+      prometheus:
+        enabled: false
+        higher_order_tools_enabled: false
   allowed_tool_prefixes:
     - docker
     - k8s
