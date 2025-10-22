@@ -15,6 +15,7 @@ class SDEMCPServerRegistry:
         self.config_manager = config_manager
     
     def get_github_fastmcp_server(self) -> FastMCPServerConfig:
+        # Official GitHub MCP server - https://github.com/github/github-mcp-server/tree/main
         return FastMCPServerConfig(
             "github",
             "sde.git.github",
@@ -34,6 +35,7 @@ class SDEMCPServerRegistry:
         )
 
     def get_docker_fastmcp_server(self) -> FastMCPServerConfig:
+        # Docker MCP server - https://github.com/ckreiling/mcp-server-docker
         return FastMCPServerConfig(
             "docker",
             "sde.container.docker",
@@ -49,7 +51,22 @@ class SDEMCPServerRegistry:
             }
         )
 
+    def get_k8s_fastmcp_server(self) -> FastMCPServerConfig:
+        # k8s MCP server - https://github.com/strowk/mcp-k8s-go
+        return FastMCPServerConfig(
+            "k8s",
+            "sde.container.k8s",
+            {
+                "command": "npx",
+                "args": [
+                    "@strowk/mcp-k8s"
+                ],
+                "tool_prefix": "k8s",
+            }
+        )
+
     def get_jira_fastmcp_server(self) -> FastMCPServerConfig:
+        # Official Jira MCP server - https://mcp.atlassian.com/v1/sse
         return FastMCPServerConfig(
             "jira",
             "sde.project_management.jira",
@@ -63,6 +80,7 @@ class SDEMCPServerRegistry:
         )
 
     def get_linear_fastmcp_server(self) -> FastMCPServerConfig:
+        # Official Linear MCP server - https://mcp.linear.app/sse
         return FastMCPServerConfig(
             "linear",
             "sde.project_management.linear",

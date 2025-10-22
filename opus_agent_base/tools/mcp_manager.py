@@ -72,7 +72,7 @@ class MCPManager:
         Examples of category are: todo, calendar etc.
         Examples of tool are: todoist, google_calendar, slack etc.
         """
-        logger.info(f"Checking if MCP server is enabled - {config_key}")
+        # logger.info(f"Checking if MCP server is enabled - {config_key}")
         return self.config_manager.get_setting(f"mcp_config.{config_key}.enabled")
 
     def _is_higher_order_tools_enabled(self, config_key):
@@ -83,7 +83,7 @@ class MCPManager:
         Examples of category are: todo, calendar etc.
         Examples of tool are: todoist, google_calendar, slack etc.
         """
-        logger.info(f"Checking if MCP server or higher order tools is enabled - {config_key}")
+        # logger.info(f"Checking if MCP server or higher order tools is enabled - {config_key}")
         return self.config_manager.get_setting(f"mcp_config.{config_key}.higher_order_tools_enabled")
 
     async def _inspect_fastmcp_client_tools(self):

@@ -78,11 +78,16 @@ class AgentManager:
         )
 
         async def tools_initializer(session: ClientSession):
+            logger.info("Initializing agent tools")
+            logger.info(f"Allowed tool prefixes for allowed tools: {self.config_manager.get_setting('mcp_config.allowed_tool_prefixes', [])}")
+            # logger.info(f"Allowed docker tools: {self.config_manager.get_setting('mcp_config.allowed_tools.docker', [])}")
+            # logger.info(f"Allowed k8s tools: {self.config_manager.get_setting('mcp_config.allowed_tools.k8s', [])}")
             client_tools = await session.list_tools()
             for tool in client_tools:
                 tool_prefix = tool.name.split("_")[0]
                 if tool_prefix in self.config_manager.get_setting("mcp_config.allowed_tool_prefixes", []):
                     if tool.name in self.config_manager.get_setting("mcp_config.allowed_tools").get(tool_prefix, []):
+                        logger.info(f"Wrapping FastMCP tool: {tool.name}")
                         self.tools.append(self.wrap_tool(tool, fastmcp_client_context))
                 else:
                     self.tools.append(self.wrap_tool(tool, fastmcp_client_context))

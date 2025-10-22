@@ -32,6 +32,7 @@ model_config:
 mcp_config:
   allowed_tool_prefixes:
     - docker
+    - k8s
   allowed_tools:
     docker:
     - docker_list_containers
@@ -40,7 +41,12 @@ mcp_config:
     - docker_list_images
     - docker_list_networks
     - docker_list_volumes
-  gene  ral:
+    k8s:
+    - k8s_get-k8s-resource
+    - k8s_list-k8s-namespaces
+    - k8s_list-k8s-nodes
+    - k8s_list-k8s-resources
+  general:
     filesystem:
       enabled: true
     search:
@@ -90,6 +96,9 @@ mcp_config:
         higher_order_tools_enabled: false
     container:
       docker:
+        enabled: false
+        higher_order_tools_enabled: false
+      k8s:
         enabled: false
         higher_order_tools_enabled: false
 chat:
