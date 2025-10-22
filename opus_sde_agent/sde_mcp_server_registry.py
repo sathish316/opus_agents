@@ -19,19 +19,30 @@ class SDEMCPServerRegistry:
         return FastMCPServerConfig(
             "github",
             "sde.git.github",
+            # using streamable-http
             {
-                "command": "docker",
-                "args": [
-                    "run",
-                    "-i",
-                    "--rm",
-                    "-e",
-                    "GITHUB_PERSONAL_ACCESS_TOKEN",
-                    "ghcr.io/github/github-mcp-server"
-                ],
-                "env": self._get_github_auth_env(),
+                "transport": "streamable-http",
+                "url": "https://api.githubcopilot.com/mcp/",
                 "tool_prefix": "github",
+                "auth": "oauth",
+                "headers": {
+                    "Authorization": f"Bearer {os.getenv('GITHUB_PERSONAL_ACCESS_TOKEN')}"
+                }
             }
+            # using docker
+            # {
+            #     "command": "docker",
+            #     "args": [
+            #         "run",
+            #         "-i",
+            #         "--rm",
+            #         "-e",
+            #         "GITHUB_PERSONAL_ACCESS_TOKEN",
+            #         "ghcr.io/github/github-mcp-server"
+            #     ],
+            #     "env": self._get_github_auth_env(),
+            #     "tool_prefix": "github",
+            # }
         )
 
     def get_docker_fastmcp_server(self) -> FastMCPServerConfig:
@@ -70,12 +81,16 @@ class SDEMCPServerRegistry:
         return FastMCPServerConfig(
             "jira",
             "sde.project_management.jira",
+            # {
+            #     "url": "https://mcp.atlassian.com/v1/sse",
+            #     "transport": "streamable-http",
+            #     "tool_prefix": "jira",
+            #     "auth": "oauth",
+            # }
             {
-                "type": "http",
-                "url": "https://mcp.atlassian.com/v1/sse",
-                "transport": "streamable-http",
+                "command": "npx",
+                "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"],
                 "tool_prefix": "jira",
-                "auth": "oauth",
             }
         )
 
