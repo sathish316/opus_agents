@@ -59,12 +59,21 @@ class SDEAgentBuilder:
         sde_mcp_server_registry = SDEMCPServerRegistry(self.config_manager)
         fastmcp_servers_config = [
             mcp_server_registry.get_datetime_mcp_server(),
+            # code
             sde_mcp_server_registry.get_github_fastmcp_server(),
+            # containers
             sde_mcp_server_registry.get_docker_fastmcp_server(),
             sde_mcp_server_registry.get_k8s_fastmcp_server(),
+            # project management
             sde_mcp_server_registry.get_jira_fastmcp_server(),
             sde_mcp_server_registry.get_linear_fastmcp_server(),
+            # observability
+            sde_mcp_server_registry.get_prometheus_fastmcp_server(),
+            sde_mcp_server_registry.get_loki_fastmcp_server(),
+            sde_mcp_server_registry.get_grafana_fastmcp_server(),
+            sde_mcp_server_registry.get_grafana_tempo_fastmcp_server(),
         ]
+        fastmcp_servers_config = [config for config in fastmcp_servers_config if config is not None]
         self.mcp_manager.add_fastmcp_servers(fastmcp_servers_config)
 
     def _add_custom_tools(self):
