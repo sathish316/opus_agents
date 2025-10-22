@@ -39,12 +39,10 @@ mcp_config:
     - docker_start_container
     - docker_stop_container
     - docker_list_images
-    - docker_list_networks
     - docker_list_volumes
     k8s:
     - k8s_get-k8s-resource
     - k8s_list-k8s-namespaces
-    - k8s_list-k8s-nodes
     - k8s_list-k8s-resources
   general:
     filesystem:
@@ -132,3 +130,26 @@ meeting_transcript:
     max_transcript_size: 32000 # 0 means no limit, otherwise token limit
 debug:
   inspect_tools: true
+unused_tools:
+  docker:
+    - docker_create_container
+    - docker_run_container
+    - docker_recreate_container
+    - docker_fetch_container_logs
+    - docker_remove_container
+    - docker_pull_image
+    - docker_push_image
+    - docker_build_image
+    - docker_remove_image
+    - docker_create_network
+    - docker_remove_network
+    - docker_list_volumes
+    - docker_create_volume
+    - docker_remove_volume
+  k8s:
+    - k8s_apply-k8s-resource
+    - k8s_get-k8s-pod-logs
+    - k8s_k8s-pod-exec
+    - k8s_list-k8s-contexts
+    - k8s_list-k8s-events
+    - k8s_list-k8s-nodes
