@@ -1,10 +1,11 @@
+from opus_agent_base.agent.agent_runner import AgentInstance
 from opus_agent_base.tools.custom_tool import CustomTool
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
-from opus_agent_base.agent.agent_runner import AgentInstance
 from opus_agent_base.tools.mcp_server_registry import MCPServerRegistry
+from opus_sde_agent.higher_order_tools.project_management.github_issues_tools import (
+    GithubIssuesHigherOrderTool,
+)
 from opus_sde_agent.sde_mcp_server_registry import SDEMCPServerRegistry
-from opus_agent_base.tools.mcp_server_config import MCPServerConfig
-from opus_agent_base.tools.fastmcp_server_config import FastMCPServerConfig
 
 
 class SDEAgentBuilder:
@@ -38,6 +39,12 @@ class SDEAgentBuilder:
         )
         self.instructions_manager.put_from_file(
             "sde_agent_instruction", "prompts/agent/SDE_AGENT_INSTRUCTIONS.md"
+        )
+        self.instructions_manager.put_from_file(
+            "acceptance_criteria_for_github_issue_from_code", "prompt_templates/tools/sde/ACCEPTANCE_CRITERIA_FOR_GITHUB_ISSUE_FROM_CODE.md"
+        )
+        self.instructions_manager.put_from_file(
+            "github_issues_assistant_instructions", "prompts/tools/sde/GITHUB_ISSUES_ASSISTANT_INSTRUCTIONS.md"
         )
 
     def _add_prompt_templates(self):
@@ -80,4 +87,11 @@ class SDEAgentBuilder:
         self.custom_tools: list[CustomTool] = []
 
     def _add_higher_order_tools(self):
-        self.higher_order_tools: list[HigherOrderTool] = []
+        self.higher_order_tools: list[HigherOrderTool] = [
+            GithubIssuesHigherOrderTool(
+                config_manager=self.config_manager,
+                instructions_manager=self.instructions_manager,
+                model_manager=self.model_manager,
+            ),
+        ]
+

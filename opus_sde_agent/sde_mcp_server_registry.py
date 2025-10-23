@@ -1,9 +1,5 @@
-from math import e
 import os
 
-from pydantic_ai.mcp import MCPServerSSE, MCPServerStdio, MCPServerHTTP
-
-from opus_agent_base.tools.mcp_server_config import MCPServerConfig
 from opus_agent_base.tools.fastmcp_server_config import FastMCPServerConfig
 
 
