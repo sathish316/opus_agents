@@ -117,7 +117,7 @@ class SDEMCPServerRegistry:
                     "--rm",
                     "-e",
                     "PROMETHEUS_URL",
-                    "prometheus-mcp-server:local"
+                    "prometheus-mcp-server:latest"
                 ],
                 "env": {
                     "PROMETHEUS_URL": f"{os.getenv('PROMETHEUS_URL')}"
