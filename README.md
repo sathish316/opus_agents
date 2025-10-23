@@ -52,7 +52,7 @@ The project will remain open source under the [MIT LICENSE](LICENSE.md)
 
 ## About / Inspiration
 
-The project draws inspiration from Neil DeGrasse Tyson's balanced perspective on AI from his podcast "Why AI is overrated" (https://www.youtube.com/watch?v=BYizgB2FcAQ). He suggests that society is already living on an exponential curve from Industrial Revolution to Automobiles to Internet to Modern computing systems and AI will drive the next wave of human creativity, productivity, and exponential growth.
+The world is filled with polarized opinions on AI that either "AI will replace all humans" or "AI or LLM in its current state is next token prediction and not intelligence". This project draws inspiration from Neil DeGrasse Tyson's balanced perspective on AI from his podcast "Why AI is overrated" (https://www.youtube.com/watch?v=BYizgB2FcAQ). He suggests that society is already living on an exponential curve from Industrial Revolution to Automobiles to Internet to Modern computing systems and AI will drive the next wave of human creativity, productivity, and exponential growth. For this to become possible, AI has to be like Jarvis for most knowledge work. This project aims to fill the gaps of current AI tools to make them feel almost like Jarvis.
 
 The name is inspired by the latin phrase "magnum opus" that means "great work". 
 
