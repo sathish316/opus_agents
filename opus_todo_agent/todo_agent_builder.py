@@ -94,8 +94,6 @@ class TodoAgentBuilder:
             mcp_server_registry.get_search_mcp_server(),
             mcp_server_registry.get_code_execution_mcp_server(),
             todo_mcp_server_registry.get_todoist_mcp_server(),
-            todo_mcp_server_registry.get_google_calendar_mcp_server(),
-            todo_mcp_server_registry.get_slack_mcp_server(),
         ]
         self.mcp_manager.add_servers(mcp_servers_config)
 

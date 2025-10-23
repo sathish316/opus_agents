@@ -64,7 +64,7 @@ model_config.enabled=true (where provider="ollama", model="qwen3:1.7b-q8_0", is_
 6. Start Opus CLI
 
 ```bash
-$ uv run opus_todo_agent/main.py
+$ uv run main.py
 ```
 
 7. Test with a simple command

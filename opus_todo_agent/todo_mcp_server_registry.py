@@ -28,45 +28,6 @@ class TodoMCPServerRegistry:
             )
         )
 
-    def get_google_calendar_mcp_server(self) -> MCPServerConfig:
-        return MCPServerConfig(
-            "google_calendar",
-            "productivity.calendar.google_calendar",
-            "stdio",
-            MCPServerStdio(
-                command="uv",
-                args=[
-                    "run",
-                    "--directory",
-                    f"{os.getenv('GOOGLE_WORKSPACE_MCP_PATH')}",
-                    "python",
-                    "main.py",
-                    "--tools",
-                    "calendar",
-                ],
-                env=self._get_google_calendar_auth_env(),
-                tool_prefix="google_calendar",
-            )
-        )
-
-    def get_slack_mcp_server(self) -> MCPServerConfig:
-        return MCPServerConfig(
-            "slack",
-            "productivity.chat.slack",
-            "stdio",
-            MCPServerStdio(
-                command="npx",
-                args=[
-                    "-y",
-                    "slack-mcp-server@latest",
-                    "--transport",
-                    "stdio"
-                ],
-                env=self._get_slack_auth_env(),
-                tool_prefix="slack",
-            )
-        )
-
     def get_google_calendar_fastmcp_server(self) -> FastMCPServerConfig:
         # Google workspace is run as a stdio MCP server using https://github.com/taylorwilsdon/google_workspace_mcp
         return FastMCPServerConfig(
