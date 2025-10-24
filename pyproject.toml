@@ -27,27 +27,11 @@ classifiers = [
 ]
 
 dependencies = [
-    # Base framework dependencies
-    "boto3>=1.40.21",
-    "pydantic-ai>=0.8.1",
-    "pydantic-ai-slim[anthropic,openai,retries]>=0.8.1",
-    "tenacity>=8.2.0",
-    "httpx>=0.24.0",
-    "singleton-decorator>=1.0.0",
-    "fastmcp>=2.12.4",
-    "typer>=0.19.2",
-    "tiktoken>=0.12.0",
-    "chromadb>=1.1.1",
-    "rapidfuzz>=3.14.1",
-    "prompt-toolkit>=3.0.0",
-    "rich>=13.0.0",
-    "pyyaml>=6.0.0",
-    # Todo agent specific dependencies
-    "todoist-api-python>=2.1.0",
-    "google-auth>=2.0.0",
-    "google-auth-oauthlib>=1.0.0",
-    "google-api-python-client>=2.0.0",
-    "slack-sdk>=3.0.0",
+    # Local workspace packages
+    "opus-agent-base",
+    "opus-sde-agent", 
+    "opus-todo-agent",
+    # Additional dependencies
     "mcp-server-docker>=0.2.1",
 ]
 
@@ -70,7 +54,7 @@ Repository = "https://github.com/sathish316/opus_agents.git"
 Issues = "https://github.com/sathish316/opus_agents/issues"
 
 [tool.hatch.build.targets.wheel]
-packages = ["opus_agent_base", "opus_todo_agent"]
+packages = []
 
 [tool.black]
 line-length = 88
