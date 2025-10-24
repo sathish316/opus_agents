@@ -1,0 +1,17 @@
+[project]
+name = "opus-todo-agent"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Sathish", email = "sathish316@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = []
+
+[project.scripts]
+opus-todo-agent = "opus_todo_agent:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

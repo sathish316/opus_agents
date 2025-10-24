@@ -101,3 +101,10 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+
+[tool.uv.workspace]
+members = [
+    "opus_agent_base",
+    "opus_todo_agent",
+    "opus_sde_agent",
+]
