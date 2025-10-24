@@ -53,15 +53,27 @@ Documentation = "https://github.com/sathish316/opus_agents#readme"
 Repository = "https://github.com/sathish316/opus_agents.git"
 Issues = "https://github.com/sathish316/opus_agents/issues"
 
+# Hatchling build configuration
 [tool.hatch.build.targets.wheel]
-packages = []
+packages = ["main.py"]
+only-include = ["main.py"]
 
+[tool.hatch.build.targets.sdist]
+include = [
+    "main.py",
+    "README.md",
+    "LICENSE",
+    "pyproject.toml",
+]
+
+# Black formatter configuration
 [tool.black]
 line-length = 88
-target-version = ['py313']
+target-version = ['py312']
 
+# Ruff linter configuration
 [tool.ruff]
-target-version = "py313"
+target-version = "py312"
 line-length = 88
 select = [
     "E",  # pycodestyle errors
@@ -73,22 +85,30 @@ select = [
     "UP", # pyupgrade
 ]
 
+# MyPy type checker configuration
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.12"
 warn_return_any = true
 warn_unused_configs = true
 disallow_untyped_defs = true
 
+# Pytest configuration
 [tool.pytest.ini_options]
-testpaths = ["opus_agent_base/tests", "opus_todo_agent/tests"]
+testpaths = ["opus_agent_base/tests", "opus_todo_agent/tests", "opus_sde_agent/tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
 
+# UV workspace configuration
 [tool.uv.workspace]
 members = [
     "opus_agent_base",
     "opus_todo_agent",
     "opus_sde_agent",
 ]
+
+[tool.uv.sources]
+opus-agent-base = { workspace = true }
+opus-sde-agent = { workspace = true }
+opus-todo-agent = { workspace = true }

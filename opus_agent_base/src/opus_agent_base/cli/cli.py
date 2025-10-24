@@ -5,11 +5,6 @@ import sys
 from pathlib import Path
 
 import typer
-
-from opus_todo_agent.todo_agent_runner import run_todo_agent
-from opus_sde_agent.sde_agent_runner import run_sde_agent
-from opus_agent_base.config.config_command_manager import ConfigCommandManager
-from opus_agent_base.config.config_manager import ConfigManager
 from prompt_toolkit import PromptSession
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from prompt_toolkit.completion import WordCompleter
@@ -18,6 +13,9 @@ from prompt_toolkit.styles import Style
 from rich.console import Console
 from rich.panel import Panel
 from rich.table import Table
+
+from opus_agent_base.config.config_command_manager import ConfigCommandManager
+from opus_agent_base.config.config_manager import ConfigManager
 
 # Setup rich console for pretty output
 console = Console()
@@ -37,7 +35,9 @@ def create_cli_app(
         rich_markup_mode="rich",
     )
 
-    def run_cli_mode(run_agent_on_startup: bool = False, run_agent_code: str = "todo-agent"):
+    def run_cli_mode(
+        run_agent_on_startup: bool = False, run_agent_code: str = "todo-agent"
+    ):
         """Run the admin mode with slash commands."""
         console.print(
             Panel.fit(
@@ -96,13 +96,18 @@ def create_cli_app(
         if run_agent_on_startup:
             try:
                 if run_agent_code == "todo-agent":
+                    from opus_todo_agent.todo_agent_runner import run_todo_agent
+
                     asyncio.run(run_todo_agent())
                 elif run_agent_code == "sde-agent":
+                    from opus_sde_agent.sde_agent_runner import run_sde_agent
+
                     asyncio.run(run_sde_agent())
             except KeyboardInterrupt:
                 console.print("\n[dim]Agent interrupted. Returning to CLI...[/dim]")
             except Exception as e:
                 import traceback
+
                 console.print(f"[red]Agent error: {e}[/red]")
                 console.print("[dim]Stacktrace:[/dim]")
                 console.print(traceback.format_exc())
@@ -136,8 +141,12 @@ def create_cli_app(
                 elif cmd == "help":
                     show_admin_help()
                 elif cmd == "agent" or cmd == "todo-agent":
+                    from opus_todo_agent.todo_agent_runner import run_todo_agent
+
                     asyncio.run(run_todo_agent())
                 elif cmd == "sde-agent":
+                    from opus_sde_agent.sde_agent_runner import run_sde_agent
+
                     asyncio.run(run_sde_agent())
                 elif cmd == "config":
                     config_command_manager.handle_config_command(args)

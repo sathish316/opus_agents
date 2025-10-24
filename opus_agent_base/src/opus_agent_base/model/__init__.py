@@ -1,2 +1,1 @@
 """Model management and configuration."""
-

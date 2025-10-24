@@ -1,2 +1,1 @@
 """Prompt and instructions management."""
-
