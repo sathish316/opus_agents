@@ -16,6 +16,7 @@ class TodoMCPServerRegistry:
         pass
 
     def get_todoist_mcp_server(self) -> MCPServerConfig:
+        # https://github.com/abhiz123/todoist-mcp-server
         return MCPServerConfig(
             "todoist",
             "productivity.todo.todoist",
@@ -60,6 +61,7 @@ class TodoMCPServerRegistry:
 
     def get_clockwise_fastmcp_server(self) -> FastMCPServerConfig:
         # MCP server (remote): https://mcp.getclockwise.com/mcp
+        # https://support.getclockwise.com/article/238-connecting-to-clockwise-mcp
         return FastMCPServerConfig(
             "clockwise",
             "productivity.calendar.clockwise",

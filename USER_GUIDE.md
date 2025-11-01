@@ -121,11 +121,19 @@ mcp_config.productivity.todo.todoist.enabled=true
 TODOIST_API_KEY="your-api-key"
 ```
 
-3. Test Todoist from OpusCLI
+3. Start/Restart OpusCLI
+
+```
+uv run main.py
+```
+
+4. Test Todoist from OpusCLI
 
 OpusCLI> Find open tasks in Test project (in Todoist)
 
-(Restart OpusCLI if required)
+> Generate daily review of Todoist tasks
+
+> Generate weekly review of Todoist tasks
 
 The power of OpusCLI is in the advanced workflows that it supports to suit your needs. For custom tools and workflows possible with Todoist, check Custom Tools and Prompt library section
 
@@ -166,7 +174,7 @@ https://docs.trychroma.com/docs/overview/getting-started
 
 OpusCLI> Ask notes - what is X?
 
-For advanced tools and workflows possible with Obsidian, check Custom Tools and Prompt library section
+For advanced Obsidian workflows, check Custom Tools and Prompt library section
 
 # Collaboration tools Usage - Mail, Calendar, Chat, Meetings
 
@@ -203,6 +211,8 @@ OAUTHLIB_INSECURE_TRANSPORT=1
 5. Test Google Calendar from OpusCLI
 
 OpusCLI> What meetings do i have tomorrow?
+
+> Generate summary of my meetings this week
 
 6. Complete the OAuth handshake flow in your browser
 
@@ -263,7 +273,7 @@ Configure tokens in ENV:
 SLACK_MCP_XOXP_TOKEN=<your-token>
 ```
 
-4. For advanced features, OpusCLI supports the following config for Slack to tell Opus about your specific teams and projects and their corresponding Slack channels:
+4. For advanced features, OpusCLI supports the following config to guide Opus about your specific teams and projects and their corresponding Slack channels:
 
 ```
 chat.slack.project_to_channels.phoenix=["phoenix-dev","phoenix-product"]
@@ -278,7 +288,11 @@ chat.slack.use_local_model=true
 
 6. Test Slack from OpusSLI
 
-OpusCLI> Update me on the recent messages in Test slack channel in last one week
+> Update me on the recent messages in Test slack channel
+
+> Brief me about Test project's slack channels from last one week
+
+> Brief me about Test team's slack channels from last one week
 
 ## Meetings Recording and Transcript - Zoom and Loom
 
