@@ -105,7 +105,7 @@ If running from the Git repo
 
 ```bash
 # Using uv
-uv run opus_todo_agent/main.py
+uv run main.py
 ```
 
 # Productivity tools Usage - Todo, Notetaking
@@ -159,7 +159,7 @@ https://docs.trychroma.com/docs/overview/getting-started
 4. Index your notes. Opus updates only the changes every time you do this operation. It uses a local embedding model that comes by default in Chromadb and your notes are kept secure
 
 ```
- uv run opus_todo_agent/background_jobs/notes/obsidian_indexer.py sathish316_personal
+ uv run opus_todo_agent/src/opus_todo_agent/background_jobs/notes/obsidian_indexer.py my_personal_notes
 ```
 
 5. Test Obsidian from OpusCLI
