@@ -137,6 +137,8 @@ OpusCLI> Find open tasks in Test project (in Todoist)
 
 The power of OpusCLI is in the advanced workflows that it supports to suit your needs. For custom tools and workflows possible with Todoist, check Custom Tools and Prompt library section
 
+<gif_placeholder_claude_vs_opus>
+
 ## Obsidian
 Obsidian is a notetaking tool.
 Opus Agents support indexing your notes one-time or periodically and asking questions to your notes
@@ -175,6 +177,8 @@ https://docs.trychroma.com/docs/overview/getting-started
 OpusCLI> Ask notes - what is X?
 
 For advanced Obsidian workflows, check Custom Tools and Prompt library section
+
+<gif_placeholder_claude_vs_opus>
 
 # Collaboration tools Usage - Mail, Calendar, Chat, Meetings
 
@@ -218,6 +222,8 @@ OpusCLI> What meetings do i have tomorrow?
 
 7. The power of OpusCLI is in the advanced and hackable Google Calendar workflows that it supports to suit your needs. For advanced tools and workflows possible with Google Calendar, check Custom Tools and Prompt library section
 
+<gif_placeholder_claude_vs_opus>
+
 ## Calendar - Clockwise
 
 In case your Google workspace permission does not allow you to use Google calendar, Clockwise provides Remote MCP servers with access to your Calendar and more optimization tools.
@@ -237,6 +243,8 @@ mcp_config.productivity.calendar.clockwise.higher_order_tools.enabled=true
 OpusCLI> What meetings do i have tomorrow?
 
 The power of OpusCLI is in the advanced and hackable Clockwise workflows that it supports to suit your needs. For advanced tools and workflows possible with Clockwise, check Custom Tools and Prompt library section
+
+<gif_placeholder_claude_vs_opus>
 
 ## Chat - Slack
 1. Enable Slack in ~/.opusai/opus-config.yaml
@@ -294,6 +302,8 @@ chat.slack.use_local_model=true
 
 > Brief me about Test team's slack channels from last one week
 
+<gif_placeholder_claude_vs_opus>
+
 ## Meetings Recording and Transcript - Zoom and Loom
 
 OpusCLI does not direcly integrate with Zoom or Loom APIs. It expects you to download the transcript in a specific location and uses a Local model to answer follow-up questions about the meeting
@@ -335,6 +345,8 @@ To download transcript: Go to loom.com > Sign-in > Click on meeting > View Recor
 6. Test Zoom or Loom on OpusAI
 
 > Ask question about meeting id 123 - Summarize the meeting
+
+<gif_placeholder_opus>
 
 # Custom Tools and Prompt Library
 
