@@ -63,7 +63,7 @@ class ObsidianIndexer:
                     md_files.append(file_path)
         # read md files
         count = 0
-        max_count = 100
+        max_count = 1000
         for md_file_path in md_files:
             with open(md_file_path, "r", encoding="utf-8") as f:
                 if count < max_count:
@@ -101,7 +101,7 @@ class ObsidianIndexer:
                     md_files.append(file_path)
         # read md files
         count = 0
-        max_count = 500
+        max_count = 1000
         for md_file_path in md_files:
             with open(md_file_path, "r", encoding="utf-8") as f:
                 if count < max_count:
