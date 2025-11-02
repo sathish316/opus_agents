@@ -1,1 +1,1 @@
-"""Prompt and instructions management."""
+"""System prompt management."""

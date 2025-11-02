@@ -30,7 +30,7 @@ async def run_sde_agent():
         name=sde_agent_builder.name,
         config_manager=config_manager,
         instructions_manager=instructions_manager,
-        agent_instruction_keys=sde_agent_builder.agent_instruction_keys,
+        system_prompt_keys=sde_agent_builder.system_prompt_keys,
         mcp_manager=mcp_manager,
         custom_tools=sde_agent_builder.custom_tools,
         higher_order_tools=sde_agent_builder.higher_order_tools,

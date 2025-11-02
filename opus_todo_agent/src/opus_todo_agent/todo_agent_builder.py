@@ -24,9 +24,8 @@ class TodoAgentBuilder:
         self, config_manager, instructions_manager, model_manager, mcp_manager
     ):
         self.name = "todo-agent"
-        self.agent_instruction_keys = [
-            "opus_agent_instruction",
-            "todo_agent_instruction",
+        self.system_prompt_keys = [
+            "todo_agent_system_prompt",
         ]
         self.config_manager = config_manager
         self.instructions_manager = instructions_manager
@@ -37,19 +36,21 @@ class TodoAgentBuilder:
 
     def build(self) -> AgentInstance:
         """Build the todo agent"""
-        self._add_instructions()
+        self._add_system_prompts()
         self._add_prompt_templates()
         self._add_mcp_servers()
         self._add_fastmcp_servers()
         self._add_custom_tools()
         self._add_higher_order_tools()
 
-    def _add_instructions(self):
-        self.instructions_manager.put_from_file(
-            "opus_agent_instruction", "prompts/agent/OPUS_AGENT_INSTRUCTIONS.md"
+    def _add_system_prompts(self):
+        # Set root system prompt
+        self.instructions_manager.set_root_system_prompt_from_file(
+            "prompts/agent/OPUS_AGENT_INSTRUCTIONS.md"
         )
+        # Set agent-specific system prompt
         self.instructions_manager.put_from_file(
-            "todo_agent_instruction", "prompts/agent/TODO_AGENT_INSTRUCTIONS.md"
+            "todo_agent_system_prompt", "prompts/agent/TODO_AGENT_INSTRUCTIONS.md"
         )
         self.instructions_manager.put_from_file(
             "obsidian_notes_instructions",

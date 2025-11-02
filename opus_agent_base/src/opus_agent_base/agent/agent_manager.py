@@ -29,7 +29,7 @@ class AgentManager:
         self,
         name: str,
         config_manager: ConfigManager,
-        agent_instruction_keys: list[str],
+        system_prompt_keys: list[str],
         instructions_manager: InstructionsManager,
         mcp_manager: MCPManager,
         custom_tools: list[CustomTool],
@@ -37,7 +37,7 @@ class AgentManager:
     ):
         self.name = name
         self.config_manager = config_manager
-        self.agent_instruction_keys = agent_instruction_keys
+        self.system_prompt_keys = system_prompt_keys
         self.instructions_manager = instructions_manager
         self.model_manager = None
         self.mcp_manager = mcp_manager
@@ -63,10 +63,18 @@ class AgentManager:
         )
 
     async def initialize_agent(self):
-        # setup agent instructions
-        instructions = "\n".join(
-            self.instructions_manager.get(key) for key in self.agent_instruction_keys
+        # Setup agent system prompts
+        # Combine root system prompt with agent-specific system prompts
+        root_system_prompt = self.instructions_manager.get_root_system_prompt()
+        agent_system_prompts = "\n".join(
+            self.instructions_manager.get(key) for key in self.system_prompt_keys
         )
+        
+        # Combine root and agent-specific system prompts
+        if root_system_prompt:
+            instructions = f"{root_system_prompt}\n\n{agent_system_prompts}"
+        else:
+            instructions = agent_system_prompts
 
         # model manager
         self.model_manager = ModelManager(self.config_manager)

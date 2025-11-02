@@ -20,7 +20,7 @@ class AgentRunner:
         name: str,
         config_manager: ConfigManager,
         instructions_manager: InstructionsManager,
-        agent_instruction_keys: list[str],
+        system_prompt_keys: list[str],
         mcp_manager: MCPManager,
         custom_tools: list[CustomTool],
         higher_order_tools: list[HigherOrderTool],
@@ -28,7 +28,7 @@ class AgentRunner:
         self.name = name
         self.config_manager = config_manager
         self.instructions_manager = instructions_manager
-        self.agent_instruction_keys = agent_instruction_keys
+        self.system_prompt_keys = system_prompt_keys
         self.mcp_manager = mcp_manager
         self.custom_tools = custom_tools
         self.higher_order_tools = higher_order_tools
@@ -40,7 +40,7 @@ class AgentRunner:
             agent_instance = AgentInstance(
                 name=self.name,
                 config_manager=self.config_manager,
-                agent_instruction_keys=self.agent_instruction_keys,
+                system_prompt_keys=self.system_prompt_keys,
                 instructions_manager=self.instructions_manager,
                 mcp_manager=self.mcp_manager,
                 custom_tools=self.custom_tools,

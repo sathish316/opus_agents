@@ -30,7 +30,7 @@ async def run_todo_agent():
         name=todo_agent_builder.name,
         config_manager=config_manager,
         instructions_manager=instructions_manager,
-        agent_instruction_keys=todo_agent_builder.agent_instruction_keys,
+        system_prompt_keys=todo_agent_builder.system_prompt_keys,
         mcp_manager=mcp_manager,
         custom_tools=todo_agent_builder.custom_tools,
         higher_order_tools=todo_agent_builder.higher_order_tools,
