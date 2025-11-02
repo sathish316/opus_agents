@@ -1,3 +1,15 @@
+-[X] Framework
+    -[X] Agent builder
+    -[X] Agent CLI
+    -[X] Admin CLI
+    -[X] Config
+    -[X] Frontier model selection
+    -[X] Local LLM selection
+    -[X] Prompts and Prompt templates
+    -[X] MCP servers
+    -[X] FastMCP servers with OAuth
+    -[X] Custom tools/skills
+    -[X] Higher order tools/skills
 -[ ] MCP servers and Tools - Productivity
     -[X] Todo list
         -[X] Todoist
@@ -33,41 +45,7 @@
     -[X] Meeting transcript
         -[X] Ask follow-up question to Loom transcript
         -[X] Ask follow-up question to Zoom transcript
--[ ] MCP servers and Tools - SDE
-    -[ ] Git
-        -[ ] Github
-    -[ ] Containers
-        -[ ] Docker
-        -[ ] Kubernetes
-    -[ ] Monitoring
-        -[ ] Prometheus
-    -[ ] Logging
-        -[ ] Loki
-    -[ ] Oncall
-    -[ ] Projects
-        -[ ] Jira
-    -[ ] Databases
-    -[ ] Docs
-        -[ ] SDK docs
-        -[ ] Official docs
-    -[ ] Linux
-    -[ ] Languages
-    -[ ] Editors
--[ ] Custom tools - SDE
-    -[ ] Github
-    -[ ] Docker
-    -[ ] Kubernetes
-    -[ ] Prometheus
-    -[ ] Loki
-    -[ ] Oncall
-    -[ ] Jira
-    -[ ] Databases
-    -[ ] SDK docs
-    -[ ] Official docs
-    -[ ] Linux
-    -[ ] Languages
-    -[ ] Editors
--[ ] Common capabilities
+-[ ] Common framework capabilities
     -[X] CLI
         -[X] pydantic cli
         -[X] typer cli with help, exit, status, env commands
