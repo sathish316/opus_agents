@@ -83,7 +83,7 @@ class ConfigCommandManager:
 
         # Find the sample config file (it's in the same directory as this file)
         current_dir = Path(__file__).parent
-        sample_file = current_dir / "opus-config-productivity.sample.yaml"
+        sample_file = current_dir / "opus-config-productivity.sample.yml"
 
         if not sample_file.exists():
             self.console.print(

@@ -46,17 +46,17 @@ source .venv/bin/activate
 
 ```bash
 mkdir -p ~/.opusai
-cp opus_todo_agent/common/opus-config.sample.yaml ~/.opusai/opus-config.yaml
+cp opus_todo_agent/common/opus-config.sample.yml ~/.opusai/opus-config.yml
 ```
 
 5. Configure which model to use
 
-Frontier models can be configured in ~/.opusai/config.yaml
+Frontier models can be configured in ~/.opusai/config.yml
 ```
 model_config.enabled=true (where provider="openai", model="gpt-5")
 ```
 
-Local models can also be configured and enabled in ~/.opusai/config.yaml
+Local models can also be configured and enabled in ~/.opusai/config.yml
 ```
 model_config.enabled=true (where provider="ollama", model="qwen3:1.7b-q8_0", is_local=true)
 ```
@@ -111,7 +111,7 @@ uv run main.py
 # Productivity tools Usage - Todo, Notetaking
 
 ## Todoist
-1. Enable Todoist in ~/.opusai/opus-config.yaml
+1. Enable Todoist in ~/.opusai/opus-config.yml
 ```
 mcp_config.productivity.todo.todoist.enabled=true
 ```
@@ -143,12 +143,12 @@ The power of OpusCLI is in the advanced workflows that it supports to suit your 
 Obsidian is a notetaking tool.
 Opus Agents support indexing your notes one-time or periodically and asking questions to your notes
 
-1. Enable Obsidian in ~/.opusai/opus-config.yaml
+1. Enable Obsidian in ~/.opusai/opus-config.yml
 ```
 mcp_config.productivity.notes.obsidian.enabled=true
 ```
 
-2. Configure your vault name and location in ~/.opusai/opus-config.yaml
+2. Configure your vault name and location in ~/.opusai/opus-config.yml
 ```
 notes:
   obsidian:
@@ -184,7 +184,7 @@ For advanced Obsidian workflows, check Custom Tools and Prompt library section
 
 ## Calendar - Google Calendar
 
-1. Enable Google Calendar in ~/.opusai/opus-config.yaml
+1. Enable Google Calendar in ~/.opusai/opus-config.yml
 A higher order tool is a special type of custom tool that uses the MCP server to build advanced functionalities.
 
 ```
@@ -228,7 +228,7 @@ OpusCLI> What meetings do i have tomorrow?
 
 In case your Google workspace permission does not allow you to use Google calendar, Clockwise provides Remote MCP servers with access to your Calendar and more optimization tools.
 
-1. Enable Calendar in ~/.opusai/opus-config.yaml
+1. Enable Calendar in ~/.opusai/opus-config.yml
 A higher order tool is a special type of custom tool that uses the MCP server to build advanced functionalities.
 
 ```
@@ -247,7 +247,7 @@ The power of OpusCLI is in the advanced and hackable Clockwise workflows that it
 <gif_placeholder_claude_vs_opus>
 
 ## Chat - Slack
-1. Enable Slack in ~/.opusai/opus-config.yaml
+1. Enable Slack in ~/.opusai/opus-config.yml
 ```
 mcp_config.productivity.chat.slack.enabled=true
 ```
@@ -308,7 +308,7 @@ chat.slack.use_local_model=true
 
 OpusCLI does not direcly integrate with Zoom or Loom APIs. It expects you to download the transcript in a specific location and uses a Local model to answer follow-up questions about the meeting
 
-1. Enable Zoom or Loom in ~/.opusai/opus-config.yaml
+1. Enable Zoom or Loom in ~/.opusai/opus-config.yml
 ```
 mcp_config.productivity.meeting_transcript.zoom.enabled=true
 mcp_config.productivity.meeting_transcript.loom.enabled=true
