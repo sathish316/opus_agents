@@ -79,10 +79,13 @@ uv tool install .
 Test installation:
 
 ```bash
-which opus-todo-agent
+which opus-agents
 
 # Run from any directory
-opus-todo-agent
+opus-agents
+
+# Run a specific agent
+opus-agents -todo
 
 # Test with a simple command
 > Find open tasks in my todoist project Test
