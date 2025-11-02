@@ -1,2 +1,0 @@
-"""Calendar higher-order tools."""
-
