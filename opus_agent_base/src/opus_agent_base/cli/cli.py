@@ -16,6 +16,7 @@ from rich.table import Table
 
 from opus_agent_base.config.config_command_manager import ConfigCommandManager
 from opus_agent_base.config.config_manager import ConfigManager
+from opus_agent_base.ui.logo import display_logo
 
 # Setup rich console for pretty output
 console = Console()
@@ -39,16 +40,7 @@ def create_cli_app(
         run_agent_on_startup: bool = False, run_agent_code: str = "todo-agent"
     ):
         """Run the admin mode with slash commands."""
-        console.print(
-            Panel.fit(
-                f"[bold green]{agent_name} - Admin Mode[/bold green]\n"
-                "Use slash commands to configure the agent.\n"
-                "Type [bold]/help[/bold] for available commands or [bold]/exit[/bold] to quit.\n"
-                "[dim]💡 Tip: Use ↑/↓ arrows to navigate command history, Tab for completion[/dim]",
-                border_style="green",
-            )
-        )
-
+        display_logo(console)
         # Set up command history file
         history_dir = Path.home() / ".opusai"
         history_dir.mkdir(exist_ok=True)
