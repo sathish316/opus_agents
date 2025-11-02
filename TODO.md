@@ -1,62 +1,62 @@
--[X] Framework
-    -[X] Agent builder
-    -[X] Agent CLI
-    -[X] Admin CLI
-    -[X] Config
-    -[X] Frontier model selection
-    -[X] Local LLM selection
-    -[X] Prompts and Prompt templates
-    -[X] MCP servers
-    -[X] FastMCP servers with OAuth
-    -[X] Custom tools/skills
-    -[X] Higher order tools/skills
--[ ] MCP servers and Tools - Productivity
-    -[X] Todo list
-        -[X] Todoist
-    -[X] Chat
-        -[X] Slack
-    -[X] Calendar
-        -[X] Google calendar
-        -[X] Clockwise
-    -[X] Meeting transcript
-        -[X] Zoom
-        -[X] Loom
-    -[ ] Email
-        -[ ] Gmail
-    -[ ] Docs
-        -[ ] Confluence docs
-        -[ ] Google docs
-    -[X] Notetaking
-        -[X] Obsidian
--[ ] Custom tools - Productivity
-    -[X] Todoist
-        -[X] daily review, weekly review
-        -[X] Task recommendation
-    -[X] Calendar
-        -[X] daily review, weekly review
-        -[X] briefing for future meetings
-        -[ ] calendar metrics
-        -[ ] optimize meetings
-    -[X] Slack
-        -[X] brief about single channel and summarize
-        -[X] brief about team or project specific channels and summarize
-    -[X] Notetaking
-        -[X] Ask question or chat with your notes
-    -[X] Meeting transcript
-        -[X] Ask follow-up question to Loom transcript
-        -[X] Ask follow-up question to Zoom transcript
--[ ] Common framework capabilities
-    -[X] CLI
-        -[X] pydantic cli
-        -[X] typer cli with help, exit, status, env commands
-        -[X] config command
-    -[X] Config
-        -[X] init config file
-        -[X] list, get, set, show config in yml
-        -[X] nested yml get, set, show. dot notation for get and set
-    -[ ] Memory
-    -[X] Local model support
-        -[X] Meeting transcript
-        -[X] Slack
-        -[ ] Calendar
-        -[ ] Tool calling
+- [x] Framework
+    - [x] Agent builder
+    - [x] Agent CLI
+    - [x] Admin CLI
+    - [x] Config
+    - [x] Frontier model selection
+    - [x] Local LLM selection
+    - [x] Prompts and Prompt templates
+    - [x] MCP servers
+    - [x] FastMCP servers with OAuth
+    - [x] Custom tools/skills
+    - [x] Higher order tools/skills
+- [ ] MCP servers and Tools - Productivity
+    - [x] Todo list
+        - [x] Todoist
+    - [x] Chat
+        - [x] Slack
+    - [x] Calendar
+        - [x] Google calendar
+        - [x] Clockwise
+    - [x] Meeting transcript
+        - [x] Zoom
+        - [x] Loom
+    - [ ] Email
+        - [ ] Gmail
+    - [ ] Docs
+        - [ ] Confluence docs
+        - [ ] Google docs
+    - [x] Notetaking
+        - [x] Obsidian
+- [ ] Custom tools - Productivity
+    - [x] Todoist
+        - [x] daily review, weekly review
+        - [x] Task recommendation
+    - [x] Calendar
+        - [x] daily review, weekly review
+        - [x] briefing for future meetings
+        - [ ] calendar metrics
+        - [ ] optimize meetings
+    - [x] Slack
+        - [x] brief about single channel and summarize
+        - [x] brief about team or project specific channels and summarize
+    - [x] Notetaking
+        - [x] Ask question or chat with your notes
+    - [x] Meeting transcript
+        - [x] Ask follow-up question to Loom transcript
+        - [x] Ask follow-up question to Zoom transcript
+- [ ] Common framework capabilities
+    - [x] CLI
+        - [x] pydantic cli
+        - [x] typer cli with help, exit, status, env commands
+        - [x] config command
+    - [x] Config
+        - [x] init config file
+        - [x] list, get, set, show config in yml
+        - [x] nested yml get, set, show. dot notation for get and set
+    - [ ] Memory
+    - [x] Local model support
+        - [x] Meeting transcript
+        - [x] Slack
+        - [ ] Calendar
+        - [ ] Tool calling
