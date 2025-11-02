@@ -31,7 +31,7 @@ class ObsidianRAG:
         assert (
             self.vault_config is not None
         ), f"Vault config not found for {self.obsidian_vault_name}"
-        print(f"Vault config: {self.vault_config}")
+        logger.info(f"Vault config: {self.vault_config}")
         self._init_vector_db()
         self._init_agent()
 
@@ -54,11 +54,12 @@ class ObsidianRAG:
             query_texts=[query],
             n_results=self.vault_config.get("num_results", 3),
         )
+        query_results = results["documents"]
 
-        # print search results
-        for i, query_results in enumerate(results["documents"]):
-            print(f"\nQuery {i+1}")
-            print("\n".join(query_results))
+        # log search results
+        for i, query_result in enumerate(query_results):
+            logger.debug(f"\nQuery {i+1}")
+            logger.debug(query_result)
         return "\n----------\n".join(query_results)
 
     def ask_notes(self, query: str) -> str:

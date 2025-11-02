@@ -2,7 +2,7 @@ import logging
 import os
 
 from pydantic_ai.models.anthropic import AnthropicModel
-from pydantic_ai.models.openai import OpenAIChatModel, OpenAIModel
+from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.anthropic import AnthropicProvider
 from pydantic_ai.providers.ollama import OllamaProvider
 from pydantic_ai.providers.openai import OpenAIProvider
@@ -59,7 +59,7 @@ class ModelManager:
     def initialize_ollama_model(self):
         for model_config in self.models_config:
             if model_config["provider"] == "ollama" and model_config["enabled"] and model_config["is_local"]:
-                self.local_model = OpenAIModel(
+                self.local_model = OpenAIChatModel(
                     model_name=model_config["model"],
                     provider=OllamaProvider(base_url=model_config["base_url"]),
                 )

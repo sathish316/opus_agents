@@ -105,17 +105,17 @@ class TodoistTools(CustomTool):
                     predefined_daterange_key == ""
                     or predefined_daterange_key == "today"
                 ):
-                    logging.info("[CustomToolCall] Generating Daily review for today")
+                    logger.info("[CustomToolCall] Generating Daily review for today")
                     tasks = get_completed_tasks_for_predefined_date_range(
                         ctx, predefined_daterange_key
                     )
                 elif predefined_daterange_key == "yesterday":
-                    logging.info("[CustomToolCall] Generating Daily review for yesterday")
+                    logger.info("[CustomToolCall] Generating Daily review for yesterday")
                     tasks = get_completed_tasks_for_predefined_date_range(
                         ctx, predefined_daterange_key
                     )
                 else:
-                    logging.info(
+                    logger.info(
                         f"[CustomToolCall] Generating Daily review for date: {predefined_daterange_key}"
                     )
                     tasks = get_completed_tasks_for_date_range(
@@ -124,7 +124,7 @@ class TodoistTools(CustomTool):
                         self.datetime_helper.get_next_date(predefined_daterange_key),
                     )
             except Exception as e:
-                logging.error(f"Error fetching completed tasks: {e}")
+                logger.error(f"Error fetching completed tasks: {e}")
                 return
 
             try:
@@ -133,7 +133,7 @@ class TodoistTools(CustomTool):
                     project_ids
                 )
             except Exception as e:
-                logging.error(f"Error fetching project names: {e}")
+                logger.error(f"Error fetching project names: {e}")
                 return
 
             tasks = [
@@ -171,17 +171,17 @@ class TodoistTools(CustomTool):
             """
             try:
                 if from_date and to_date:
-                    logging.info(
+                    logger.info(
                         f"[CustomToolCall] Generating weekly review for the date range: {from_date} to {to_date}"
                     )
                     tasks = get_completed_tasks_for_date_range(ctx, from_date, to_date)
                 elif predefined_weekrange_key == "current_week":
-                    logging.info("[CustomToolCall] Generating weekly review for current week")
+                    logger.info("[CustomToolCall] Generating weekly review for current week")
                     tasks = get_completed_tasks_for_predefined_date_range(
                         ctx, "current_week"
                     )
                 elif predefined_weekrange_key == "last_week":
-                    logging.info("[CustomToolCall] Generating weekly review for last week")
+                    logger.info("[CustomToolCall] Generating weekly review for last week")
                     tasks = get_completed_tasks_for_predefined_date_range(
                         ctx, "last_week"
                     )
@@ -190,7 +190,7 @@ class TodoistTools(CustomTool):
                         f"Invalid date range for weekly review: {predefined_weekrange_key}"
                     )
             except Exception as e:
-                logging.error(f"Error fetching completed tasks: {e}")
+                logger.error(f"Error fetching completed tasks: {e}")
                 return
 
             try:
@@ -199,7 +199,7 @@ class TodoistTools(CustomTool):
                     project_ids
                 )
             except Exception as e:
-                logging.error(f"Error fetching project names: {e}")
+                logger.error(f"Error fetching project names: {e}")
                 return
 
             tasks = [
@@ -229,7 +229,7 @@ class TodoistTools(CustomTool):
 
             try:
                 if project_identifier:
-                    logging.info(f"[CustomToolCall] Looking for project: {project_identifier}")
+                    logger.info(f"[CustomToolCall] Looking for project: {project_identifier}")
 
                     # Find the project by name or ID
                     project_id, project_name = (
@@ -237,28 +237,28 @@ class TodoistTools(CustomTool):
                             project_identifier
                         )
                     )
-                    logging.info(f"[CustomToolCall] Found project: {project_name} (ID: {project_id})")
+                    logger.info(f"[CustomToolCall] Found project: {project_name} (ID: {project_id})")
 
                     # Get all active tasks from the project
                     tasks = self.todoist_client.get_tasks_for_project(project_id)
                     source_description = f"project '{project_name}'"
 
                 elif tag_filter_identifier:
-                    logging.info(f"[CustomToolCall] Looking for filter: {tag_filter_identifier}")
+                    logger.info(f"[CustomToolCall] Looking for filter: {tag_filter_identifier}")
 
                     # Get tasks from filter
                     tasks = self.todoist_client.get_tasks_for_tag(tag_filter_identifier)
                     source_description = f"tagFilter '{tag_filter_identifier}'"
 
             except Exception as e:
-                logging.error(f"Error fetching tasks: {e}")
+                logger.error(f"Error fetching tasks: {e}")
                 return
 
             if len(tasks) == 0:
-                print(f"No active tasks found in {source_description}")
+                logger.info(f"No active tasks found in {source_description}")
                 return
 
-            logging.info(f"Found {len(tasks)} active tasks in {source_description}")
+            logger.info(f"Found {len(tasks)} active tasks in {source_description}")
 
             # Pick random tasks
             selected_tasks = self.todoist_helper.pick_random_tasks(tasks, count)
@@ -272,7 +272,7 @@ class TodoistTools(CustomTool):
                     project_ids
                 )
             except Exception as e:
-                logging.error(f"Error fetching project names: {e}")
+                logger.error(f"Error fetching project names: {e}")
                 return
 
             selected_tasks = [

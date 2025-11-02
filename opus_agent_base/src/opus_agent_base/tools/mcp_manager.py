@@ -6,7 +6,7 @@ from mcp.client.session import ClientSession
 from pydantic_ai.tools import Tool
 from singleton_decorator import singleton
 from pydantic_ai.mcp import MCPServer
-
+from opus_agent_base.common.logging_config import console_log
 
 logger = logging.getLogger(__name__)
 
@@ -30,22 +30,28 @@ class MCPManager:
 
     def add_servers(self, mcp_servers_config):
         self.servers = []
+        enabled = []
         for mcp_server_config in mcp_servers_config:
             if self._is_mcp_enabled(mcp_server_config.config_key):
                 logger.info(f"Adding MCP server: {mcp_server_config.name}")
                 self.servers.append(mcp_server_config.mcp_server)
+                enabled.append(mcp_server_config.name)
             else:
                 logger.info(f"MCP server {mcp_server_config.name} not enabled")
+        console_log(f"Added {len(enabled)} MCP servers - {enabled}")
         logger.info("MCP servers added")
 
     def add_fastmcp_servers(self, fastmcp_servers_config):
         self.config["mcpServers"] = {}
+        enabled = []
         for fastmcp_server_config in fastmcp_servers_config:
             if self._is_mcp_enabled(fastmcp_server_config.config_key) or self._is_higher_order_tools_enabled(fastmcp_server_config.config_key):
                 logger.info(f"Adding FastMCP server: {fastmcp_server_config.name}")
                 self.config["mcpServers"][fastmcp_server_config.name] = fastmcp_server_config.mcp_server_config
+                enabled.append(fastmcp_server_config.name)
             else:
                 logger.info(f"FastMCP server {fastmcp_server_config.name} not enabled")
+        console_log(f"Added {len(enabled)} FastMCP servers - {enabled}")
         logger.info("FastMCP servers added")
 
     async def initialize_fastmcp_client_context(self):
@@ -61,7 +67,7 @@ class MCPManager:
 
         self.fastmcp_client_context = fastmcp_client_context
         await self._inspect_fastmcp_client_tools()
-        logger.info("Client for FastMCP servers initialized")
+        logger.info("FastMCP Client initialized")
         return self.fastmcp_client_context
 
     def _is_mcp_enabled(self, config_key):
@@ -93,10 +99,10 @@ class MCPManager:
                 await client.ping()
                 self.fastmcp_client = client
                 tools = await client.list_tools()
-                logger.info("FastMCP Client - Available tools:")
+                logger.debug("FastMCP Client - Available tools:")
                 for tool in tools:
                     logger.debug(f"Tool attributes: {list(tool.__dict__.keys())}")
-                    logger.info(f"Name - {tool.name}")
+                    logger.debug(f"Name - {tool.name}")
                     logger.debug(f"Title - {tool.title}")
                     logger.debug(f"Description - {tool.description}")
                     logger.debug(f"inputSchema - {tool.inputSchema}")

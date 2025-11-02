@@ -79,7 +79,7 @@ class AgentManager:
 
         async def tools_initializer(session: ClientSession):
             logger.info("Initializing agent tools")
-            logger.info(f"Allowed tool prefixes for allowed tools: {self.config_manager.get_setting('mcp_config.allowed_tool_prefixes', [])}")
+            logger.debug(f"Allowed tool prefixes for allowed tools: {self.config_manager.get_setting('mcp_config.allowed_tool_prefixes', [])}")
             # logger.info(f"Allowed docker tools: {self.config_manager.get_setting('mcp_config.allowed_tools.docker', [])}")
             # logger.info(f"Allowed k8s tools: {self.config_manager.get_setting('mcp_config.allowed_tools.k8s', [])}")
             client_tools = await session.list_tools()
@@ -87,7 +87,7 @@ class AgentManager:
                 tool_prefix = tool.name.split("_")[0]
                 if tool_prefix in self.config_manager.get_setting("mcp_config.allowed_tool_prefixes", []):
                     if tool.name in self.config_manager.get_setting("mcp_config.allowed_tools").get(tool_prefix, []):
-                        logger.info(f"Wrapping FastMCP tool: {tool.name}")
+                        logger.debug(f"Wrapping FastMCP tool: {tool.name}")
                         self.tools.append(self.wrap_tool(tool, fastmcp_client_context))
                 else:
                     self.tools.append(self.wrap_tool(tool, fastmcp_client_context))
@@ -135,7 +135,7 @@ class AgentManager:
                 for tool in tools:
                     toolset_id = getattr(toolset, "id", None)
                     toolset_command = getattr(toolset, "command", None)
-                    logger.info(
+                    logger.debug(
                         f"AgentMCPTool: {toolset_id or toolset_command}-{tool.name}"
                     )
 
@@ -143,4 +143,4 @@ class AgentManager:
         function_toolset = getattr(self.agent, "_function_toolset", None)
         if function_toolset:
             for function_tool_key, _ in function_toolset.tools.items():
-                logger.info(f"AgentFunctionTool: {function_tool_key}")
+                logger.debug(f"AgentFunctionTool: {function_tool_key}")

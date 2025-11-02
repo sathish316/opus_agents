@@ -17,6 +17,7 @@ from rich.table import Table
 from opus_agent_base.config.config_command_manager import ConfigCommandManager
 from opus_agent_base.config.config_manager import ConfigManager
 from opus_agent_base.ui.logo import display_logo
+from opus_agent_base.common.logging_config import get_current_log_level, set_log_level
 
 # Setup rich console for pretty output
 console = Console()

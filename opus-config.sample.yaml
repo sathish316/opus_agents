@@ -60,6 +60,7 @@ meeting_transcript:
     max_transcript_size: 32000 # 0 means no limit, otherwise token limit
 debug:
   inspect_tools: true
+  log_level: "ERROR"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
 mcp_config:
   general:
     filesystem:

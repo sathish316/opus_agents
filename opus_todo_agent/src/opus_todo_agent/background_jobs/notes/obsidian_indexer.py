@@ -33,7 +33,7 @@ class ObsidianIndexer:
         assert (
             self.vault_config is not None
         ), f"Vault config not found for {self.obsidian_vault_name}"
-        print(f"Vault config: {self.vault_config}")
+        logging.info(f"Vault config: {self.vault_config}")
         self._init_vector_db()
 
     def _init_vector_db(self):
@@ -68,7 +68,7 @@ class ObsidianIndexer:
             with open(md_file_path, "r", encoding="utf-8") as f:
                 if count < max_count:
                     # add document to collection
-                    print(f"Adding note to vector_db collection: {md_file_path}")
+                    logger.info(f"Adding note to vector_db collection: {md_file_path}")
                     doc_id = str(uuid.uuid4())
                     content = f.read()
                     metadata = {
@@ -106,7 +106,7 @@ class ObsidianIndexer:
             with open(md_file_path, "r", encoding="utf-8") as f:
                 if count < max_count:
                     # add or update document to collection
-                    print(f"Indexing create/update/nop: {md_file_path}")
+                    logger.info(f"Indexing create/update/nop: {md_file_path}")
                     doc_id = str(uuid.uuid4())
                     content = f.read()
                     metadata = {
@@ -125,10 +125,10 @@ class ObsidianIndexer:
 
                         if existing_hash == metadata["md5_hash"]:
                             # Content unchanged, skip
-                            print(f"Skipping unchanged note: {md_file_path}")
+                            logger.info(f"Skipping unchanged note: {md_file_path}")
                         else:
                             # Content changed, update existing document
-                            print(f"Updating changed note: {md_file_path}")
+                            logger.info(f"Updating changed note: {md_file_path}")
                             existing_id = existing_docs["ids"][0]
                             self.collection.upsert(
                                 ids=[existing_id],
@@ -137,7 +137,7 @@ class ObsidianIndexer:
                             )
                     else:
                         # Document does not exist, add new document
-                        print(f"Adding new note: {md_file_path}")
+                        logger.info(f"Adding new note: {md_file_path}")
                         self.collection.add(
                             ids=[doc_id],
                             documents=[content],
