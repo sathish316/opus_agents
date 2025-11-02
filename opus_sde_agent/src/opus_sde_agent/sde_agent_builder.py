@@ -17,9 +17,9 @@ class SDEAgentBuilder:
         self, config_manager, instructions_manager, model_manager, mcp_manager
     ):
         self.name = "sde-agent"
-        self.agent_instruction_keys = [
+        self.system_prompt_keys = [
             "opus_agent_instruction",
-            "sde_agent_instruction",
+            "sde_agent_instruction"
         ]
         self.config_manager = config_manager
         self.instructions_manager = instructions_manager
@@ -38,12 +38,14 @@ class SDEAgentBuilder:
         self._add_higher_order_tools()
 
     def _add_instructions(self):
+        # Set system prompts
         self.instructions_manager.put_from_file(
             "opus_agent_instruction", "prompts/agent/OPUS_AGENT_INSTRUCTIONS.md"
         )
         self.instructions_manager.put_from_file(
             "sde_agent_instruction", "prompts/agent/SDE_AGENT_INSTRUCTIONS.md"
         )
+        # Set tool instructions
         self.instructions_manager.put_from_file(
             "github_issues_assistant_instructions", "prompts/tools/sde/GITHUB_ISSUES_ASSISTANT_INSTRUCTIONS.md"
         )

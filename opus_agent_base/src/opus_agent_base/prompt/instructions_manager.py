@@ -5,7 +5,7 @@ logger = logging.getLogger(__name__)
 
 class InstructionsManager:
     """
-    Manager for static instructions and prompts
+    Manager for system prompts, instruction prompts and prompt templates
     """
 
     def __init__(self):
@@ -38,17 +38,17 @@ class InstructionsManager:
 
     def put_from_file(self, key: str, file: str):
         """
-        Put an instruction with a key
+        Put an instruction from a file
 
         Args:
             key: The key to store the instruction under
-            value: The instruction value to store
+            file: Path to the file containing the instruction
         """
         self.put(key, self.load(file))
 
     def load(self, file_path: str) -> str:
         """
-        Read instructions from a file
+        Read content from a file
 
         Args:
             file_path: Path to the file to read

@@ -5,6 +5,7 @@ from pydantic_ai import Agent
 from pydantic_ai.mcp import MCPServer
 from singleton_decorator import singleton
 
+from opus_agent_base.agent.agent_dependencies import AgentDependencies
 from opus_agent_base.config.config_manager import ConfigManager
 from opus_agent_base.model.model_manager import ModelManager
 from opus_agent_base.tools.custom_tool import CustomTool
@@ -25,47 +26,21 @@ class AgentManager:
     Manager for the agent
     """
 
-    def __init__(
-        self,
-        name: str,
-        config_manager: ConfigManager,
-        agent_instruction_keys: list[str],
-        instructions_manager: InstructionsManager,
-        mcp_manager: MCPManager,
-        custom_tools: list[CustomTool],
-        higher_order_tools: list[HigherOrderTool],
-    ):
+    def __init__(self, name: str, agent_deps: AgentDependencies):
         self.name = name
-        self.config_manager = config_manager
-        self.agent_instruction_keys = agent_instruction_keys
-        self.instructions_manager = instructions_manager
-        self.model_manager = None
-        self.mcp_manager = mcp_manager
-        self.custom_tools = custom_tools
-        self.higher_order_tools = higher_order_tools
-
-    def wrap_tool(self, tool: MCPTool, fastmcp_client_context) -> Tool:
-        async def mcp_tool_function(**kwargs):
-            """Dynamically created tool function for MCP tool"""
-
-            async def execute_tool(client: ClientSession):
-                result = await client.call_tool(tool.name, kwargs)
-                return result
-
-            result = await fastmcp_client_context(execute_tool)
-            return result
-
-        return Tool.from_schema(
-            name=tool.name,
-            description=tool.description,
-            json_schema=tool.inputSchema,
-            function=mcp_tool_function,
-        )
+        self.config_manager = agent_deps.config_manager
+        self.system_prompt_keys = agent_deps.system_prompt_keys
+        self.instructions_manager = agent_deps.instructions_manager
+        self.model_manager = agent_deps.model_manager
+        self.mcp_manager = agent_deps.mcp_manager
+        self.custom_tools = agent_deps.custom_tools
+        self.higher_order_tools = agent_deps.higher_order_tools
 
     async def initialize_agent(self):
-        # setup agent instructions
-        instructions = "\n".join(
-            self.instructions_manager.get(key) for key in self.agent_instruction_keys
+        # System prompt
+        agent_system_prompt = "\n".join(
+            self.instructions_manager.get(key)
+            for key in self.system_prompt_keys
         )
 
         # model manager
@@ -79,23 +54,30 @@ class AgentManager:
 
         async def tools_initializer(session: ClientSession):
             logger.info("Initializing agent tools")
-            logger.debug(f"Allowed tool prefixes for allowed tools: {self.config_manager.get_setting('mcp_config.allowed_tool_prefixes', [])}")
+            logger.debug(
+                f"Allowed tool prefixes for allowed tools: {self.config_manager.get_setting('mcp_config.allowed_tool_prefixes', [])}"
+            )
             # logger.info(f"Allowed docker tools: {self.config_manager.get_setting('mcp_config.allowed_tools.docker', [])}")
             # logger.info(f"Allowed k8s tools: {self.config_manager.get_setting('mcp_config.allowed_tools.k8s', [])}")
             client_tools = await session.list_tools()
             for tool in client_tools:
                 tool_prefix = tool.name.split("_")[0]
-                if tool_prefix in self.config_manager.get_setting("mcp_config.allowed_tool_prefixes", []):
-                    if tool.name in self.config_manager.get_setting("mcp_config.allowed_tools").get(tool_prefix, []):
+                if tool_prefix in self.config_manager.get_setting(
+                    "mcp_config.allowed_tool_prefixes", []
+                ):
+                    if tool.name in self.config_manager.get_setting(
+                        "mcp_config.allowed_tools"
+                    ).get(tool_prefix, []):
                         logger.debug(f"Wrapping FastMCP tool: {tool.name}")
                         self.tools.append(self.wrap_tool(tool, fastmcp_client_context))
                 else:
                     self.tools.append(self.wrap_tool(tool, fastmcp_client_context))
+
         await fastmcp_client_context(tools_initializer)
 
         # agent
         self.agent = Agent(
-            instructions=instructions,
+            system_prompt=agent_system_prompt,
             model=self.model_manager.get_model(),
             toolsets=self.mcp_manager.servers,
             tools=self.tools,
@@ -119,6 +101,24 @@ class AgentManager:
 
     def get_agent(self):
         return self.agent
+
+    def wrap_tool(self, tool: MCPTool, fastmcp_client_context) -> Tool:
+        async def mcp_tool_function(**kwargs):
+            """Dynamically created tool function for MCP tool"""
+
+            async def execute_tool(client: ClientSession):
+                result = await client.call_tool(tool.name, kwargs)
+                return result
+
+            result = await fastmcp_client_context(execute_tool)
+            return result
+
+        return Tool.from_schema(
+            name=tool.name,
+            description=tool.description,
+            json_schema=tool.inputSchema,
+            function=mcp_tool_function,
+        )
 
     async def inspect_tools(self):
         agent_inspect_tools_enabled = self.config_manager.get_setting(

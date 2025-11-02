@@ -5,11 +5,7 @@ from typing import Optional
 from singleton_decorator import singleton
 
 from opus_agent_base.agent.agent_manager import AgentManager
-from opus_agent_base.config.config_manager import ConfigManager
-from opus_agent_base.prompt.instructions_manager import InstructionsManager
-from opus_agent_base.tools.custom_tool import CustomTool
-from opus_agent_base.tools.higher_order_tool import HigherOrderTool
-from opus_agent_base.tools.mcp_manager import MCPManager
+from opus_agent_base.agent.agent_dependencies import AgentDependencies
 
 logger = logging.getLogger(__name__)
 
@@ -22,12 +18,7 @@ class AgentInstance:
     def __new__(
         cls,
         name: str,
-        config_manager: ConfigManager,
-        agent_instruction_keys: list[str],
-        instructions_manager: InstructionsManager,
-        mcp_manager: MCPManager,
-        custom_tools: list[CustomTool],
-        higher_order_tools: list[HigherOrderTool],
+        agent_deps: AgentDependencies,
     ):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -36,12 +27,7 @@ class AgentInstance:
     def __init__(
         self,
         name: str,
-        config_manager: ConfigManager,
-        agent_instruction_keys: list[str],
-        instructions_manager: InstructionsManager,
-        mcp_manager: MCPManager,
-        custom_tools: list[CustomTool],
-        higher_order_tools: list[HigherOrderTool],
+        agent_deps: AgentDependencies,
     ):
         """Initialize is called every time, but we only set up once."""
         # Don't reinitialize if already done
@@ -49,12 +35,7 @@ class AgentInstance:
             return
         self.agent_manager = AgentManager(
             name,
-            config_manager,
-            agent_instruction_keys,
-            instructions_manager,
-            mcp_manager,
-            custom_tools,
-            higher_order_tools,
+            agent_deps,
         )
 
     async def initialize(self):

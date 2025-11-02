@@ -24,7 +24,7 @@ class TodoAgentBuilder:
         self, config_manager, instructions_manager, model_manager, mcp_manager
     ):
         self.name = "todo-agent"
-        self.agent_instruction_keys = [
+        self.system_prompt_keys = [
             "opus_agent_instruction",
             "todo_agent_instruction",
         ]
@@ -45,12 +45,14 @@ class TodoAgentBuilder:
         self._add_higher_order_tools()
 
     def _add_instructions(self):
+        # Set system prompts
         self.instructions_manager.put_from_file(
             "opus_agent_instruction", "prompts/agent/OPUS_AGENT_INSTRUCTIONS.md"
         )
         self.instructions_manager.put_from_file(
             "todo_agent_instruction", "prompts/agent/TODO_AGENT_INSTRUCTIONS.md"
         )
+        # Set tool instructions
         self.instructions_manager.put_from_file(
             "obsidian_notes_instructions",
             "prompts/tools/productivity/OBSIDIAN_NOTES_INSTRUCTIONS.md",
