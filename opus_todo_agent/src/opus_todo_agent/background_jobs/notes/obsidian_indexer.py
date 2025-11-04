@@ -4,7 +4,7 @@ import uuid
 import os
 import logging
 import sys
-from opus_todo_agent.common.config_manager import ConfigManager
+from opus_agent_base.config.config_manager import ConfigManager
 import re
 
 logger = logging.getLogger(__name__)
