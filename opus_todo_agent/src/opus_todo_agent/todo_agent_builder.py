@@ -1,5 +1,8 @@
 from opus_agent_base.tools.mcp_server_registry import MCPServerRegistry
+from opus_agent_base.config.config_manager import ConfigManager
 
+
+from opus_agent_base.agent.agent_builder import AgentBuilder
 from opus_agent_base.agent.agent_runner import AgentInstance
 from opus_agent_base.tools.custom_tool import CustomTool
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
@@ -19,21 +22,9 @@ from opus_todo_agent.higher_order_tools.chat.slack_higher_order_tool import (
 from opus_todo_agent.todo_mcp_server_registry import TodoMCPServerRegistry
 
 
-class TodoAgentBuilder:
-    def __init__(
-        self, config_manager, instructions_manager, model_manager, mcp_manager
-    ):
-        self.name = "todo-agent"
-        self.system_prompt_keys = [
-            "opus_agent_instruction",
-            "todo_agent_instruction",
-        ]
-        self.config_manager = config_manager
-        self.instructions_manager = instructions_manager
-        self.model_manager = model_manager
-        self.mcp_manager = mcp_manager
-        self.custom_tools: list[CustomTool] = []
-        self.higher_order_tools: list[HigherOrderTool] = []
+class TodoAgentBuilder(AgentBuilder):
+    def __init__(self, config_manager: ConfigManager):
+        super().__init__(config_manager)
 
     def build(self) -> AgentInstance:
         """Build the todo agent"""

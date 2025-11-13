@@ -1,0 +1,12 @@
+[project]
+name = "opus-deepwork-agent"
+version = "0.1.0"
+description = "DeepWork Agent for managing and scheduling focused work sessions"
+requires-python = ">=3.12"
+dependencies = [
+    "opus-agent-base",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

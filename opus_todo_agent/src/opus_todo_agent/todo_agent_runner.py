@@ -15,26 +15,22 @@ async def run_todo_agent():
     # build Todo Agent
     logger.info("📝 Starting Todo Agent")
     config_manager = ConfigManager()
-    instructions_manager = InstructionsManager()
-    model_manager = ModelManager(config_manager)
-    mcp_manager = MCPManager(config_manager)
-    todo_agent_builder = TodoAgentBuilder(
-        config_manager=config_manager,
-        instructions_manager=instructions_manager,
-        model_manager=model_manager,
-        mcp_manager=mcp_manager,
+    todo_agent = (
+        TodoAgentBuilder(config_manager)
+            .name("todo-agent")
+            .set_system_prompt_keys(["opus_agent_instruction", "todo_agent_instruction"])
+            .add_instructions_manager()
+            .add_model_manager()
+            .add_mcp_manager()
+            .instruction(
+                "opus_agent_instruction", "prompts/agent/OPUS_AGENT_INSTRUCTIONS.md"
+            )
+            .instruction(
+                "todo_agent_instruction", "prompts/agent/TODO_AGENT_INSTRUCTIONS.md"
+            )
+            .build()
     )
-    todo_agent_builder.build()
 
     # run Todo Agent
-    agent_deps = AgentDependencies(
-        config_manager=config_manager,
-        system_prompt_keys=todo_agent_builder.system_prompt_keys,
-        instructions_manager=instructions_manager,
-        model_manager=model_manager,
-        mcp_manager=mcp_manager,
-        custom_tools=todo_agent_builder.custom_tools,
-        higher_order_tools=todo_agent_builder.higher_order_tools,
-    )
-    agent_runner = AgentRunner(name=todo_agent_builder.name, agent_deps=agent_deps)
+    agent_runner = AgentRunner(name=todo_agent.name, agent_deps=todo_agent)
     await agent_runner.run_agent()

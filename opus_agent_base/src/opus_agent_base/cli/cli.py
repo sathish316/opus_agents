@@ -18,7 +18,6 @@ from opus_agent_base.config.config_command_manager import ConfigCommandManager
 from opus_agent_base.config.config_manager import ConfigManager
 from opus_agent_base.ui.logo import display_logo
 from opus_agent_base.common.logging_config import get_current_log_level, set_log_level
-from opus_todo_agent.todo_agent_runner import run_todo_agent
 
 # Setup rich console for pretty output
 console = Console()
@@ -29,7 +28,7 @@ config_command_manager = ConfigCommandManager(config_manager, console)
 
 
 def create_cli_app(
-    agent_name: str, agent_description: str, agent_version: str
+    agent_name: str, agent_description: str, agent_version: str, agent_runner: callable = None
 ) -> typer.Typer:
     """Creates a Typer app for the agent CLI."""
     app = typer.Typer(
@@ -39,7 +38,7 @@ def create_cli_app(
     )
 
     def run_cli_mode(
-        run_agent_on_startup: bool = False, run_agent_code: str = "todo-agent", run_agent_fn: callable = run_todo_agent
+        run_agent_on_startup: bool = False, run_agent_code: str = "todo-agent"
     ):
         """Run the admin mode with slash commands."""
         display_logo(console)
@@ -98,7 +97,7 @@ def create_cli_app(
 
                     asyncio.run(run_sde_agent())
                 else:
-                    asyncio.run(run_agent_fn())
+                    asyncio.run(agent_runner())
             except KeyboardInterrupt:
                 console.print("\n[dim]Agent interrupted. Returning to CLI...[/dim]")
             except Exception as e:
