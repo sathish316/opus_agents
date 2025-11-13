@@ -15,7 +15,7 @@ def main():
     try:
         app = create_cli_app(
             agent_name="Opus Agents",
-            agent_description="AI Agents framework with productivity and collaboration tools",
+            agent_description="AI Agents fram-ework with productivity and collaboration tools",
             agent_version="0.1.0",
         )
         app()
