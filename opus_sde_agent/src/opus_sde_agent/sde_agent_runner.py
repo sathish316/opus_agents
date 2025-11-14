@@ -1,5 +1,4 @@
 from opus_agent_base.agent.agent_runner import AgentRunner
-from opus_agent_base.agent.agent_dependencies import AgentDependencies
 from opus_agent_base.config.config_manager import ConfigManager
 from opus_agent_base.model.model_manager import ModelManager
 from opus_agent_base.prompt.instructions_manager import InstructionsManager

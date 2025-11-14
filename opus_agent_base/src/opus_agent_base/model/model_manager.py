@@ -7,6 +7,8 @@ from pydantic_ai.providers.anthropic import AnthropicProvider
 from pydantic_ai.providers.ollama import OllamaProvider
 from pydantic_ai.providers.openai import OpenAIProvider
 
+from opus_agent_base.common.logging_config import console_log
+
 logger = logging.getLogger(__name__)
 
 class ModelManager:
@@ -21,6 +23,7 @@ class ModelManager:
 
     def initialize_config(self):
         self.models_config = self.config_manager.get_setting("model_config")
+        console_log(f"Enabled {len(self.get_enabled_models())} models: {self.get_enabled_models()}")
 
     def initialize_model(self):
         self.initialize_openai_model()
@@ -28,6 +31,9 @@ class ModelManager:
         self.initialize_bedrock_model()
         self.initialize_ollama_model()
         logger.info("Model initialized")
+
+    def get_enabled_models(self):
+        return [model_config["model"] for model_config in self.models_config if model_config["enabled"]]
 
     def get_model(self):
         return self.model

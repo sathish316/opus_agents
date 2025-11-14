@@ -2,7 +2,6 @@ from opus_agent_base.agent.agent_builder import AgentBuilder
 from opus_agent_base.config.config_manager import ConfigManager
 from opus_agent_base.tools.mcp_server_registry import MCPServerRegistry
 from opus_deepwork_agent.deepwork_mcp_server_registry import DeepWorkMCPServerRegistry
-from opus_agent_base.agent.agent_dependencies import AgentDependencies
 
 class DeepWorkAgentBuilder(AgentBuilder):
     """Builder for DeepWork Agent"""
@@ -10,10 +9,10 @@ class DeepWorkAgentBuilder(AgentBuilder):
     def __init__(self, config_manager: ConfigManager):
         super().__init__(config_manager)
 
-    def build(self) -> AgentDependencies:
+    def build(self) -> AgentBuilder:
         """Build the DeepWork agent with all components"""
         self._add_mcp_servers()
-        return AgentDependencies(self)
+        return self
 
     def _add_mcp_servers(self):
         """Add FastMCP servers (Clockwise for calendar)"""

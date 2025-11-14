@@ -1,11 +1,9 @@
-from opus_agent_base.tools.mcp_server_registry import MCPServerRegistry
-from opus_agent_base.config.config_manager import ConfigManager
-
-
 from opus_agent_base.agent.agent_builder import AgentBuilder
-from opus_agent_base.agent.agent_runner import AgentInstance
+from opus_agent_base.config.config_manager import ConfigManager
 from opus_agent_base.tools.custom_tool import CustomTool
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
+from opus_agent_base.tools.mcp_server_registry import MCPServerRegistry
+
 from opus_todo_agent.custom_tools.meeting_transcript.loom_tools import LoomTools
 from opus_todo_agent.custom_tools.meeting_transcript.zoom_tools import ZoomTools
 from opus_todo_agent.custom_tools.notes.obsidian_tools import ObsidianTools
@@ -26,7 +24,7 @@ class TodoAgentBuilder(AgentBuilder):
     def __init__(self, config_manager: ConfigManager):
         super().__init__(config_manager)
 
-    def build(self) -> AgentInstance:
+    def build(self) -> AgentBuilder:
         """Build the todo agent"""
         self._add_instructions()
         self._add_prompt_templates()
@@ -34,6 +32,7 @@ class TodoAgentBuilder(AgentBuilder):
         self._add_fastmcp_servers()
         self._add_custom_tools()
         self._add_higher_order_tools()
+        return self
 
     def _add_instructions(self):
         # Set system prompts

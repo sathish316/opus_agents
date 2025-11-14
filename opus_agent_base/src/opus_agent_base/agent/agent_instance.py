@@ -4,8 +4,8 @@ from typing import Optional
 
 from singleton_decorator import singleton
 
+from opus_agent_base.agent.agent_builder import AgentBuilder
 from opus_agent_base.agent.agent_manager import AgentManager
-from opus_agent_base.agent.agent_dependencies import AgentDependencies
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +18,7 @@ class AgentInstance:
     def __new__(
         cls,
         name: str,
-        agent_deps: AgentDependencies,
+        agent_builder: AgentBuilder,
     ):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -27,7 +27,7 @@ class AgentInstance:
     def __init__(
         self,
         name: str,
-        agent_deps: AgentDependencies,
+        agent_builder: AgentBuilder,
     ):
         """Initialize is called every time, but we only set up once."""
         # Don't reinitialize if already done
@@ -35,7 +35,7 @@ class AgentInstance:
             return
         self.agent_manager = AgentManager(
             name,
-            agent_deps,
+            agent_builder,
         )
 
     async def initialize(self):

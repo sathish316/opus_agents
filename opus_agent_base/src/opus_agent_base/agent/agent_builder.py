@@ -6,7 +6,6 @@ from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_agent_base.tools.fastmcp_server_config import FastMCPServerConfig
 from opus_agent_base.tools.mcp_manager import MCPManager
 
-
 class AgentBuilder:
     """Builder for the agent"""
 
@@ -47,3 +46,4 @@ class AgentBuilder:
     def higher_order_tool(self, higher_order_tool: HigherOrderTool):
         self.higher_order_tools.append(higher_order_tool)
         return self
+

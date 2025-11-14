@@ -1,12 +1,9 @@
-from opus_agent_base.agent.agent_runner import AgentRunner
-from opus_agent_base.agent.agent_dependencies import AgentDependencies
-from opus_agent_base.config.config_manager import ConfigManager
-from opus_agent_base.model.model_manager import ModelManager
-from opus_agent_base.prompt.instructions_manager import InstructionsManager
-from opus_agent_base.tools.mcp_manager import MCPManager
-from opus_todo_agent.todo_agent_builder import TodoAgentBuilder
-
 import logging
+
+from opus_agent_base.agent.agent_runner import AgentRunner
+from opus_agent_base.config.config_manager import ConfigManager
+
+from opus_todo_agent.todo_agent_builder import TodoAgentBuilder
 
 logger = logging.getLogger(__name__)
 
@@ -32,5 +29,5 @@ async def run_todo_agent():
     )
 
     # run Todo Agent
-    agent_runner = AgentRunner(name=todo_agent.name, agent_deps=todo_agent)
+    agent_runner = AgentRunner(name=todo_agent.name, agent_builder=todo_agent)
     await agent_runner.run_agent()

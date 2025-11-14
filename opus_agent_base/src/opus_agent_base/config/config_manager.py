@@ -19,10 +19,16 @@ class ConfigManager:
         self.config_file = ConfigManager.CONFIG_FILE
         self.nested_config_manager = NestedConfigManager()
         self._ensure_config_dir()
+        self._ensure_config_file()
 
     def _ensure_config_dir(self):
-        """Ensure configuration directory exists."""
+        """Ensure config directory exists."""
         self.config_dir.mkdir(exist_ok=True)
+
+    def _ensure_config_file(self):
+        """Ensure config file exists."""
+        if not self.config_file.exists():
+            raise FileNotFoundError(f"Config file not found: {self.config_file}")
 
     def load_config(self) -> Dict[str, Any]:
         """Load configuration from file."""

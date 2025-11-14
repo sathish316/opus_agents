@@ -2,7 +2,6 @@
 name = "opus-agent-base"
 version = "0.1.0"
 description = "Base framework for Opus AI Agents"
-readme = "README.md"
 authors = [
     { name = "Sathish", email = "sathish316@gmail.com" }
 ]

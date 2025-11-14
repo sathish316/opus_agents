@@ -1,21 +1,16 @@
 import logging
 
-from opus_agent_base.prompt.instructions_manager import InstructionsManager
+from fastmcp.client.client import ClientSession
+from mcp.types import Tool as MCPTool
 from pydantic_ai import Agent
 from pydantic_ai.mcp import MCPServer
+from pydantic_ai.tools import Tool
 from singleton_decorator import singleton
 
-from opus_agent_base.agent.agent_dependencies import AgentDependencies
-from opus_agent_base.config.config_manager import ConfigManager
+from opus_agent_base.agent.agent_builder import AgentBuilder
 from opus_agent_base.model.model_manager import ModelManager
-from opus_agent_base.tools.custom_tool import CustomTool
 from opus_agent_base.tools.custom_tools_manager import CustomToolsManager
-from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_agent_base.tools.higher_order_tools_manager import HigherOrderToolsManager
-from opus_agent_base.tools.mcp_manager import MCPManager
-from fastmcp.client.client import ClientSession
-from pydantic_ai.tools import Tool
-from mcp.types import Tool as MCPTool
 
 logger = logging.getLogger(__name__)
 
@@ -26,15 +21,15 @@ class AgentManager:
     Manager for the agent
     """
 
-    def __init__(self, name: str, agent_deps: AgentDependencies):
+    def __init__(self, name: str, builder: AgentBuilder):
         self.name = name
-        self.config_manager = agent_deps.config_manager
-        self.system_prompt_keys = agent_deps.system_prompt_keys
-        self.instructions_manager = agent_deps.instructions_manager
-        self.model_manager = agent_deps.model_manager
-        self.mcp_manager = agent_deps.mcp_manager
-        self.custom_tools = agent_deps.custom_tools
-        self.higher_order_tools = agent_deps.higher_order_tools
+        self.config_manager = builder.config_manager
+        self.system_prompt_keys = builder.system_prompt_keys
+        self.instructions_manager = builder.instructions_manager
+        self.model_manager = builder.model_manager
+        self.mcp_manager = builder.mcp_manager
+        self.custom_tools = builder.custom_tools
+        self.higher_order_tools = builder.higher_order_tools
 
     async def initialize_agent(self):
         # System prompt

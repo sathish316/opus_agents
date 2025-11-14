@@ -2,7 +2,6 @@
 name = "opus-todo-agent"
 version = "0.1.0"
 description = "Productivity and TODO Agent for Opus AI"
-readme = "README.md"
 authors = [
     { name = "Sathish", email = "sathish316@gmail.com" }
 ]
