@@ -30,7 +30,6 @@ Create data models for your API responses. This ensures type safety and makes yo
 ```python
 from dataclasses import dataclass
 
-
 @dataclass
 class Task:
     """Represents an active task from Todoist"""
@@ -43,7 +42,7 @@ class Task:
 
 ---
 
-## Step 2: Create an API Client
+## Step 2: Create API Clients
 
 Create a client class to handle all API interactions. This separates concerns and makes testing easier.
 
@@ -135,7 +134,7 @@ class TodoistClient:
 
 ---
 
-## Step 3: Implement Opus Custom Tool
+## Step 3: Implement Custom Tools for Todoist
 
 Now create Custom tool that the agent will use. This inherits from `CustomTool` base class.
 The instructions that you specify in the tool comment are available to an AI agent to get context of the tool and when to invoke it.
@@ -143,6 +142,8 @@ The instructions that you specify in the tool comment are available to an AI age
 **File:** `opus_todo_agent/src/opus_todo_agent/custom_tools/todo/todoist_tools.py`
 
 ```python
+logger = logging.getLogger(__name__)
+
 class TodoistTools(CustomTool):
     """
     Todoist tools
@@ -182,9 +183,7 @@ class TodoistTools(CustomTool):
                 List of `Task` objects
                 Each task includes: id, content, project_name, and a clickable URL.            
             """
-            logger.info(
-                f"[CustomToolCall] Fetching DeepWork tasks with Tag:{tag_name}, Project:{project_name}")
-            )
+            logger.info(f"[CustomToolCall] Fetching DeepWork tasks with Tag:{tag_name}, Project:{project_name}")
 
             try:
                 # Fetch tasks with the specified tag
@@ -204,15 +203,21 @@ class TodoistTools(CustomTool):
 
 ## Step 4: Add custom tool to your Agent
 
-If you have an existing agent or a new agent by following the GUIDE_BUILD_AN_AGENT.md, add Custom tool to your Agent
-
-**File:** `todo_agent_builder.py` or `deepwork_agent_builder.py`
+If you're extending an existing Agent, make these changes in `todo_agent_builder.py`. If you're building a new agent by following the GUIDE_BUILD_AN_AGENT.md, make these changes in `deepwork_agent_builder.py`
 
 ```python
     def _add_custom_tools(self):
         self.custom_tools: list[CustomTool] = [
             TodoistTools(),
         ]
+```
+
+Another option to add custom tools is to add tools to the AgentBuilder in `todo_agent_runner.py` or `deepwork_agent_runner.py`
+
+```python
+    DeepWorkAgentBuilder(config_manager)
+        .name("deepwork-agent")
+        .custom_tool(TodoistTools())
 ```
 
 ---
@@ -242,9 +247,7 @@ Run your agent and try these queries:
 
 ```bash
 # Start the agent
-uv run main.py -todo
-
-TODO: figure out a way to easily run deep_work_agent.py
+uv run main.py
 
 # Try these prompts:
 > Show me my deep work tasks
