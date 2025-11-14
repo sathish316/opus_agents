@@ -55,9 +55,15 @@ dependencies = [
     "opus-agent-base",
 ]
 
+[project.scripts]
+opus-deepwork-agent = "opus_deepwork_agent:main"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/opus_deepwork_agent"]
 ```
 
 ---
@@ -94,10 +100,12 @@ class DeepWorkMCPServerRegistry:
 ## Step 3: Add custom tools
 
 Follow Custom tool guides to add Todoist tool and Clockwise tool to your Agent
+* GUIDE_ADD_CUSTOM_TOOL.md
+* GUIDE_ADD_HIGHER_ORDER_TOOL.md
 
 ---
 
-## Step 4: Create Agent System Prompt and Instructions
+## Step 4: Agent System Prompt
 
 Define the agent's system prompt and instructions
 
@@ -139,7 +147,8 @@ Deep work requires uninterrupted focus. When scheduling:
 
 ## Step 5: Define DeepWork Agent using AgentBuilder and AgentRunner
 
-The agent builder configures all components: prompts, MCP servers, custom tools, and higher order tools.
+AgentBuilder configures all components: prompts, MCP servers, custom tools, and higher order tools.
+Extend AgentBuilder to create a DeepWorkAgentBuilder
 
 **File:** `src/opus_deepwork_agent/deepwork_agent_builder.py`
 
@@ -150,10 +159,10 @@ class DeepWorkAgentBuilder(AgentBuilder):
     def __init__(self, config_manager: ConfigManager):
         super().__init__(config_manager)
 
-    def build(self) -> AgentDependencies:
+    def build(self) -> AgentBuilder:
         """Build the DeepWork agent with all components"""
         self._add_mcp_servers()
-        return AgentDependencies(self)
+        return self
 
     def _add_mcp_servers(self):
         """Add FastMCP servers (Clockwise for calendar)"""
@@ -166,7 +175,7 @@ class DeepWorkAgentBuilder(AgentBuilder):
         self.mcp_manager.add_fastmcp_servers(mcp_servers_config)
 ```
 
-The agent runner runs your Agent.
+AgentRunner runs your Agent.
 
 **File:** `opus_deepwork_agent/src/opus_deepwork_agent/deepwork_agent_runner.py`
 
@@ -199,7 +208,8 @@ async def run_deepwork_agent():
     await agent_runner.run_agent()
 ```
 
-If you need more control to define your Agent, you can also do the following in AgentBuilder:
+If you need more control to define your Agent instead of the builder pattern, you can add all capabilities to the agent in build method
+
 ```python
 class DeepWorkAgentBuilder:
     """Builder for DeepWork Agent"""
@@ -214,12 +224,13 @@ class DeepWorkAgentBuilder:
             "deepwork_agent_instruction",
         ]
     
-    def build(self) -> AgentInstance:
+    def build(self) -> AgentBuilder:
         """Build the DeepWork agent with all components"""
         self._add_instructions()
         self._add_mcp_servers()
         self._add_custom_tools()
         self._add_higher_order_tools()
+        return self
 
     def _add_instructions(self):
         """Load agent instructions from markdown files"""
@@ -294,14 +305,13 @@ mcp_config:
 
 ---
 
-## Step 8: Create main to run DeepWorkAgent
+## Step 7: Create main to run DeepWorkAgent and run the agent
 
 ```python
 import logging
 import traceback
-from opus_agent_base.cli.cli import create_cli_app
-from opus_deepwork_agent.deepwork_agent_runner import run_deepwork_agent
 
+from opus_agent_base.cli.cli import create_cli_app
 
 logger = logging.getLogger(__name__)
 
@@ -310,10 +320,9 @@ def main():
     """Entry point for the Opus Agents CLI."""
     try:
         app = create_cli_app(
-            agent_name="Opus Deepwork Agent",
-            agent_description="Deepwork Agent for Opus AI",
+            agent_name="Opus Agents",
+            agent_description="AI Agents framework with productivity and collaboration tools",
             agent_version="0.1.0",
-            agent_runner=run_deepwork_agent,
         )
         app()
     except Exception as e:
@@ -326,7 +335,7 @@ if __name__ == "__main__":
     main()
 ```
 
-## Step 9: Run Agent
+Run the Agent
 
 
 ```bash
@@ -339,7 +348,7 @@ uv tool install .
 opus-deepwork-agent
 ```
 
-Test your agent with these prompts:
+Test DeepWorkAgent with these prompts:
 
 > What deep work tasks do I have today?
 
