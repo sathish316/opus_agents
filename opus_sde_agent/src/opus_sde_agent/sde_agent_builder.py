@@ -1,4 +1,6 @@
+from opus_agent_base.agent.agent_builder import AgentBuilder
 from opus_agent_base.agent.agent_runner import AgentInstance
+from opus_agent_base.config.config_manager import ConfigManager
 from opus_agent_base.tools.custom_tool import CustomTool
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_agent_base.tools.mcp_server_registry import MCPServerRegistry
@@ -12,23 +14,13 @@ from opus_sde_agent.higher_order_tools.project_management.jira_issues_tools impo
 from opus_sde_agent.sde_mcp_server_registry import SDEMCPServerRegistry
 
 
-class SDEAgentBuilder:
+class SDEAgentBuilder(AgentBuilder):
     def __init__(
-        self, config_manager, instructions_manager, model_manager, mcp_manager
+        self, config_manager: ConfigManager
     ):
-        self.name = "sde-agent"
-        self.system_prompt_keys = [
-            "opus_agent_instruction",
-            "sde_agent_instruction"
-        ]
-        self.config_manager = config_manager
-        self.instructions_manager = instructions_manager
-        self.model_manager = model_manager
-        self.mcp_manager = mcp_manager
-        self.custom_tools: list[CustomTool] = []
-        self.higher_order_tools: list[HigherOrderTool] = []
+        super().__init__(config_manager)
 
-    def build(self) -> AgentInstance:
+    def build(self) -> AgentBuilder:
         """Build the sde agent"""
         self._add_instructions()
         self._add_prompt_templates()
@@ -36,6 +28,7 @@ class SDEAgentBuilder:
         self._add_fastmcp_servers()
         self._add_custom_tools()
         self._add_higher_order_tools()
+        return self
 
     def _add_instructions(self):
         # Set system prompts
