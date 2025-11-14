@@ -1,7 +1,8 @@
 import logging
+
+from opus_agent_base.agent.agent_runner import AgentRunner
 from opus_agent_base.config.config_manager import ConfigManager
 from opus_deepwork_agent.deepwork_agent_builder import DeepWorkAgentBuilder
-from opus_agent_base.agent.agent_runner import AgentRunner
 
 logger = logging.getLogger(__name__)
 
