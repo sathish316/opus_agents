@@ -2,6 +2,7 @@ import logging
 
 from opus_agent_base.agent.agent_runner import AgentRunner
 from opus_agent_base.config.config_manager import ConfigManager
+
 from opus_deepwork_agent.deepwork_agent_builder import DeepWorkAgentBuilder
 
 logger = logging.getLogger(__name__)
@@ -16,9 +17,10 @@ async def run_deepwork_agent():
     deepwork_agent = (
         DeepWorkAgentBuilder(config_manager)
         .name("deepwork-agent")
-        .system_prompt_keys(["opus_agent_instruction", "deepwork_agent_instruction"])
-        .instructions_manager()
-        .model_manager()
+        .set_system_prompt_keys(["opus_agent_instruction", "deepwork_agent_instruction"])
+        .add_instructions_manager()
+        .add_model_manager()
+        .add_mcp_manager()
         .instruction(
             "opus_agent_instruction", "prompts/agent/OPUS_AGENT_INSTRUCTIONS.md"
         )

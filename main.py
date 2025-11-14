@@ -6,6 +6,7 @@ import logging
 import traceback
 
 from opus_agent_base.cli.cli import create_cli_app
+from opus_todo_agent.todo_agent_runner import run_todo_agent
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +18,7 @@ def main():
             agent_name="Opus Agents",
             agent_description="AI Agents framework with productivity and collaboration tools",
             agent_version="0.1.0",
+            agent_runner=run_todo_agent,
         )
         app()
     except Exception as e:

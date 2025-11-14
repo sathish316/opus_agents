@@ -189,9 +189,10 @@ async def run_deepwork_agent():
     deepwork_agent = (
         DeepWorkAgentBuilder(config_manager)
         .name("deepwork-agent")
-        .system_prompt_keys(["opus_agent_instruction", "deepwork_agent_instruction"])
-        .instructions_manager()
-        .model_manager()
+        .set_system_prompt_keys(["opus_agent_instruction", "deepwork_agent_instruction"])
+        .add_instructions_manager()
+        .add_model_manager()
+        .add_mcp_manager()
         .instruction(
             "opus_agent_instruction", "prompts/agent/OPUS_AGENT_INSTRUCTIONS.md"
         )
@@ -282,9 +283,10 @@ agent:
   description: "DeepWork Agent for managing focused work sessions"
 
 # Model Configuration
-model:
-  provider: "openai"
-  name: "gpt-5"
+model_config:
+  - provider: "openai"
+    model: "gpt-5"
+    enabled: true
   enabled: true
 
 # MCP Server Configuration
