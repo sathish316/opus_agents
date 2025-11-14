@@ -116,12 +116,11 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
     def __init__(self, config_manager=None, instructions_manager=None, model_manager=None):
         super().__init__(
             "clockwise",
-            "productivity.calendar.clockwise",
+            "deepwork.calendar.clockwise",
             config_manager,
             instructions_manager,
             model_manager
         )
-        self.deepwork_helper = DeepworkHelper()
 
     async def initialize_tools(self, agent, fastmcp_client_context):
         @agent.tool

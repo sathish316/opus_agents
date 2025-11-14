@@ -89,34 +89,33 @@ class TodoistClient:
             raise TodoistAPIError(f"HTTP request failed: {e}")
 
     def get_tasks_with_tag(
-        self, 
-        tag_name: str = "deepwork",
-        project_name: Optional[str] = None
+        self, tag_name: str = "deepwork", project_name: Optional[str] = None
     ) -> List[Task]:
         """
         Retrieve tasks filtered by a specific tag.
-        
+
         Args:
             tag_name: The tag to filter by (default: "deepwork")
-            project_id: Optional project ID to filter tasks further
-            
+            project_id: Optional project ID to filter tasks
+
         Returns:
             List of Task objects matching the criteria
         """
         url = "https://api.todoist.com/rest/v2/tasks"
-        
+
         # Build filter query
-        if project_id:
-            filter_query = f"@{tag_name} & #{project_id}"
+        if project_name:
+            filter_query = f"@{tag_name} & #{project_name}"
         else:
             filter_query = f"@{tag_name}"
-            
+
         logger.info(f"Fetching tasks with filter: {filter_query}")
+        headers = {}
         headers["Authorization"] = f"Bearer {self.api_key}"
         params = {"filter": filter_query}
         response = response = requests.get(url, headers=headers, params=params)
         tasks_data = response.json()
-        
+
         return self._convert_to_tasks(tasks_data)
 
     def _convert_to_tasks(self, tasks_data) -> List[Task]:
@@ -125,7 +124,7 @@ class TodoistClient:
             Task(
                 content=task_data.get("content", ""),
                 id=task_data.get("id", ""),
-                project_id=task_data.get("project_id", ""),
+                project_name=task_data.get("project_name", ""),
                 url=task_data.get("url", ""),
             )
             for task_data in tasks_data
@@ -153,7 +152,7 @@ class TodoistTools(CustomTool):
         # Initialize base class with tool name and config key
         super().__init__(
             "todoist_deepwork",  # Tool name
-            "productivity.todo.todoist",  # Config key path
+            "deepwork.todo.todoist",  # Config key path
             config_manager,
             instructions_manager,
             model_manager

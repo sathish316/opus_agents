@@ -54,7 +54,7 @@ class TodoistClient:
 
         Args:
             tag_name: The tag to filter by (default: "deepwork")
-            project_id: Optional project ID to filter tasks further
+            project_id: Optional project ID to filter tasks
 
         Returns:
             List of Task objects matching the criteria
@@ -62,12 +62,13 @@ class TodoistClient:
         url = "https://api.todoist.com/rest/v2/tasks"
 
         # Build filter query
-        if project_id:
-            filter_query = f"@{tag_name} & #{project_id}"
+        if project_name:
+            filter_query = f"@{tag_name} & #{project_name}"
         else:
             filter_query = f"@{tag_name}"
 
         logger.info(f"Fetching tasks with filter: {filter_query}")
+        headers = {}
         headers["Authorization"] = f"Bearer {self.api_key}"
         params = {"filter": filter_query}
         response = response = requests.get(url, headers=headers, params=params)
@@ -81,7 +82,7 @@ class TodoistClient:
             Task(
                 content=task_data.get("content", ""),
                 id=task_data.get("id", ""),
-                project_id=task_data.get("project_id", ""),
+                project_name=task_data.get("project_name", ""),
                 url=task_data.get("url", ""),
             )
             for task_data in tasks_data

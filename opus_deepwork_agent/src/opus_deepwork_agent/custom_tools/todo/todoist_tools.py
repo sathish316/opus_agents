@@ -4,6 +4,7 @@ from typing import List, Optional
 from opus_agent_base.tools.custom_tool import CustomTool
 from opus_deepwork_agent.custom_tools.todo.todoist_client import TodoistClient
 from opus_deepwork_agent.models.todoist_models import Task
+from pydantic_ai import RunContext
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +17,7 @@ class TodoistTools(CustomTool):
         # Initialize base class with tool name and config key
         super().__init__(
             "todoist_deepwork",  # Tool name
-            "productivity.todo.todoist",  # Config key path
+            "deepwork.todo.todoist",  # Config key path
             config_manager,
             instructions_manager,
             model_manager
@@ -58,5 +59,7 @@ class TodoistTools(CustomTool):
                 return tasks
 
             except Exception as e:
+                import traceback
                 logger.error(f"Error fetching tasks: {e}")
+                logger.error(traceback.format_exc())
                 return []

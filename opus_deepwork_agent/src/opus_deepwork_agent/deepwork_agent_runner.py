@@ -35,5 +35,5 @@ async def run_deepwork_agent():
     )
 
     # Run DeepWork Agent
-    agent_runner = AgentRunner(name="deepwork-agent", agent_deps=deepwork_agent)
+    agent_runner = AgentRunner(name="deepwork-agent", agent_builder=deepwork_agent)
     await agent_runner.run_agent()

@@ -1,6 +1,9 @@
 from dataclasses import dataclass
 import logging
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
+from pydantic_ai import RunContext
+import pytz
+from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
@@ -23,12 +26,12 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
     def __init__(self, config_manager=None, instructions_manager=None, model_manager=None):
         super().__init__(
             "clockwise",
-            "productivity.calendar.clockwise",
+            "deepwork.calendar.clockwise",
             config_manager,
             instructions_manager,
             model_manager
         )
-        self.deepwork_helper = DeepworkHelper()
+        # self.deepwork_helper = DeepworkHelper()
 
     async def initialize_tools(self, agent, fastmcp_client_context):
         @agent.tool
@@ -218,5 +221,6 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
                 return "\n".join(output)
 
             except Exception as e:
-                logger.error(f"Error finding free time: {e}")
+                import traceback
+                logger.error(f"Error finding free time: {e} with stacktrace: {traceback.format_exc()}")
                 return f"❌ Error: {str(e)}"
