@@ -38,9 +38,6 @@ class AgentManager:
             for key in self.system_prompt_keys
         )
 
-        # model manager
-        self.model_manager = ModelManager(self.config_manager)
-
         # initialize agent tools
         self.tools = []
         fastmcp_client_context = (
