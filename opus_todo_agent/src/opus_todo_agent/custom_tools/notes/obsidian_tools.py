@@ -4,6 +4,7 @@ from pydantic_ai import RunContext
 
 from opus_agent_base.tools.custom_tool import CustomTool
 from opus_todo_agent.custom_tools.notes.obsidian_rag import ObsidianRAG
+from opus_agent_base.common.logging_config import console_log
 
 logger = logging.getLogger(__name__)
 
@@ -28,8 +29,15 @@ class ObsidianTools(CustomTool):
             If the user asks a question to their notes, use this tool to retrieve the notes, summarize and answer the question.
             If the user prefixes the question with "Ask my notes" or "Search my notes", use this tool.
             """
-            logger.info(f"[CustomToolCall] Asking notes for query: {query}")
-            response = self.obsidian_rag.ask_notes(query)
-            logger.info(f"[CustomToolCall] Received response from model: {len(response)} chars")
-            return response
+            try:
+                logger.info(f"[CustomToolCall] Asking notes for query: {query}")
+                console_log(f"[CustomToolCall] Asking notes for query: {query}")
+                response = self.obsidian_rag.ask_notes(query)
+                logger.info(f"[CustomToolCall] Received response from model: {len(response)} chars")
+                return response
+            except Exception as e:
+                logger.error(f"Error asking notes: {e}", exc_info=True)
+                import traceback
+                logger.error(traceback.format_exc())
+                return f"Error retrieving notes: {str(e)}"
 

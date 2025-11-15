@@ -4,6 +4,11 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+import os
+
+# Disable tokenizers parallelism to avoid warnings
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 
 class ObsidianRAG:
     """
@@ -50,17 +55,37 @@ class ObsidianRAG:
         )
 
     def retrieve_notes(self, query: str) -> str:
+        """
+        Retrieve relevant notes from the vector database based on the query.
+
+        Returns:
+            A string containing all retrieved notes separated by '----------'
+        """
         results = self.collection.query(
             query_texts=[query],
             n_results=self.vault_config.get("num_results", 3),
         )
-        query_results = results["documents"]
 
-        # log search results
-        for i, query_result in enumerate(query_results):
+        if not results:
+            logger.error(f"No notes found for the query: {query}")
+            return "No notes found for the query"
+
+        # ChromaDB returns documents as a list of lists: [[doc1, doc2, doc3]]
+        # The outer list represents queries (we only have 1 query)
+        # The inner list contains the matching documents
+        documents_list = results["documents"]
+
+        # Log search results for debugging
+        for i, docs in enumerate(documents_list):
             logger.debug(f"\nQuery {i+1}")
-            logger.debug(query_result)
-        return "\n----------\n".join(query_results)
+            logger.debug(docs)
+
+        # Extract documents from the nested list structure
+        # Since we only pass one query, we get documents_list[0]
+        retrieved_documents = documents_list[0] if documents_list else []
+
+        # Join all documents with a separator
+        return "\n----------\n".join(retrieved_documents)
 
     def ask_notes(self, query: str) -> str:
         logger.info(f"Calling SubAgent to Ask question about notes: {query}")
@@ -69,7 +94,9 @@ class ObsidianRAG:
         if not notes:
             logger.error("No notes found for the query")
             return ""
-        prompt_template = self.instructions_manager.get("obsidian_notes_prompt_template")
+        prompt_template = self.instructions_manager.get(
+            "obsidian_notes_prompt_template"
+        )
         prompt = prompt_template.format(context=notes, question=query)
         response = self.agent.run_sync(prompt)
         return response.output

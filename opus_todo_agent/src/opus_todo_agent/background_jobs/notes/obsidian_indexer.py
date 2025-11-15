@@ -34,6 +34,7 @@ class ObsidianIndexer:
             self.vault_config is not None
         ), f"Vault config not found for {self.obsidian_vault_name}"
         logging.info(f"Vault config: {self.vault_config}")
+        print(f"Vault config: {self.vault_config}")
         self._init_vector_db()
 
     def _init_vector_db(self):
@@ -69,6 +70,7 @@ class ObsidianIndexer:
                 if count < max_count:
                     # add document to collection
                     logger.info(f"Adding note to vector_db collection: {md_file_path}")
+                    print(f"Adding note to vector_db collection: {md_file_path}")
                     doc_id = str(uuid.uuid4())
                     content = f.read()
                     metadata = {
@@ -107,6 +109,7 @@ class ObsidianIndexer:
                 if count < max_count:
                     # add or update document to collection
                     logger.info(f"Indexing create/update/nop: {md_file_path}")
+                    print(f"Indexing create/update/nop: {md_file_path}")
                     doc_id = str(uuid.uuid4())
                     content = f.read()
                     metadata = {
@@ -126,9 +129,11 @@ class ObsidianIndexer:
                         if existing_hash == metadata["md5_hash"]:
                             # Content unchanged, skip
                             logger.info(f"Skipping unchanged note: {md_file_path}")
+                            print(f"Skipping unchanged note: {md_file_path}")
                         else:
                             # Content changed, update existing document
                             logger.info(f"Updating changed note: {md_file_path}")
+                            print(f"Updating changed note: {md_file_path}")
                             existing_id = existing_docs["ids"][0]
                             self.collection.upsert(
                                 ids=[existing_id],
@@ -138,6 +143,7 @@ class ObsidianIndexer:
                     else:
                         # Document does not exist, add new document
                         logger.info(f"Adding new note: {md_file_path}")
+                        print(f"Adding new note: {md_file_path}")
                         self.collection.add(
                             ids=[doc_id],
                             documents=[content],
