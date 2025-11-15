@@ -1,0 +1,28 @@
+# Agent Configuration
+agent:
+  name: "deepwork-agent"
+  description: "DeepWork Agent for managing focused work sessions"
+
+# Model Configuration
+model_config:
+  - provider: "openai"
+    model: "gpt-5"
+    enabled: true
+
+# MCP Server Configuration
+mcp_config:
+  general:
+    datetime:
+      enabled: true
+  deepwork:
+    todo:
+      todoist:
+        enabled: true
+    calendar:
+      clockwise:
+        enabled: true
+        higher_order_tools_enabled: true
+
+# Environment Variables (set these in your shell)
+# export TODOIST_API_KEY="your_todoist_api_key"
+# Clockwise uses OAuth, no API key needed

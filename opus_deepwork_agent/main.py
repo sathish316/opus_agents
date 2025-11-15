@@ -1,12 +1,19 @@
 """
-Main entry point for Opus Agents.
+Main entry point for Opus Deepwork Agent.
 """
 
 import logging
 import traceback
 
+import sys
+from pathlib import Path
+
+# Add src directory to Python path
+src_path = Path(__file__).parent / "src"
+sys.path.insert(0, str(src_path))
+
 from opus_agent_base.cli.cli import create_cli_app
-from opus_todo_agent.todo_agent_runner import run_todo_agent
+from src.opus_deepwork_agent.deepwork_agent_runner import run_deepwork_agent
 
 logger = logging.getLogger(__name__)
 
@@ -15,10 +22,10 @@ def main():
     """Entry point for the Opus Agents CLI."""
     try:
         app = create_cli_app(
-            agent_name="Opus Agents",
-            agent_description="AI Agents framework with productivity and collaboration tools",
+            agent_name="Opus Deepwork Agent",
+            agent_description="Deepwork Scheduling Agent",
             agent_version="0.1.0",
-            agent_runner=run_todo_agent,
+            agent_runner=run_deepwork_agent,
         )
         app()
     except Exception as e:

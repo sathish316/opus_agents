@@ -106,6 +106,7 @@ members = [
     "opus_agent_base",
     "opus_todo_agent",
     "opus_sde_agent",
+    "opus_deepwork_agent",
 ]
 
 [tool.uv.sources]
