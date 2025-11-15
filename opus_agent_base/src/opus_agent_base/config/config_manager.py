@@ -3,6 +3,8 @@ import yaml
 from typing import Dict, Any, List
 import logging
 from opus_agent_base.config.nested_config_manager import NestedConfigManager
+from opus_agent_base.common.logging_config import console_log
+
 
 logger = logging.getLogger(__name__)
 
@@ -18,14 +20,25 @@ class ConfigManager:
         self.config_dir = ConfigManager.CONFIG_DIR
         self.config_file = ConfigManager.CONFIG_FILE
         self.nested_config_manager = NestedConfigManager()
+        self.cached_config = None
         self._ensure_config_dir()
+        self._ensure_config_file()
 
     def _ensure_config_dir(self):
-        """Ensure configuration directory exists."""
+        """Ensure config directory exists."""
         self.config_dir.mkdir(exist_ok=True)
+
+    def _ensure_config_file(self):
+        """Ensure config file exists."""
+        if not self.config_file.exists():
+            raise FileNotFoundError(f"Config file not found: {self.config_file}")
 
     def load_config(self) -> Dict[str, Any]:
         """Load configuration from file."""
+        # cache config file
+        if self.cached_config is not None:
+            return self.cached_config
+
         if not self.config_file.exists():
             return {}
 
@@ -42,6 +55,7 @@ class ConfigManager:
         try:
             with open(self.config_file, "w") as f:
                 yaml.safe_dump(config, f, default_flow_style=False, sort_keys=False)
+            self.cached_config = None
             return True
         except IOError as e:
             logger.error(f"Failed to save config: {e}")

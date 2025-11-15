@@ -55,6 +55,9 @@ class MCPManager:
         logger.info("FastMCP servers added")
 
     async def initialize_fastmcp_client_context(self):
+        if self.config["mcpServers"] is None or len(self.config["mcpServers"]) == 0:
+            console_log("No FastMCP servers configured")
+            return None
         async def fastmcp_client_context(func):
             if self.fastmcp_client_instance is None:
                 self.fastmcp_client_instance = Client(self.config)
@@ -105,6 +108,7 @@ class MCPManager:
                     logger.debug(f"Name - {tool.name}")
                     logger.debug(f"Title - {tool.title}")
                     logger.debug(f"Description - {tool.description}")
-                    logger.debug(f"inputSchema - {tool.inputSchema}")
+                    import json
+                    logger.debug(f"inputSchema - {json.dumps(tool.inputSchema, indent=2)}")
                     logger.debug(f"outputSchema - {tool.outputSchema}")
                     logger.debug(f"annotations - {tool.annotations}")

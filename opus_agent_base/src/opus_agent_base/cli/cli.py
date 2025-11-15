@@ -11,13 +11,11 @@ from prompt_toolkit.completion import WordCompleter
 from prompt_toolkit.history import FileHistory
 from prompt_toolkit.styles import Style
 from rich.console import Console
-from rich.panel import Panel
 from rich.table import Table
 
 from opus_agent_base.config.config_command_manager import ConfigCommandManager
 from opus_agent_base.config.config_manager import ConfigManager
 from opus_agent_base.ui.logo import display_logo
-from opus_agent_base.common.logging_config import get_current_log_level, set_log_level
 
 # Setup rich console for pretty output
 console = Console()
@@ -28,7 +26,7 @@ config_command_manager = ConfigCommandManager(config_manager, console)
 
 
 def create_cli_app(
-    agent_name: str, agent_description: str, agent_version: str
+    agent_name: str, agent_description: str, agent_version: str, agent_runner: callable = None
 ) -> typer.Typer:
     """Creates a Typer app for the agent CLI."""
     app = typer.Typer(
@@ -37,9 +35,7 @@ def create_cli_app(
         rich_markup_mode="rich",
     )
 
-    def run_cli_mode(
-        run_agent_on_startup: bool = False, run_agent_code: str = "todo-agent"
-    ):
+    def run_cli_mode(run_agent_on_startup: bool = False):
         """Run the admin mode with slash commands."""
         display_logo(console)
         # Set up command history file
@@ -88,14 +84,10 @@ def create_cli_app(
         # Run agent on startup if requested
         if run_agent_on_startup:
             try:
-                if run_agent_code == "todo-agent":
-                    from opus_todo_agent.todo_agent_runner import run_todo_agent
-
-                    asyncio.run(run_todo_agent())
-                elif run_agent_code == "sde-agent":
-                    from opus_sde_agent.sde_agent_runner import run_sde_agent
-
-                    asyncio.run(run_sde_agent())
+                if agent_runner:
+                    asyncio.run(agent_runner())
+                else:
+                    console.print("[yellow]No agent runner provided[/yellow]")
             except KeyboardInterrupt:
                 console.print("\n[dim]Agent interrupted. Returning to CLI...[/dim]")
             except Exception as e:
@@ -133,7 +125,12 @@ def create_cli_app(
                     break
                 elif cmd == "help":
                     show_admin_help()
-                elif cmd == "agent" or cmd == "todo-agent":
+                elif cmd == "agent":
+                    if agent_runner:
+                        asyncio.run(agent_runner())
+                    else:
+                        console.print("[yellow]No agent runner configured[/yellow]")
+                elif cmd == "todo-agent":
                     from opus_todo_agent.todo_agent_runner import run_todo_agent
 
                     asyncio.run(run_todo_agent())
@@ -289,12 +286,8 @@ def create_cli_app(
 
         if admin:
             run_cli_mode(run_agent_on_startup=False)
-        elif agent or todo:
-            run_cli_mode(run_agent_on_startup=True, run_agent_code="todo-agent")
-        elif sde:
-            run_cli_mode(run_agent_on_startup=True, run_agent_code="sde-agent")
         else:
-            # default mode
-            run_cli_mode(run_agent_on_startup=True, run_agent_code="todo-agent")
+            # Run the configured agent (if provided) or enter CLI mode
+            run_cli_mode(run_agent_on_startup=True)
 
     return app

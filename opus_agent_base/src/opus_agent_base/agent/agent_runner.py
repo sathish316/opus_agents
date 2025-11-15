@@ -1,9 +1,8 @@
 import logging
 
-from opus_agent_base.common.logging_config import quick_setup, console_log
-from opus_agent_base.agent.agent_dependencies import AgentDependencies
-
+from opus_agent_base.agent.agent_builder import AgentBuilder
 from opus_agent_base.agent.agent_instance import AgentInstance
+from opus_agent_base.common.logging_config import console_log, quick_setup
 
 logger = logging.getLogger(__name__)
 
@@ -12,13 +11,13 @@ class AgentRunner:
     def __init__(
         self,
         name: str,
-        agent_deps: AgentDependencies,
+        agent_builder: AgentBuilder,
     ):
         self.name = name
-        self.agent_deps = agent_deps
+        self.agent_builder = agent_builder
 
         # Read log level from config and reconfigure logging
-        log_level = self.agent_deps.config_manager.get_setting("debug.log_level", "ERROR")
+        log_level = self.agent_builder.config_manager.get_setting("debug.log_level", "ERROR")
         quick_setup(log_level=log_level)
 
     async def run_agent(self):
@@ -28,7 +27,7 @@ class AgentRunner:
             # Initialize Agent
             agent_instance = AgentInstance(
                 name=self.name,
-                agent_deps=self.agent_deps,
+                agent_builder=self.agent_builder,
             )
             agent = await agent_instance.get_agent()
             console_log("✅ Agent ready")

@@ -24,5 +24,5 @@ def display_logo(console: Console) -> None:
 [light_sky_blue1]║                                                                                                  ║[/light_sky_blue1]
 [light_sky_blue1]╚══════════════════════════════════════════════════════════════════════════════════════════════════╝[/light_sky_blue1]
 """
-    
+    # console.print("[bold blue]Opus Agents[/bold blue]")
     console.print(logo)
