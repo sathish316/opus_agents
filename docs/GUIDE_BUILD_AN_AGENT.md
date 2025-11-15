@@ -287,7 +287,6 @@ model_config:
   - provider: "openai"
     model: "gpt-5"
     enabled: true
-  enabled: true
 
 # MCP Server Configuration
 mcp_config:
