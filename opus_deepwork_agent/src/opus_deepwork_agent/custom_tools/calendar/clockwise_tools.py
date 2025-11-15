@@ -1,26 +1,16 @@
-from dataclasses import dataclass
 import logging
+from datetime import datetime, timedelta
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
+from opus_agent_base.tools.fastmcp_client_helper import FastMCPClientHelper
 from pydantic_ai import RunContext
-import pytz
-from datetime import datetime
+import json
 
 logger = logging.getLogger(__name__)
-
-@dataclass
-class DeepWorkPreferences:
-    duration_minutes: int = 60,
-    working_hours_start: int = 9,
-    working_hours_end: int = 17,
-    timezone: str = "Asia/Kolkata",
-    visibility: str = "private",
-    preferred_window: str = "start", # change to literal, possible values are start/middle/end of day, morning/afternoon/evening
 
 
 class ClockwiseHigherOrderTool(HigherOrderTool):
     """
-    Higher order tools for Clockwise calendar that add smart scheduling
-    capabilities on top of the basic MCP server.
+    Simple higher order tool for Clockwise calendar that schedules deepwork sessions.
     """
 
     def __init__(self, config_manager=None, instructions_manager=None, model_manager=None):
@@ -31,196 +21,189 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
             instructions_manager,
             model_manager
         )
-        # self.deepwork_helper = DeepworkHelper()
+        self.fastmcp_client_helper = FastMCPClientHelper()
 
     async def initialize_tools(self, agent, fastmcp_client_context):
         @agent.tool
-        async def schedule_deepwork_event_today(
+        async def schedule_deepwork_session(
             ctx: RunContext[str],
             event_title: str,
-            deepwork_preferences: DeepWorkPreferences
+            start_hour: int,
+            end_hour: int,
+            duration_minutes: int = 60,
+            timezone: str = "Asia/Kolkata"
         ) -> str:
             """
-            Schedule a deepwork event today in the first available free slot.
-            
-            This tool intelligently finds free time in your calendar today and
-            schedules an event. It respects your working hours and finds gaps
-            between existing meetings.
-            
+            Schedule a deepwork session today by finding a free slot.
+
             Args:
-                event_title: Title/name of the event to schedule
-                deepwork_preferences: Captures details of DeeepWork scheduling preferences in `DeepWorkPreferences` format
-            
+                event_title: Title of the deepwork session
+                start_hour: Start of search window (e.g., 9 for 9am)
+                end_hour: End of search window (e.g., 17 for 5pm)
+                duration_minutes: How long the session should be (default: 60)
+                timezone: Timezone (default: "America/Los_Angeles")
+
             Returns:
-                Success message with event details and link, or error message
-            
-            Example usage:
-                - "Schedule a focus session today"
-                - "Book 2 hours for deep work today in the morning"
-                - "Schedule a 30 minute review meeting today"
-                - "Create a 90 minute coding block today, prefer morning"
+                Success message with scheduled time or error message
+
+            Example: "Schedule a 90 minute coding session between 9am and 5pm"
             """
-            logger.info(
-                f"[HigherOrderToolCall] Scheduling '{event_title}' today "
-                f"({duration_minutes}m, {timezone})"
-            )
+            logger.info(f"Scheduling '{event_title}' ({duration_minutes}m, {start_hour}-{end_hour})")
 
             try:
-                # Get today's date
-                tz = pytz.timezone(timezone)
-                today = datetime.now(tz).date().isoformat()
-                
-                logger.info(f"Finding free slots for {today}")
+                # Create time window for today
+                today = datetime.now().date()
+                search_start = datetime.combine(today, datetime.min.time().replace(hour=start_hour))
+                search_end = datetime.combine(today, datetime.min.time().replace(hour=end_hour))
 
-                # Find free slots #TODO: replace with helper
-                free_slots = await self.clockwise_helper.find_free_slots(
-                    fastmcp_client_context,
-                    date=today,
-                    working_hours_start=working_hours_start,
-                    working_hours_end=working_hours_end,
-                    duration_minutes=duration_minutes,
-                    timezone=timezone
+                # Step 1: Get calendar events
+                events = await self.get_calendar_events(fastmcp_client_context, search_start, search_end)
+
+                # Step 2: Find a free slot
+                free_slot = self.find_free_slot(events, search_start, search_end, duration_minutes)
+
+                if not free_slot:
+                    return f"❌ No {duration_minutes}-minute slots available between {start_hour}:00 and {end_hour}:00"
+
+                free_start, free_end = free_slot
+
+                # Step 3: Schedule the event
+                success = await self.schedule_event(fastmcp_client_context, event_title, free_start, free_end)
+
+                if not success:
+                    return "❌ Failed to schedule event"
+
+                return (
+                    f"✅ Scheduled: {event_title}\n"
+                    f"📅 {free_start.strftime('%I:%M %p')} - {free_end.strftime('%I:%M %p')}\n"
+                    f"⏱️  {duration_minutes} minutes"
                 )
-
-                if not free_slots:
-                    logger.warning(f"No free slots found for {duration_minutes} minutes")
-                    return (
-                        f"❌ Could not find any free {duration_minutes}-minute slots today "
-                        f"between {working_hours_start}:00 and {working_hours_end}:00. "
-                        f"Your calendar might be fully booked."
-                    )
-
-                # Select slot based on preference #TODO: replace with helper
-                if prefer_morning:
-                    # Take the earliest slot
-                    selected_slot = free_slots[0]
-                    slot_type = "morning"
-                else:
-                    # Take the first available (might be morning or afternoon)
-                    selected_slot = free_slots[0]
-                    slot_start_hour = datetime.fromisoformat(selected_slot[0]).hour
-                    slot_type = "morning" if slot_start_hour < 12 else "afternoon"
-
-                start_time, end_time = selected_slot
-
-                # Create event request #TODO: doc on how to find tool input using mcp inspector
-                request = EventSchedulingRequest(
-                    title=event_title,
-                    start_time=start_time,
-                    end_time=end_time,
-                    timezone=timezone,
-                    visibility=visibility,
-                    description=description
-                )
-
-                # Schedule the event #TODO: keep in tool
-                event_id = await self.clockwise_helper.schedule_event(
-                    fastmcp_client_context,
-                    request
-                )
-
-                if event_id:
-                    # Format time for display
-                    start_dt = datetime.fromisoformat(start_time)
-                    end_dt = datetime.fromisoformat(end_time)
-                    
-                    time_str = f"{start_dt.strftime('%I:%M %p')} - {end_dt.strftime('%I:%M %p')}"
-                    
-                    return (
-                        f"✅ Event scheduled successfully!\n\n"
-                        f"📅 **{event_title}**\n"
-                        f"🕐 {time_str} ({timezone})\n"
-                        f"⏱️  Duration: {duration_minutes} minutes\n"
-                        f"🔒 Visibility: {visibility}\n"
-                        f"🌅 Slot type: {slot_type}\n\n"
-                        f"Found {len(free_slots)} available slot(s) today. "
-                        f"Booked the {'earliest' if prefer_morning else 'first available'} one."
-                    )
-                else:
-                    return "❌ Failed to schedule event. Please check logs for details."
 
             except Exception as e:
-                logger.error(f"Error scheduling event: {e}")
+                logger.error(f"Error scheduling: {e}")
                 import traceback
                 logger.error(f"Stacktrace: {traceback.format_exc()}")
                 return f"❌ Error: {str(e)}"
 
-        @agent.tool
-        async def find_free_time_today(
-            ctx: RunContext[str],
-            duration_minutes: int = 60,
-            working_hours_start: int = 9,
-            working_hours_end: int = 17,
-            timezone: str = "Asia/Kolkata",
-        ) -> str:
-            """
-            Find all free time slots today without scheduling anything.
-            
-            Use this when the user wants to see available time before
-            committing to schedule an event.
-            
-            Args:
-                duration_minutes: Minimum duration needed (default: 60)
-                working_hours_start: Start of working day (default: 9)
-                working_hours_end: End of working day (default: 17)
-                timezone: Timezone for the search (default: "Asia/Kolkata")
-            
-            Returns:
-                Formatted list of free time slots
-            
-            Example usage:
-                - "When am I free today?"
-                - "Show me my available time slots today"
-                - "Do I have any 2-hour blocks free today?"
-            """
-            logger.info(
-                f"[HigherOrderToolCall] Finding free slots today "
-                f"(min {duration_minutes}m)"
-            )
+    async def get_calendar_events(self, fastmcp_client_context, start_time: datetime, end_time: datetime):
+        """
+        Helper 1: Get calendar events from Clockwise MCP server
 
-            try:
-                tz = pytz.timezone(timezone)
-                today = datetime.now(tz).date().isoformat()
+        Args:
+            fastmcp_client_context: MCP client context
+            start_time: Start of time range
+            end_time: End of time range
 
-                free_slots = await self.clockwise_helper.find_free_slots(
-                    fastmcp_client_context,
-                    date=today,
-                    working_hours_start=working_hours_start,
-                    working_hours_end=working_hours_end,
-                    duration_minutes=duration_minutes,
-                    timezone=timezone
-                )
+        Returns:
+            List of calendar events
+        """
+        logger.info(f"Fetching events between {start_time} and {end_time}")
 
-                if not free_slots:
-                    return (
-                        f"📅 No free slots found today that are at least "
-                        f"{duration_minutes} minutes long.\n"
-                        f"Your calendar is fully booked between "
-                        f"{working_hours_start}:00 and {working_hours_end}:00."
-                    )
+        result = await self.fastmcp_client_helper.call_fastmcp_tool(
+            fastmcp_client_context,
+            "clockwise_search_events",
+            {
+                "query": {
+                    "timeRangeSearch": {
+                        "includeRanges": [{
+                            "startTime": start_time.isoformat() + "Z",
+                            "endTime": end_time.isoformat() + "Z",
+                        }]
+                    }
+                }
+            },
+            parse_json=False,
+        )
 
-                # Format output
-                output = [
-                    f"📅 Free time today (minimum {duration_minutes} minutes):\n"
-                ]
+        events = json.loads(result["data"][0])["events"]
+        logger.info(f"Found {len(events)} existing events")
+        return events
 
-                for i, (start, end) in enumerate(free_slots, 1):
-                    start_dt = datetime.fromisoformat(start)
-                    end_dt = datetime.fromisoformat(end)
-                    
-                    duration = int((end_dt - start_dt).total_seconds() / 60)
-                    time_range = f"{start_dt.strftime('%I:%M %p')} - {end_dt.strftime('%I:%M %p')}"
-                    
-                    # Add morning/afternoon indicator
-                    period = "🌅 Morning" if start_dt.hour < 12 else "🌆 Afternoon"
-                    
-                    output.append(
-                        f"{i}. {time_range} ({duration} min) {period}"
-                    )
+    def find_free_slot(self, events, search_start: datetime, search_end: datetime, duration_minutes: int):
+        """
+        Helper 2: Find first free slot in calendar
 
-                return "\n".join(output)
+        Args:
+            events: List of calendar events
+            search_start: Start of search window
+            search_end: End of search window
+            duration_minutes: Required duration in minutes
 
-            except Exception as e:
-                import traceback
-                logger.error(f"Error finding free time: {e} with stacktrace: {traceback.format_exc()}")
-                return f"❌ Error: {str(e)}"
+        Returns:
+            Tuple of (start_time, end_time) for free slot, or None if no slot found
+        """
+        logger.info(f"Finding {duration_minutes}min slot between {search_start} and {search_end}")
+
+        current_time = search_start
+
+        # Sort events by start time
+        sorted_events = sorted(events, key=lambda e: e["startTime"])
+
+        for event in sorted_events:
+            event_start = datetime.fromisoformat(event["startTime"].replace("Z", ""))
+
+            # Check if there's a gap before this event
+            if (event_start - current_time).total_seconds() >= duration_minutes * 60:
+                free_start = current_time
+                free_end = free_start + timedelta(minutes=duration_minutes)
+                logger.info(f"Found free slot: {free_start} to {free_end}")
+                return (free_start, free_end)
+
+            event_end = datetime.fromisoformat(event["endTime"].replace("Z", ""))
+            current_time = max(current_time, event_end)
+
+        # Check if there's time after the last event
+        if (search_end - current_time).total_seconds() >= duration_minutes * 60:
+            free_start = current_time
+            free_end = free_start + timedelta(minutes=duration_minutes)
+            logger.info(f"Found free slot at end: {free_start} to {free_end}")
+            return (free_start, free_end)
+
+        logger.warning("No free slot found")
+        return None
+
+    async def schedule_event(self, fastmcp_client_context, title: str, start_time: datetime, end_time: datetime):
+        """
+        Helper 3: Schedule an event using Clockwise MCP server
+
+        Args:
+            fastmcp_client_context: MCP client context
+            title: Event title
+            start_time: Event start time
+            end_time: Event end time
+
+        Returns:
+            True if successful, False otherwise
+        """
+        logger.info(f"Scheduling '{title}' from {start_time} to {end_time}")
+
+        # Create a proposal
+        proposal_result = await self.fastmcp_client_helper.call_fastmcp_tool(
+            fastmcp_client_context,
+            "clockwise_create_proposal",
+            {
+                "title": title,
+                "startTime": start_time.isoformat() + "Z",
+                "endTime": end_time.isoformat() + "Z",
+            },
+            parse_json=False,
+        )
+
+        proposal_data = json.loads(proposal_result["data"][0])
+        proposal_id = proposal_data.get("id")
+
+        if not proposal_id:
+            logger.error("Failed to create proposal")
+            return False
+
+        # Confirm the proposal to create the event
+        await self.fastmcp_client_helper.call_fastmcp_tool(
+            fastmcp_client_context,
+            "clockwise_confirm_proposal",
+            {"proposalId": proposal_id},
+            parse_json=False,
+        )
+
+        logger.info("Event scheduled successfully")
+        return True
+
