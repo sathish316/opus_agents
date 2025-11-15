@@ -35,7 +35,7 @@ def _parse_log_level(log_level):
 
 def setup_logging(log_level=logging.ERROR, console_output=True):
     """
-    Setup logging configuration to write to /var/log/opus_todo_agent_<timestamp>.log
+    Setup logging configuration to write to /var/log/opus_agent_<timestamp>.log
     with fallback to user home directory if /var/log is not writable
 
     Args:
@@ -49,8 +49,8 @@ def setup_logging(log_level=logging.ERROR, console_output=True):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
     # Try to write to /var/log first
-    primary_log_path = f"/var/log/opus_todo_agent_{timestamp}.log"
-    fallback_log_path = Path.home() / "logs" / f"opus_todo_agent_{timestamp}.log"
+    primary_log_path = f"/var/log/opus_agent_{timestamp}.log"
+    fallback_log_path = Path.home() / "logs" / f"opus_agent_{timestamp}.log"
 
     log_file_path = None
 
@@ -88,7 +88,7 @@ def setup_logging(log_level=logging.ERROR, console_output=True):
     # Log startup message to file only (at DEBUG level so it doesn't show in console with ERROR level)
     logger = logging.getLogger(__name__)
     logger.debug("=" * 60)
-    logger.debug("🚀 OPUS TODO AGENT - STARTUP")
+    logger.debug("🚀 OPUS AGENT - STARTUP")
     logger.debug(f"📝 Log file: {log_file_path}")
     logger.debug(f"🐍 Python: {sys.version}")
     logger.debug(f"📁 Working directory: {os.getcwd()}")
