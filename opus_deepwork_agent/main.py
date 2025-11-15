@@ -5,6 +5,13 @@ Main entry point for Opus Deepwork Agent.
 import logging
 import traceback
 
+import sys
+from pathlib import Path
+
+# Add src directory to Python path
+src_path = Path(__file__).parent / "src"
+sys.path.insert(0, str(src_path))
+
 from opus_agent_base.cli.cli import create_cli_app
 from src.opus_deepwork_agent.deepwork_agent_runner import run_deepwork_agent
 
