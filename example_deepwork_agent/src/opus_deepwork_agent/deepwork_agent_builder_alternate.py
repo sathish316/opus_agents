@@ -1,6 +1,12 @@
 from opus_agent_base.agent.agent_builder import AgentBuilder
+from opus_agent_base.tools.custom_tool import CustomTool
+from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_agent_base.tools.mcp_server_registry import MCPServerRegistry
 
+from opus_deepwork_agent.custom_tools.calendar.clockwise_tools import (
+    ClockwiseHigherOrderTool,
+)
+from opus_deepwork_agent.custom_tools.todo.todoist_tools import TodoistTools
 from opus_deepwork_agent.deepwork_mcp_server_registry import DeepWorkMCPServerRegistry
 
 

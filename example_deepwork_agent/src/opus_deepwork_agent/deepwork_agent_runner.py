@@ -3,9 +3,11 @@ import logging
 from opus_agent_base.agent.agent_runner import AgentRunner
 from opus_agent_base.config.config_manager import ConfigManager
 
-from opus_deepwork_agent.deepwork_agent_builder import DeepWorkAgentBuilder
+from opus_deepwork_agent.custom_tools.calendar.clockwise_tools import (
+    ClockwiseHigherOrderTool,
+)
 from opus_deepwork_agent.custom_tools.todo.todoist_tools import TodoistTools
-from opus_deepwork_agent.custom_tools.calendar.clockwise_tools import ClockwiseHigherOrderTool
+from opus_deepwork_agent.deepwork_agent_builder import DeepWorkAgentBuilder
 
 logger = logging.getLogger(__name__)
 
