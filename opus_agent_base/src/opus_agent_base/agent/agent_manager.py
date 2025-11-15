@@ -68,7 +68,8 @@ class AgentManager:
                 else:
                     self.tools.append(self.wrap_tool(tool, fastmcp_client_context))
 
-        await fastmcp_client_context(tools_initializer)
+        if fastmcp_client_context is not None:
+            await fastmcp_client_context(tools_initializer)
 
         # agent
         self.agent = Agent(

@@ -290,6 +290,9 @@ model_config:
 
 # MCP Server Configuration
 mcp_config:
+  general:
+    datetime:
+      enabled: true
   deepwork:
     todo:
       todoist:
