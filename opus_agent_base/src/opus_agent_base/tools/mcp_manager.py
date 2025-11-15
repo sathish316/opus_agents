@@ -98,7 +98,10 @@ class MCPManager:
     async def _inspect_fastmcp_client_tools(self):
         inspect_fastmcp_client_tools_enabled = self.config_manager.get_setting("debug.inspect_tools", False)
         if inspect_fastmcp_client_tools_enabled:
-            async with Client(self.config) as client:
+            # Reuse the existing client instance to avoid starting MCP servers twice
+            if self.fastmcp_client_instance is None:
+                self.fastmcp_client_instance = Client(self.config)
+            async with self.fastmcp_client_instance as client:
                 await client.ping()
                 self.fastmcp_client = client
                 tools = await client.list_tools()

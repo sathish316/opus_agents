@@ -56,6 +56,8 @@ class TodoMCPServerRegistry:
         auth_env = {
             "GOOGLE_OAUTH_CLIENT_ID": os.getenv("GOOGLE_OAUTH_CLIENT_ID"),
             "GOOGLE_OAUTH_CLIENT_SECRET": os.getenv("GOOGLE_OAUTH_CLIENT_SECRET"),
+            "WORKSPACE_MCP_PORT": os.getenv("WORKSPACE_MCP_PORT", "8001"),  # Default to 8001 to avoid conflicts
+            "USER_GOOGLE_EMAIL": os.getenv("USER_GOOGLE_EMAIL"),
         }
         return auth_env
 

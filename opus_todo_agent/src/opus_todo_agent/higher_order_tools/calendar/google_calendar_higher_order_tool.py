@@ -7,6 +7,7 @@ from pydantic_ai import RunContext
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_todo_agent.helper.calendar.google_calendar_helper import GoogleCalendarHelper
 from opus_todo_agent.models.calendar.google_calendar_models import GCalMeeting
+from opus_agent_base.common.logging_config import console_log
 
 logger = logging.getLogger(__name__)
 
@@ -52,18 +53,19 @@ class GoogleCalendarHigherOrderTool(HigherOrderTool):
                     or predefined_daterange_key == "today"
                 ):
                     logging.info("[CustomToolCall] Generating Daily review of meetings for today")
+                    console_log("[CustomToolCall] Generating Daily review of meetings for today")
                     meetings = await self.google_calendar_helper.get_meetings_for_predefined_date_range(
                         fastmcp_client_context, predefined_daterange_key
                     )
                 elif predefined_daterange_key == "yesterday":
                     logging.info("[CustomToolCall]Generating Daily review of meetings for yesterday")
+                    console_log("[CustomToolCall] Generating Daily review of meetings for yesterday")
                     meetings = await self.google_calendar_helper.get_meetings_for_predefined_date_range(
                         fastmcp_client_context, predefined_daterange_key
                     )
                 else:
-                    logging.info(
-                        f"Generating Daily review of meetings for date: {predefined_daterange_key}"
-                    )
+                    logging.info(f"Generating Daily review of meetings for date: {predefined_daterange_key}")
+                    console_log(f"[CustomToolCall] Generating Daily review of meetings for date: {predefined_daterange_key}")
                     meetings = (
                         await self.google_calendar_helper.get_meetings_for_date_range(
                             fastmcp_client_context,
@@ -75,6 +77,8 @@ class GoogleCalendarHigherOrderTool(HigherOrderTool):
                     )
             except Exception as e:
                 logging.error(f"Error fetching meetings: {e}")
+                import traceback
+                logging.error(traceback.format_exc())
                 return
 
             return meetings
@@ -109,21 +113,20 @@ class GoogleCalendarHigherOrderTool(HigherOrderTool):
             """
             try:
                 if from_date and to_date:
-                    logging.info(
-                        f"[CustomToolCall] Generating weekly review of meetings for the date range: {from_date} to {to_date}"
-                    )
+                    logging.info(f"[CustomToolCall] Generating weekly review of meetings for the date range: {from_date} to {to_date}")
+                    console_log(f"[CustomToolCall] Generating weekly review of meetings for the date range: {from_date} to {to_date}")
                     meetings = await self.google_calendar_helper.get_meetings_for_date_range(
                         fastmcp_client_context, from_date, to_date
                     )
                 elif predefined_weekrange_key == "current_week":
-                    logging.info(
-                        "[CustomToolCall] Generating weekly review of meetings for current week"
-                    )
+                    logging.info("[CustomToolCall] Generating weekly review of meetings for current week")
+                    console_log("[CustomToolCall] Generating weekly review of meetings for current week")
                     meetings = await self.google_calendar_helper.get_meetings_for_predefined_date_range(
                         fastmcp_client_context, "current_week"
                     )
                 elif predefined_weekrange_key == "last_week":
                     logging.info("[CustomToolCall] Generating weekly review of meetings for last week")
+                    console_log("[CustomToolCall] Generating weekly review of meetings for last week")
                     meetings = await self.google_calendar_helper.get_meetings_for_predefined_date_range(
                         fastmcp_client_context, "last_week"
                     )
@@ -133,6 +136,8 @@ class GoogleCalendarHigherOrderTool(HigherOrderTool):
                     )
             except Exception as e:
                 logging.error(f"Error fetching meetings: {e}")
+                import traceback
+                logging.error(traceback.format_exc())
                 return
 
             return meetings
