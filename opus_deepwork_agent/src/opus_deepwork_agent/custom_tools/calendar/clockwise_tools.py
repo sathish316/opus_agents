@@ -26,7 +26,7 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
 
     async def initialize_tools(self, agent, fastmcp_client_context):
         @agent.tool
-        async def schedule_deepwork_session(
+        async def schedule_deepwork_slot_in_calendar(
             ctx: RunContext[str],
             event_title: str,
             start_hour: int,
@@ -34,7 +34,9 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
             duration_minutes: int = 60,
         ) -> str:
             """
-            Schedule a deepwork session today by finding a free slot.
+            Schedule a deepwork slot in the calendar today.
+            If a proposal url is returned after scheduling, always show the proposal url to the user.
+            Proposal url indicates that deep work slot is scheduled successfully.
 
             Args:
                 event_title: Title of the deepwork session
@@ -57,26 +59,29 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
                 search_end = datetime.combine(today, datetime.min.time().replace(hour=end_hour))
 
                 # Create a proposal
+                proposal_params = {
+                        "newEvents": [{
+                            "title": event_title,
+                            "timeRanges": [{
+                                "startTime": search_start.isoformat(),
+                                "endTime": search_end.isoformat(),
+                            }],
+                            "duration": f"PT{duration_minutes}M",
+                        }]
+                    }
+                logger.info(f"[CustomToolCall] Creating proposal: {proposal_params}")
                 proposal_result = await self.fastmcp_client_helper.call_fastmcp_tool(
                     fastmcp_client_context,
                     "clockwise_create_proposal",
-                    {
-                        "title": event_title,
-                        "startTime": search_start.isoformat(),
-                        "endTime": search_end.isoformat(),
-                        "duration": f"PT{duration_minutes}M",
-                    },
+                    proposal_params,
                     parse_json=False,
                 )
 
-                proposal_data = json.loads(proposal_result["data"][0])
-                proposal_id = proposal_data.get("id")
-
-                if not proposal_id:
+                if not proposal_result:
                     logger.error("Failed to create proposal")
                     return False
 
-                return proposal_data
+                return proposal_result
 
             except Exception as e:
                 logger.error(f"Error scheduling: {e}")
