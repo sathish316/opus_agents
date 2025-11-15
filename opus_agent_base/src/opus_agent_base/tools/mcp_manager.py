@@ -108,6 +108,7 @@ class MCPManager:
                     logger.debug(f"Name - {tool.name}")
                     logger.debug(f"Title - {tool.title}")
                     logger.debug(f"Description - {tool.description}")
-                    logger.debug(f"inputSchema - {tool.inputSchema}")
+                    import json
+                    logger.debug(f"inputSchema - {json.dumps(tool.inputSchema, indent=2)}")
                     logger.debug(f"outputSchema - {tool.outputSchema}")
                     logger.debug(f"annotations - {tool.annotations}")

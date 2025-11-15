@@ -1,3 +1,4 @@
+import json
 import logging
 
 from fastmcp.client.client import ClientSession
@@ -8,7 +9,7 @@ from pydantic_ai.tools import Tool
 from singleton_decorator import singleton
 
 from opus_agent_base.agent.agent_builder import AgentBuilder
-from opus_agent_base.model.model_manager import ModelManager
+from opus_agent_base.common.logging_config import console_log
 from opus_agent_base.tools.custom_tools_manager import CustomToolsManager
 from opus_agent_base.tools.higher_order_tools_manager import HigherOrderToolsManager
 
@@ -40,6 +41,7 @@ class AgentManager:
 
         # initialize agent tools
         self.tools = []
+        enabled_tools = {}
         fastmcp_client_context = (
             await self.mcp_manager.initialize_fastmcp_client_context()
         )
@@ -62,11 +64,14 @@ class AgentManager:
                     ).get(tool_prefix, []):
                         logger.debug(f"Wrapping FastMCP tool: {tool.name}")
                         self.tools.append(self.wrap_tool(tool, fastmcp_client_context))
+                        self._log_enabled_tools(enabled_tools, tool_prefix, tool.name)
                 else:
                     self.tools.append(self.wrap_tool(tool, fastmcp_client_context))
+                    self._log_enabled_tools(enabled_tools, tool_prefix, tool.name)
 
         if fastmcp_client_context is not None:
             await fastmcp_client_context(tools_initializer)
+            console_log(f"Enabled tools: {enabled_tools}")
 
         # agent
         self.agent = Agent(
@@ -128,7 +133,7 @@ class AgentManager:
                 for tool in tools:
                     toolset_id = getattr(toolset, "id", None)
                     toolset_command = getattr(toolset, "command", None)
-                    logger.debug(
+                    logger.info(
                         f"AgentMCPTool: {toolset_id or toolset_command}-{tool.name}"
                     )
 
@@ -136,4 +141,9 @@ class AgentManager:
         function_toolset = getattr(self.agent, "_function_toolset", None)
         if function_toolset:
             for function_tool_key, _ in function_toolset.tools.items():
-                logger.debug(f"AgentFunctionTool: {function_tool_key}")
+                logger.info(f"AgentFunctionTool: {function_tool_key}")
+
+    def _log_enabled_tools(self, enabled_tools, tool_prefix, tool_name):
+        if tool_prefix not in enabled_tools:
+            enabled_tools[tool_prefix] = set()
+        enabled_tools[tool_prefix].add(tool_name)
