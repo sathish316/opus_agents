@@ -9,6 +9,7 @@ from opus_agent_base.tools.custom_tool import CustomTool
 from opus_todo_agent.custom_tools.todo.todoist_client import TodoistClient
 from opus_todo_agent.helper.todo.todoist_helper import TodoistHelper
 from opus_todo_agent.models.todo.todoist_models import CompletedTask, Task
+from opus_agent_base.common.logging_config import console_log
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +63,9 @@ class TodoistTools(CustomTool):
             logger.info(
                 f"[CustomToolCall] Fetching completed tasks for predefined date range: {predefined_daterange_key}"
             )
+            console_log(
+                f"[CustomToolCall] Fetching completed tasks for predefined date range: {predefined_daterange_key}"
+            )
             if predefined_daterange_key == "last_week":
                 since, until = self.datetime_helper.get_last_week_daterange()
             elif predefined_daterange_key == "current_week":
@@ -106,16 +110,21 @@ class TodoistTools(CustomTool):
                     or predefined_daterange_key == "today"
                 ):
                     logger.info("[CustomToolCall] Generating Daily review for today")
+                    console_log(f"[CustomToolCall] Generating Daily review for today")
                     tasks = get_completed_tasks_for_predefined_date_range(
                         ctx, predefined_daterange_key
                     )
                 elif predefined_daterange_key == "yesterday":
                     logger.info("[CustomToolCall] Generating Daily review for yesterday")
+                    console_log(f"[CustomToolCall] Generating Daily review for yesterday")
                     tasks = get_completed_tasks_for_predefined_date_range(
                         ctx, predefined_daterange_key
                     )
                 else:
                     logger.info(
+                        f"[CustomToolCall] Generating Daily review for date: {predefined_daterange_key}"
+                    )
+                    console_log(
                         f"[CustomToolCall] Generating Daily review for date: {predefined_daterange_key}"
                     )
                     tasks = get_completed_tasks_for_date_range(
