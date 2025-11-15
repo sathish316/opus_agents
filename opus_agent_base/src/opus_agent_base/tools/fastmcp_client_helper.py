@@ -2,6 +2,7 @@ import json
 import logging
 
 from mcp.client.session import ClientSession
+from mcp.types import TextContent
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +34,7 @@ class FastMCPClientHelper:
                 if isinstance(result.content, list):
                     json_result = {
                         "data": [
-                            json.loads(str(contentItem.text))
+                            json.loads(self._extract_content_text(contentItem))
                             for contentItem in result.content
                         ]
                     }
@@ -44,7 +45,7 @@ class FastMCPClientHelper:
                 if isinstance(result.content, list):
                     text_result = {
                         "data": [
-                            str(contentItem.text) for contentItem in result.content
+                            self._extract_content_text(contentItem) for contentItem in result.content
                         ]
                     }
                 else:
@@ -52,3 +53,11 @@ class FastMCPClientHelper:
                 return text_result
         else:
             return {"data": str(result)}
+
+    def _extract_content_text(self, content_item):
+        """Extract text from different MCP content types."""
+        if isinstance(content_item, TextContent):
+            return str(content_item.text)
+        else:
+            # Fallback for unknown types
+            return str(content_item)
