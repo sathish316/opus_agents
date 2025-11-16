@@ -29,10 +29,7 @@ classifiers = [
 dependencies = [
     # Local workspace packages
     "opus-agent-base",
-    "opus-sde-agent", 
     "opus-todo-agent",
-    # Additional dependencies
-    "mcp-server-docker>=0.2.1",
 ]
 
 [project.optional-dependencies]
@@ -94,7 +91,7 @@ disallow_untyped_defs = true
 
 # Pytest configuration
 [tool.pytest.ini_options]
-testpaths = ["opus_agent_base/tests", "opus_todo_agent/tests", "opus_sde_agent/tests"]
+testpaths = ["opus_agent_base/tests", "opus_todo_agent/tests"]
 python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
@@ -105,11 +102,8 @@ addopts = "-v --tb=short"
 members = [
     "opus_agent_base",
     "opus_todo_agent",
-    "opus_sde_agent",
-    "opus_deepwork_agent",
 ]
 
 [tool.uv.sources]
 opus-agent-base = { workspace = true }
-opus-sde-agent = { workspace = true }
 opus-todo-agent = { workspace = true }
