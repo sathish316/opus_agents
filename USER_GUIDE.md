@@ -202,11 +202,11 @@ https://lobehub.com/mcp/199-mcp-mcp-google#setup
 ```
 GOOGLE_OAUTH_CLIENT_ID="<your-key>"
 GOOGLE_OAUTH_CLIENT_SECRET="<your-key>"
-GOOGLE_USER_EMAIL="<your-email>"
+USER_GOOGLE_EMAIL="<your-email>"
 ```
 
 4. Google workspace MCP requires an Stdio transport version of MCP to be configured.
-Clone this repo and configure an environment variable for Google workspace MCP to work.
+Clone this repo and configure environment variables for Google workspace MCP to work.
 
 http://github.com/taylorwilsdon/google_workspace_mcp
 
@@ -395,24 +395,22 @@ To download transcript: Go to loom.com > Sign-in > Click on meeting > View Recor
 ## Calendar > Google Calendar, Clockwise
 
 ```
-** Meetings management
-> list all my meetings for today / tomorrow / yesterday
-> list all my meetings for this week / next week / last week
-> list all my meetings on 1-Sep-2025
-
 ** Meeting summary
-> generate summary of meetings that I have today / I attended yesterday / are planned for tomorrow
-> Generate summary of meetings I have this week / I attended last week / I have next week / I have this week
-> Generate summary of meetings on 1-Oct-2025
-> Generate summary of my meetings from 22-Sep-2025 to 26-Sep-2025
+> Brief me about meetings that I have today / I attended yesterday / are planned for tomorrow
+> Brief me about meetings I have this week / I attended last week / I have next week / I have this week
+> Brief me about meetings on 1-Sep-2025
+> Brief me about meetings from 22-Sep-2025 to 26-Sep-2025
 
-** Daily review from accepted meetings
-> Generate daily review of meetings (Defaults to today)
-> Generate daily review of my meetings for today / yesterday / 1-Oct-2025
+** Daily review of accepted meetings
+> Show daily review of my meetings (Defaults to today)
+> Show daily review of my meetings for today / yesterday / 1-Sep-2025
 
-** Weekly review from accepted meetings
-> Generate weekly review of meetings (Defaults to current week)
-> Generate weekly review of my meetings for this week / last week / from 1-Sep-2025 to 10-Sep-2025
+** Weekly review of accepted meetings
+> Show weekly review of my meetings (Defaults to current week)
+> Show weekly review of my meetings for this week / last week / from 1-Sep-2025 to 10-Sep-2025
+
+** Deep work scheduler
+> Brief me about my meetings tomorrow. Schedule a deepwork slot for 60 mins for the task - "<insert complex task here>"
 
 ** Meetings optimizer - batching, focus time etc
 TODO

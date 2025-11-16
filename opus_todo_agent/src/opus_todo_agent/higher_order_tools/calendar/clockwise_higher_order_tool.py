@@ -25,13 +25,13 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
 
     async def initialize_tools(self, agent, fastmcp_client_context):
         @agent.tool
-        async def generate_review_of_past_or_future_daily_meetings(
+        async def daily_review_of_meetings(
             ctx: RunContext[str],
             predefined_daterange_key: str = "today",
             summarize: bool = True,
         ) -> List[ClockwiseMeeting]:
             """
-            Generate daily review of Clockwise meetings.
+            Return daily review of Clockwise meetings.
             Supported filters for predefined_daterange_key are:
             1. today
             2. yesterday
@@ -82,7 +82,7 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
             return meetings
 
         @agent.tool
-        async def generate_review_of_past_or_future_weekly_meetings(
+        async def weekly_review_of_meetings(
             ctx: RunContext[str],
             predefined_weekrange_key: str = "current_week",
             from_date: str = "",
@@ -90,7 +90,7 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
             summarize: bool = True,
         ) -> List[ClockwiseMeeting]:
             """
-            Generate weekly review of Clockwise meetings.
+            Return weekly review of Clockwise meetings.
             Supported filters for predefined_weekrange_key are:
             1. last_week
             2. current_week

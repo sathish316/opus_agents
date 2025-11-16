@@ -57,10 +57,12 @@ class GoogleCalendarHelper:
         """
         Get meetings for a predefined date range
         Values of predefined date ranges are:
-        1. last_week
-        2. today
-        3. yesterday
+        1. today
+        2. yesterday
+        3. tomorrow
         4. current_week
+        5. last_week
+        6. next_week
         """
         logger.info(
             f"[Tool call] Fetching Google Calendar Meetings for predefined date range: {predefined_daterange_key}"
@@ -69,10 +71,14 @@ class GoogleCalendarHelper:
             since, until = self.datetime_helper.get_last_week_datetime_range()
         elif predefined_daterange_key == "current_week":
             since, until = self.datetime_helper.get_current_week_datetime_range()
+        elif predefined_daterange_key == "next_week":
+            since, until = self.datetime_helper.get_next_week_datetime_range()
         elif predefined_daterange_key == "today":
             since, until = self.datetime_helper.get_today_datetime_range()
         elif predefined_daterange_key == "yesterday":
             since, until = self.datetime_helper.get_yesterday_datetime_range()
+        elif predefined_daterange_key == "tomorrow":
+            since, until = self.datetime_helper.get_tomorrow_datetime_range()
         else:
             raise ValueError(
                 f"Invalid predefined date range key: {predefined_daterange_key}"
