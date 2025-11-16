@@ -1,8 +1,5 @@
 import os
 
-from pydantic_ai.mcp import MCPServerStdio
-
-from opus_agent_base.tools.mcp_server_config import MCPServerConfig
 from opus_agent_base.tools.fastmcp_server_config import FastMCPServerConfig
 
 
@@ -15,19 +12,17 @@ class TodoMCPServerRegistry:
         self.config_manager = config_manager
         pass
 
-    def get_todoist_mcp_server(self) -> MCPServerConfig:
+    def get_todoist_mcp_server(self) -> FastMCPServerConfig:
         # https://github.com/abhiz123/todoist-mcp-server
-        return MCPServerConfig(
+        return FastMCPServerConfig(
             "todoist",
             "productivity.todo.todoist",
-            "stdio",
-            MCPServerStdio(
-                command="npx",
-                args=["-y", "@abhiz123/todoist-mcp-server"],
-                env={"TODOIST_API_TOKEN": os.getenv("TODOIST_API_TOKEN")},
-                tool_prefix="todoist",
-            )
-        )
+            {
+                "command": "npx",
+                "args": ["-y", "@abhiz123/todoist-mcp-server"],
+                "env": {"TODOIST_API_TOKEN": os.getenv("TODOIST_API_TOKEN")},
+                "tool_prefix=": "todoist",
+            })
 
     def get_google_calendar_fastmcp_server(self) -> FastMCPServerConfig:
         # Google workspace is run as a stdio MCP server using https://github.com/taylorwilsdon/google_workspace_mcp

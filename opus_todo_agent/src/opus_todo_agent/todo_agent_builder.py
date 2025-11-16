@@ -28,8 +28,8 @@ class TodoAgentBuilder(AgentBuilder):
         """Build the todo agent"""
         self._add_instructions()
         self._add_prompt_templates()
-        self._add_mcp_servers()
-        self._add_fastmcp_servers()
+        self._add_mcp_servers_config()
+        self._add_fastmcp_servers_config()
         self._add_custom_tools()
         self._add_higher_order_tools()
         return self
@@ -78,18 +78,16 @@ class TodoAgentBuilder(AgentBuilder):
             "prompt_templates/tools/productivity/OBSIDIAN_NOTES_PROMPT_TEMPLATE.md",
         )
 
-    def _add_mcp_servers(self):
+    def _add_mcp_servers_config(self):
         mcp_server_registry = MCPServerRegistry()
         todo_mcp_server_registry = TodoMCPServerRegistry(self.config_manager)
         mcp_servers_config = [
-            mcp_server_registry.get_filesystem_mcp_server(),
             mcp_server_registry.get_search_mcp_server(),
-            mcp_server_registry.get_code_execution_mcp_server(),
             todo_mcp_server_registry.get_todoist_mcp_server(),
         ]
-        self.mcp_manager.add_servers(mcp_servers_config)
+        self.add_mcp_servers_config(mcp_servers_config)
 
-    def _add_fastmcp_servers(self):
+    def _add_fastmcp_servers_config(self):
         mcp_server_registry = MCPServerRegistry()
         todo_mcp_server_registry = TodoMCPServerRegistry(self.config_manager)
         fastmcp_servers_config = [
@@ -98,7 +96,7 @@ class TodoAgentBuilder(AgentBuilder):
             todo_mcp_server_registry.get_clockwise_fastmcp_server(),
             todo_mcp_server_registry.get_slack_fastmcp_server(),
         ]
-        self.mcp_manager.add_fastmcp_servers(fastmcp_servers_config)
+        self.add_mcp_servers_config(fastmcp_servers_config)
 
     def _add_custom_tools(self):
         self.custom_tools: list[CustomTool] = [

@@ -35,10 +35,6 @@ class AgentBuilder:
         self.model_manager = ModelManager(self.config_manager)
         return self
 
-    def add_mcp_manager(self):
-        self.mcp_manager = MCPManager(self.config_manager)
-        return self
-
     def custom_tool(self, custom_tool: CustomTool):
         self.custom_tools.append(custom_tool)
         return self
@@ -47,3 +43,10 @@ class AgentBuilder:
         self.higher_order_tools.append(higher_order_tool)
         return self
 
+    def add_mcp_server_config(self, mcp_server_config: FastMCPServerConfig):
+        self.mcp_servers_config.append(mcp_server_config)
+        return self
+
+    def add_mcp_servers_config(self, mcp_servers_config: list[FastMCPServerConfig]):
+        self.mcp_servers_config.extend(mcp_servers_config)
+        return self

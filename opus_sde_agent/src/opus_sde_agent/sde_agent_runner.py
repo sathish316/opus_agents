@@ -18,7 +18,6 @@ async def run_sde_agent():
             .set_system_prompt_keys(["opus_agent_instruction", "sde_agent_instruction"])
             .add_instructions_manager()
             .add_model_manager()
-            .add_mcp_manager()
             .instruction(
                 "opus_agent_instruction", "prompts/agent/OPUS_AGENT_INSTRUCTIONS.md"
             )
@@ -29,5 +28,5 @@ async def run_sde_agent():
     )
 
     # run SDE Agent
-    agent_runner = AgentRunner(name=sde_agent.name, agent_builder=sde_agent)
+    agent_runner = AgentRunner(sde_agent)
     await agent_runner.run_agent()

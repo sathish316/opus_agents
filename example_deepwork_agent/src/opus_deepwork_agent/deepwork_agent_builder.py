@@ -13,10 +13,10 @@ class DeepWorkAgentBuilder(AgentBuilder):
 
     def build(self) -> AgentBuilder:
         """Build the DeepWork agent with all components"""
-        self._add_mcp_servers()
+        self._add_mcp_servers_config()
         return self
 
-    def _add_mcp_servers(self):
+    def _add_mcp_servers_config(self):
         """Add FastMCP servers (Clockwise for calendar)"""
         mcp_server_registry = MCPServerRegistry()
         deepwork_mcp_server_registry = DeepWorkMCPServerRegistry(self.config_manager)
@@ -24,4 +24,4 @@ class DeepWorkAgentBuilder(AgentBuilder):
             mcp_server_registry.get_datetime_mcp_server(),
             deepwork_mcp_server_registry.get_clockwise_fastmcp_server(),
         ]
-        self.mcp_manager.add_fastmcp_servers(mcp_servers_config)
+        self.add_mcp_servers_config(mcp_servers_config)

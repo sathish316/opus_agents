@@ -17,7 +17,6 @@ class AgentInstance:
 
     def __new__(
         cls,
-        name: str,
         agent_builder: AgentBuilder,
     ):
         if cls._instance is None:
@@ -26,34 +25,30 @@ class AgentInstance:
 
     def __init__(
         self,
-        name: str,
         agent_builder: AgentBuilder,
     ):
         """Initialize is called every time, but we only set up once."""
-        # Don't reinitialize if already done
         if AgentInstance._initialized:
             return
         self.agent_manager = AgentManager(
-            name,
+            agent_builder.name,
             agent_builder,
         )
 
     async def initialize(self):
         """Initialize Agent"""
         if AgentInstance._initialized:
-            logger.info("♻️  Agent initialized, reusing existing instance")
+            logger.info("Agent initialized, reusing existing instance")
             return self
 
-        logger.info("🚀 Initializing Agent...")
+        logger.info("Initializing Agent Instance...")
 
         try:
-            # initialize agent
             await self.agent_manager.initialize_agent()
             self.agent = self.agent_manager.get_agent()
 
             AgentInstance._initialized = True
-            logger.info("✅ Agent initialized successfully")
-            await self.agent_manager.inspect_tools()
+            logger.info("Agent Instance initialized successfully")
 
             return self
 

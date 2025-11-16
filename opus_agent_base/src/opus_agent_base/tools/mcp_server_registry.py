@@ -1,6 +1,3 @@
-from pydantic_ai.mcp import MCPServerStdio
-
-from opus_agent_base.tools.mcp_server_config import MCPServerConfig
 from opus_agent_base.tools.fastmcp_server_config import FastMCPServerConfig
 
 
@@ -8,53 +5,37 @@ class MCPServerRegistry:
     """
     Registry for MCP servers
     """
-
-    def __init__(self):
-        pass
-
-    def register_server(self, mcp_server_config: MCPServerConfig):
-        pass
-
-    def get_filesystem_mcp_server(self) -> MCPServerConfig:
-        return MCPServerConfig(
+    def get_filesystem_mcp_server(self) -> FastMCPServerConfig:
+        return FastMCPServerConfig(
             "desktop_commander",
             "general.filesystem",
-            "stdio",
-            MCPServerStdio(
-                command="npx",
-                args=["-y", "@wonderwhy-er/desktop-commander"],
-                tool_prefix="desktop_commander",
-            )
-        )
+            {
+                "command": "npx",
+                "args": [
+                    "-y",
+                    "@wonderwhy-er/desktop-commander@latest"
+                ]
+            })
 
-    def get_search_mcp_server(self) -> MCPServerConfig:
-        return MCPServerConfig(
+    def get_search_mcp_server(self) -> FastMCPServerConfig:
+        return FastMCPServerConfig(
             "duckduckgo-mcp-server",
             "general.search",
-            "stdio",
-            MCPServerStdio(command="uvx", args=["duckduckgo-mcp-server"])
-        )
+            {
+                "command": "uvx",
+                "args": ["duckduckgo-mcp-server"]
+            })
 
-    def get_code_execution_mcp_server(self) -> MCPServerConfig:
-        return MCPServerConfig(
+    def get_python_code_execution_mcp_server(self) -> FastMCPServerConfig:
+        return FastMCPServerConfig(
             "run_python",
             "general.code_execution",
-            "stdio",
-            MCPServerStdio(
-                "deno",
-                args=[
-                    "run",
-                    "-N",
-                    "-R=node_modules",
-                    "-W=node_modules",
-                    "--node-modules-dir=auto",
-                    "jsr:@pydantic/mcp-run-python",
-                    "stdio",
-                ],
-            )
-        )
+            {
+                "command": "uvx",
+                "args": ["-y", "mcp-run-python"]
+            })
 
-    def get_datetime_mcp_server(self) -> MCPServerConfig:
+    def get_datetime_mcp_server(self) -> FastMCPServerConfig:
         return FastMCPServerConfig(
             "mcp-datetime",
             "general.datetime",

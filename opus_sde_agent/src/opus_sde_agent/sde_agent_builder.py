@@ -1,5 +1,4 @@
 from opus_agent_base.agent.agent_builder import AgentBuilder
-from opus_agent_base.agent.agent_runner import AgentInstance
 from opus_agent_base.config.config_manager import ConfigManager
 from opus_agent_base.tools.custom_tool import CustomTool
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
@@ -24,8 +23,7 @@ class SDEAgentBuilder(AgentBuilder):
         """Build the sde agent"""
         self._add_instructions()
         self._add_prompt_templates()
-        self._add_mcp_servers()
-        self._add_fastmcp_servers()
+        self._add_mcp_servers_config()
         self._add_custom_tools()
         self._add_higher_order_tools()
         return self
@@ -57,21 +55,14 @@ class SDEAgentBuilder(AgentBuilder):
             "jira_issue_classifier", "prompt_templates/tools/sde/JIRA_ISSUE_CLASSIFIER.md"
         )
 
-    def _add_mcp_servers(self):
+    def _add_mcp_servers_config(self):
         mcp_server_registry = MCPServerRegistry()
         sde_mcp_server_registry = SDEMCPServerRegistry(self.config_manager)
         mcp_servers_config = [
+            # general
             mcp_server_registry.get_filesystem_mcp_server(),
             mcp_server_registry.get_search_mcp_server(),
-            mcp_server_registry.get_code_execution_mcp_server(),
-        ]
-        mcp_servers_config = [config for config in mcp_servers_config if config is not None]
-        self.mcp_manager.add_servers(mcp_servers_config)
-
-    def _add_fastmcp_servers(self):
-        mcp_server_registry = MCPServerRegistry()
-        sde_mcp_server_registry = SDEMCPServerRegistry(self.config_manager)
-        fastmcp_servers_config = [
+            mcp_server_registry.get_python_code_execution_mcp_server(),
             mcp_server_registry.get_datetime_mcp_server(),
             # code
             sde_mcp_server_registry.get_github_fastmcp_server(),
@@ -87,8 +78,8 @@ class SDEAgentBuilder(AgentBuilder):
             sde_mcp_server_registry.get_grafana_fastmcp_server(),
             sde_mcp_server_registry.get_grafana_tempo_fastmcp_server(),
         ]
-        fastmcp_servers_config = [config for config in fastmcp_servers_config if config is not None]
-        self.mcp_manager.add_fastmcp_servers(fastmcp_servers_config)
+        mcp_servers_config = [config for config in mcp_servers_config if config is not None]
+        self.add_mcp_servers_config(mcp_servers_config)
 
     def _add_custom_tools(self):
         self.custom_tools: list[CustomTool] = []
