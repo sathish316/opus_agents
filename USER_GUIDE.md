@@ -424,16 +424,14 @@ TODO
 ```
 ** Catchup on Slack channel
 > List my slack channels
-> List recent messages in slack channel foo (and summarize them)
+> List recent messages in slack channel foo and summarize them
 > Brief me about slack channel foo from today / yesterday / custom date (and summarize them)
 
 ** Catchup on Project specific slack channels
-> Brief me about Bar project's slack channels from last one day / last one week / last x days
-> List recent messages in Bar project's slack channels (from last x days)
+> Brief me about Bar project's slack channels from last one day / one week / last x days
 
 ** Catchup on Team specific slack channels
 > Brief me about Bar team's slack channels from last one day / last one week / last x days
-> List recent messages in Bar team's slack channels (from last x days)
 ```
 
 ## Meeting recorder > Zoom or Loom

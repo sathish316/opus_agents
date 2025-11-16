@@ -7,6 +7,7 @@ from pydantic_ai import RunContext
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_todo_agent.helper.chat.slack_helper import SlackHelper
 from opus_todo_agent.higher_order_tools.chat.slack_assistant import SlackAssistant
+from opus_agent_base.common.logging_config import console_log
 
 logger = logging.getLogger(__name__)
 
@@ -64,7 +65,10 @@ class SlackHigherOrderTool(HigherOrderTool):
             """
             try:
                 logging.info(
-                    f"[CustomToolCall] Fetching slack conversation history for channel_scope_type: {channel_scope_type}, team_name: {team_name}, project_name: {project_name}, channel_name: {channel_name}, time_limit: {time_limit}, summarize: {summarize}"
+                    f"[CustomToolCall] Fetching slack conversation history for channel_scope_type: {channel_scope_type}, team_name: {team_name}, project_name: {project_name}, channel_name: {channel_name}, time_limit: {time_limit}"
+                )
+                console_log(
+                    f"[CustomToolCall] Fetching slack conversation history for channel_scope_type: {channel_scope_type}, team_name: {team_name}, project_name: {project_name}, channel_name: {channel_name}, time_limit: {time_limit}"
                 )
                 channel_scope_name = team_name or project_name or channel_name
                 conversation_summary = await self.slack_assistant.fetch_and_summarize_messages_from_channels(
