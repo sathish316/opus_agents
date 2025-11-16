@@ -1,7 +1,7 @@
 import logging
 
 from opus_agent_base.agent.agent_builder import AgentBuilder
-from opus_agent_base.agent.agent_instance import AgentInstance
+from opus_agent_base.agent.agent_manager import AgentManager
 from opus_agent_base.common.logging_config import console_log, quick_setup
 
 logger = logging.getLogger(__name__)
@@ -13,6 +13,11 @@ class AgentRunner:
         agent_builder: AgentBuilder,
     ):
         self.agent_builder = agent_builder
+        self.agent_manager = None
+        self.agent = None
+        self._setup_logging()
+
+    def _setup_logging(self):
         log_level = self.agent_builder.config_manager.get_setting("debug.log_level", "ERROR")
         quick_setup(log_level=log_level)
 
@@ -21,10 +26,16 @@ class AgentRunner:
         try:
             console_log("🚀 Starting Agent...")
             # Initialize Agent
-            agent_instance = AgentInstance(self.agent_builder)
-            agent = await agent_instance.get_agent()
+            if self.agent is None:
+                self.agent_manager = AgentManager(
+                  self.agent_builder.name,
+                  self.agent_builder
+                )
+                await self.agent_manager.initialize_agent()
+                self.agent = self.agent_manager.get_agent()
+
             console_log("✅ Agent started")
-            await agent.to_cli()
+            await self.agent.to_cli()
 
         except ExceptionGroup as eg:
             console_log("❌ Exception running agent")
