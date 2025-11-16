@@ -25,7 +25,7 @@ This guide will walk you through creating a custom tool that queries tasks tagge
 
 Create data models for your API responses. This ensures type safety and makes your code more maintainable.
 
-**File:** `opus_todo_agent/src/opus_todo_agent/models/todo/todoist_models.py`
+**File:** `<agent-src>/models/todo/todoist_models.py`
 
 ```python
 from dataclasses import dataclass
@@ -46,7 +46,7 @@ class Task:
 
 Create a client class to handle all API interactions. This separates concerns and makes testing easier.
 
-**File:** `opus_todo_agent/src/opus_todo_agent/custom_tools/todo/todoist_client.py`
+**File:** `<agent-src>/custom_tools/todo/todoist_client.py`
 
 ```python
 class TodoistClient:
@@ -138,7 +138,7 @@ class TodoistClient:
 Now create Custom tool that the agent will use. This inherits from `CustomTool` base class.
 The instructions that you specify in the tool comment are available to an AI agent to get context of the tool and when to invoke it.
 
-**File:** `opus_todo_agent/src/opus_todo_agent/custom_tools/todo/todoist_tools.py`
+**File:** `<agent-src>/custom_tools/todo/todoist_tools.py`
 
 ```python
 logger = logging.getLogger(__name__)
@@ -151,10 +151,9 @@ class TodoistTools(CustomTool):
     def __init__(
         self, config_manager=None, instructions_manager=None, model_manager=None
     ):
-        # Initialize base class with tool name and config key
         super().__init__(
-            "todoist_deepwork",  # Tool name
-            "deepwork.todo.todoist",  # Config key path
+            "todoist_deepwork",
+            "deepwork.todo.todoist",
             config_manager,
             instructions_manager,
             model_manager,
@@ -203,7 +202,7 @@ class TodoistTools(CustomTool):
 
 ## Step 4: Add custom tool to your Agent
 
-If you're extending an existing Agent, make these changes in `todo_agent_builder.py`. If you're building a new agent by following the GUIDE_BUILD_AN_AGENT.md, make these changes in `deepwork_agent_builder.py`
+If you're extending an existing Agent, make these changes in `todo_agent_builder.py`. If you're building a new agent by following [GUIDE_BUILD_AN_AGENT.md](GUIDE_BUILD_AN_AGENT.md), make these changes in `deepwork_agent_builder.py`
 
 ```python
     def _add_custom_tools(self):
@@ -262,6 +261,3 @@ uv run main.py
 - Check out [Guide to Build a new deepwork agent](./GUIDE_BUILD_NEW_DEEPWORK_AGENT.md) for adding these skills to an Agent
 
 ---
-
-You've created a production-ready custom tool that queries Todoist for deep work tasks. This pattern can be adapted for any API integration or custom business logic, that is available as a skill to your Agent.
-

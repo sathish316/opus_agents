@@ -33,7 +33,7 @@ First, ensure the Clockwise MCP server is available. Higher order tools build on
 
 Add Clockwise MCP server to your Agent's MCP registry. This is similar to adding MCP servers in mcp.json in other AI tools. The additional config here lets you contol which MCP servers/tools are enabled for the Agent.
 
-**File:** `opus_todo_agent/todo_mcp_server_registry.py`
+**File:** `<agent-src>/todo_mcp_server_registry.py` or `<agent-src>/deepwork_mcp_server_registry.py`
 
 ```python
 class TodoMCPServerRegistry(MCPServerRegistry):
@@ -58,16 +58,16 @@ class TodoMCPServerRegistry(MCPServerRegistry):
 
 MCP servers added to the agent are loaded on startup and are made available as tools
 
-**File:** `opus_todo_agent/todo_agent_builder.py`
+**File:** `<agent-src>/todo_agent_builder.py` or `<agent-src>/deepwork_agent_builder.py`
 
 ```python
-    def _add_fastmcp_servers(self):
+    def _add_mcp_servers_config(self):
         mcp_server_registry = MCPServerRegistry()
         todo_mcp_server_registry = TodoMCPServerRegistry(self.config_manager)
-        fastmcp_servers_config = [
+        mcp_servers_config = [
             todo_mcp_server_registry.get_clockwise_fastmcp_server(),
         ]
-        self.mcp_manager.add_fastmcp_servers(fastmcp_servers_config)
+        self.add_mcp_servers_config(mcp_servers_config)
 ```
 
 ### 3. Enable Clockwise MCP server and tools
@@ -89,11 +89,11 @@ mcp_config:
 
 Analyze MCP tools to find the capability that will be useful to you:
 
-TODO: Add section on MCP inspector
+Optionally, you can use [MCP inspector](https://github.com/modelcontextprotocol/inspector) to test or to understand the contract of Tools provided by MCP servers.
 
 Now create the higher order tool that wraps the MCP server with custom logic.
 
-**File:** `opus_todo_agent/higher_order_tools/calendar/clockwise_higher_order_tool.py`
+**File:** `<agent-src>/higher_order_tools/calendar/clockwise_higher_order_tool.py`
 
 ```python
 
@@ -184,7 +184,7 @@ class ClockwiseHigherOrderTool(HigherOrderTool):
 
 ## Step 3: Register Higher Order Tool
 
-Add higher order tool to an existing or new agent. If you're extending an existing Agent, make these changes in `todo_agent_builder.py`. If you're building a new agent by following the GUIDE_BUILD_AN_AGENT.md, make these changes in `deepwork_agent_builder.py`
+Add higher order tool to an existing or new agent. If you're extending an existing Agent, make these changes in `todo_agent_builder.py`. If you're building a new agent by following [GUIDE_BUILD_AN_AGENT.md](GUIDE_BUILD_AN_AGENT.md), make these changes in `deepwork_agent_builder.py`
 
 ```python
     def _add_higher_order_tools(self):
@@ -211,9 +211,8 @@ uv run main.py
 ```
 
 ```bash
-# Test various scenarios:
+# Test prompts:
 > Schedule a deep work session today
 > Schedule a focus session today
 > Schedule a deep work meeting at 2 PM today for 90 minutes
-> I need 2 hours to work on the report, prefer morning
 ```
