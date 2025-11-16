@@ -3,3 +3,4 @@ node_modules
 skip
 *.json
 __pycache__
+.DS_Store
