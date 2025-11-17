@@ -10,9 +10,8 @@ logger = logging.getLogger(__name__)
 
 class MetaTool:
     """
-    Base class for Meta tools that can dynamically create tools 
+    Base class for Meta tools that can dynamically create tools
     for standard usecases like OpenAPI specs, Scrapers, Bash/Python scripts etc
-    without writing code.
 
     Meta tools are ideal when you want to integrate APIs without writing custom code
     or using an MCP server for a specific API.

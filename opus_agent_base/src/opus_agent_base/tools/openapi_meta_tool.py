@@ -69,12 +69,12 @@ class OpenAPIMetaTool(MetaTool):
         """
         logger.info("Setup OpenAPI MetaTool")
         spec = await self.load_spec()
-        logger.info(f"OpenAPI spec loaded: {spec}") #debug
+        logger.debug(f"OpenAPI spec loaded: {spec}")
         mcp_server = await self.create_mcp_server()
-        logger.info("OpenAPI MCP Server created for Spec") #debug
+        logger.debug("OpenAPI MCP Server created for Spec")
         client, tools = await self.create_mcp_client_and_initialize_tools()
-        logger.info("OpenAPI MCP Client and tools created") #debug
-        logger.info(f"OpenAPI Tools: {tools}") #debug
+        logger.debug("OpenAPI MCP Client and tools created")
+        logger.info(f"OpenAPI Tools: {tools}")
 
     async def load_spec(self) -> Dict[str, Any]:
         """
@@ -224,7 +224,7 @@ IMPORTANT: Pass parameters directly to the function, not nested in a dictionary.
 Example:
 ```
 call_dynamic_tool(api_name="topstories_json")
-call_dynamic_tool(api_name="getItem", id=45947810)
+call_dynamic_tool(api_name="getItem", id="45947810")
 ```
                     """
                     logger.info(f"OpenAPI Tool Instructions for {self.name}: {tool_instructions}")
@@ -291,7 +291,7 @@ call_dynamic_tool(api_name="getItem", id=45947810)
                 name=dynamic_tool_name,
                 description=f"Call any API from the {self.name} OpenAPI specification. Pass api_name and any required parameters.",
                 json_schema=dynamic_tool_schema,
-                function=call_dynamic_tool_impl
+                function=call_dynamic_tool_impl,
             )
 
             logger.info(f"Successfully built OpenAPI MetaTool: {self.name}")

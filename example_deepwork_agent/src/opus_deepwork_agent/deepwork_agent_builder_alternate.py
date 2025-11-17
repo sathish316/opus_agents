@@ -68,5 +68,5 @@ class DeepWorkAgentBuilderAlternate(AgentBuilder):
     def _add_meta_tools(self):
         """Add meta tools (HackerNews API)"""
         self.meta_tools: list[MetaTool] = [
-            HackerNewsMetaTool(),
+            HackerNewsMetaTool(self.config_manager, self.instructions_manager),
         ]

@@ -216,3 +216,9 @@ uv run main.py
 > Schedule a focus session today
 > Schedule a deep work meeting at 2 PM today for 90 minutes
 ```
+
+## Next Steps
+
+- Check out [Guide to Build a new deepwork agent](./GUIDE_BUILD_NEW_DEEPWORK_AGENT.md)
+
+---

@@ -25,8 +25,11 @@ class AgentBuilder:
         self.system_prompt_keys = system_prompt_keys
         return self
 
-    def add_instructions_manager(self):
-        self.instructions_manager = InstructionsManager()
+    def add_instructions_manager(self, instructions_manager: InstructionsManager = None):
+        if instructions_manager is not None:
+            self.instructions_manager = instructions_manager
+        else:
+            self.instructions_manager = InstructionsManager()
         return self
 
     def instruction(self, key: str, file: str):
