@@ -2,7 +2,7 @@
 
 ## Overview
 
-Opus Agents is an open-source Agentic AI framework and toolkit, that helps you build AI Agents and configure Tools easily.
+Opus Agents is an open-source Agentic AI framework, that helps you build AI Agents and configure Tools easily.
 
 The goal of the framework is to build Agents and Tools that can be used in a more predictable and reliable way, compared to just adding MCP servers to Agents or other AI tools like Claude Desktop, Cursor etc. It reduces Context pollution from multiple MCP servers/tools and improves Tool selection accuracy using abstractions like Custom tool, Higher order tool, Meta tool etc.
 
@@ -18,6 +18,7 @@ Example of an Agent built with OpusAgents framework:
         .add_model_manager()
         .custom_tool(TodoistTools())
         .higher_order_tool(ClockwiseHigherOrderTool())
+        .meta_tool(HackerNewsMetaTool(config_manager))
         .build()
     )
 
@@ -35,10 +36,10 @@ Both the framework and bundled Agents are extensible/hackable, making it easy to
 ## OpusAgents Framework - Getting started
 
 OpusAgents framework can be used to build your own Tools or build your own Agent. Refer to the following guides to get started:
-* **[Build a custom tool](docs/GUIDE_ADD_CUSTOM_TOOL.md)** - Custom tools extend the capability of Agent, similar to function tools
-* **[Build a higher order tool](docs/GUIDE_ADD_HIGHER_ORDER_TOOL.md)** - Higher order tools are capabilities on top of one or more existing MCP servers/tools, to make them easier to use for the Agent.
-* TODO:Meta tool - Meta tools are re-usable tools on top of existing patterns like OpenAPI specs, Bash scripts, Scraping tools etc
-* **[Build an agent](docs/GUIDE_BUILD_AN_AGENT.md)** - 
+* **[Build a Custom tool](docs/GUIDE_ADD_CUSTOM_TOOL.md)** - Custom tools extend the capability of Agent, similar to function tools
+* **[Build a Higher Order tool](docs/GUIDE_ADD_HIGHER_ORDER_TOOL.md)** - Higher order tools are capabilities on top of one or more existing MCP servers/tools, to make them easier to use for the Agent.
+* **[Build a Meta tool](docs/GUIDE_ADD_META_TOOL.md)** - Meta tools are re-usable tools on top of existing patterns like OpenAPI specs, which can be built with minimal code.
+* **[Build an agent](docs/GUIDE_BUILD_AN_AGENT.md)** - A Complete Agent demonstrating how to use all aspects of the framework
 
 The framework is built on top of [PydanticAI](https://ai.pydantic.dev/) and [FastMCP](https://gofastmcp.com/)
 
@@ -91,7 +92,7 @@ The project will remain open source under the [MIT LICENSE](LICENSE.md)
 
 ## About / Inspiration
 
-Opinions on AI range from extremes that "AI will replace humans" or "AI in its current state is next token prediction and not intelligence". This project draws inspiration from Neil DeGrasse Tyson's balanced perspective on AI from his podcast (https://www.youtube.com/watch?v=BYizgB2FcAQ). He suggests that society is already living on an exponential curve, since the days of Industrial Revolution to Automobiles to Internet and AI will drive the next wave of exponential growth through human productivity. We are already seeing glimpses of this in AI Coding tools like Cursor and Coding CLIs. For this vision to become possible in all areas, AI has to be a Jarvis-like companion for most knowledge-workers. OpusAgents is an attempt to make the interactions between AI and Software/Tools used by knowledge workers as seamless, customizable, predictable/reliable and Jarvis-like as possible.
+Opinions on AI range from extremes that "AI will replace humans" or "AI in its current state is next token prediction and not intelligence". This project draws inspiration from Neil DeGrasse Tyson's balanced perspective on AI from his podcast (https://www.youtube.com/watch?v=BYizgB2FcAQ). He suggests that society is already living on an exponential curve, since the days of Industrial Revolution to Automobiles to Internet and AI will drive the next wave of exponential growth through human productivity. We are already seeing glimpses of this in AI Coding tools like Cursor and Coding CLIs. For this vision to become possible in all areas, AI has to be a Jarvis-like companion for most of the software/tools we use. OpusAgents is an attempt to make the interactions between AI and Software/Tools we use everyday as seamless, customizable, predictable/reliable and Jarvis-like as possible.
 
 The name is inspired by the latin phrase "magnum opus" that means "great work". 
 

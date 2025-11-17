@@ -23,6 +23,12 @@ mcp_config:
         enabled: true
         higher_order_tools_enabled: true
 
+meta_tools:
+  hackernews_api:
+    allowed_apis:
+    - "getItem"
+    - "topstories_json"
+
 # Environment Variables (set these in your shell)
 # export TODOIST_API_KEY="your_todoist_api_key"
 # Clockwise uses OAuth, no API key needed

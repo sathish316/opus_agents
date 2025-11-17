@@ -3,6 +3,7 @@ from opus_agent_base.prompt.instructions_manager import InstructionsManager
 from opus_agent_base.model.model_manager import ModelManager
 from opus_agent_base.tools.custom_tool import CustomTool
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
+from opus_agent_base.tools.meta_tool import MetaTool
 from opus_agent_base.tools.fastmcp_server_config import FastMCPServerConfig
 from opus_agent_base.tools.mcp_manager import MCPManager
 
@@ -13,6 +14,7 @@ class AgentBuilder:
         self.config_manager = config_manager
         self.custom_tools: list[CustomTool] = []
         self.higher_order_tools: list[HigherOrderTool] = []
+        self.meta_tools: list[MetaTool] = []
         self.mcp_servers_config: list[FastMCPServerConfig] = []
 
     def name(self, name: str):
@@ -23,8 +25,11 @@ class AgentBuilder:
         self.system_prompt_keys = system_prompt_keys
         return self
 
-    def add_instructions_manager(self):
-        self.instructions_manager = InstructionsManager()
+    def add_instructions_manager(self, instructions_manager: InstructionsManager = None):
+        if instructions_manager is not None:
+            self.instructions_manager = instructions_manager
+        else:
+            self.instructions_manager = InstructionsManager()
         return self
 
     def instruction(self, key: str, file: str):
@@ -41,6 +46,10 @@ class AgentBuilder:
 
     def higher_order_tool(self, higher_order_tool: HigherOrderTool):
         self.higher_order_tools.append(higher_order_tool)
+        return self
+
+    def meta_tool(self, meta_tool: MetaTool):
+        self.meta_tools.append(meta_tool)
         return self
 
     def add_mcp_server_config(self, mcp_server_config: FastMCPServerConfig):
