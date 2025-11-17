@@ -35,9 +35,9 @@ Both the framework and bundled Agents are extensible/hackable, making it easy to
 ## OpusAgents Framework - Getting started
 
 OpusAgents framework can be used to build your own Tools or build your own Agent. Refer to the following guides to get started:
-* **[Build a custom tool](docs/GUIDE_ADD_CUSTOM_TOOL.md)** - Custom tools extend the capability of Agent, similar to function tools
-* **[Build a higher order tool](docs/GUIDE_ADD_HIGHER_ORDER_TOOL.md)** - Higher order tools are capabilities on top of one or more existing MCP servers/tools, to make them easier to use for the Agent.
-* TODO:Meta tool - Meta tools are re-usable tools on top of existing patterns like OpenAPI specs, Bash scripts, Scraping tools etc
+* **[Build a Custom tool](docs/GUIDE_ADD_CUSTOM_TOOL.md)** - Custom tools extend the capability of Agent, similar to function tools
+* **[Build a Higher Order tool](docs/GUIDE_ADD_HIGHER_ORDER_TOOL.md)** - Higher order tools are capabilities on top of one or more existing MCP servers/tools, to make them easier to use for the Agent.
+* **[Build a Meta tool](docs/GUIDE_ADD_META_TOOL.md)** - Meta tools are re-usable tools on top of existing patterns like OpenAPI specs, which can be built with minimal code.
 * **[Build an agent](docs/GUIDE_BUILD_AN_AGENT.md)** - 
 
 The framework is built on top of [PydanticAI](https://ai.pydantic.dev/) and [FastMCP](https://gofastmcp.com/)

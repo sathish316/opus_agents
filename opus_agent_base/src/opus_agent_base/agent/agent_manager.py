@@ -4,7 +4,6 @@ import logging
 from fastmcp.client.client import ClientSession
 from mcp.types import Tool as MCPTool
 from pydantic_ai import Agent
-from pydantic_ai.mcp import MCPServer
 from pydantic_ai.tools import Tool
 from singleton_decorator import singleton
 
@@ -13,6 +12,7 @@ from opus_agent_base.common.logging_config import console_log
 from opus_agent_base.tools.custom_tools_manager import CustomToolsManager
 from opus_agent_base.tools.mcp_manager import MCPManager
 from opus_agent_base.tools.higher_order_tools_manager import HigherOrderToolsManager
+from opus_agent_base.tools.meta_tools_manager import MetaToolsManager
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +31,7 @@ class AgentManager:
         self.model_manager = builder.model_manager
         self.custom_tools = builder.custom_tools
         self.higher_order_tools = builder.higher_order_tools
+        self.meta_tools = builder.meta_tools
         self.mcp_servers_config = builder.mcp_servers_config
 
     async def initialize_agent(self):
@@ -68,6 +69,11 @@ class AgentManager:
             self.config_manager, self.agent, self.fastmcp_client_context
         )
         await self.higher_order_tools_manager.initialize_tools(self.higher_order_tools)
+
+        # Add meta tools to Agent
+        self.meta_tools_manager = MetaToolsManager(self.config_manager, self.agent)
+        meta_tools = await self.meta_tools_manager.initialize_tools(self.meta_tools)
+
         logger.info("Agent initialized")
 
     async def initialize_mcp_servers(self):
@@ -106,6 +112,23 @@ class AgentManager:
         if self.fastmcp_client_context is not None:
             result = await self.fastmcp_client_context(tools_initializer)
             console_log(f"Enabled tools: {result}")
+
+        # Initialize Meta tools
+        result = await self.initialize_meta_tools()
+        logger.info(f"Enabled Meta tools: {result}")
+
+    async def initialize_meta_tools(self):
+        # Initialize Meta tools
+        result = []
+        logger.info("Initializing Meta tools")
+        for meta_tool in self.meta_tools:
+            await meta_tool.setup_tool()
+            agent_tool = await meta_tool.build_agent_tool()
+            self.agent_tools.append(agent_tool)
+            result.append(meta_tool.name)
+
+        logger.info("Meta tools initialized")
+        return result
 
     def get_agent(self):
         return self.agent
