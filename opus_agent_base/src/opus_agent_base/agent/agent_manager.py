@@ -13,6 +13,7 @@ from opus_agent_base.common.logging_config import console_log
 from opus_agent_base.tools.custom_tools_manager import CustomToolsManager
 from opus_agent_base.tools.mcp_manager import MCPManager
 from opus_agent_base.tools.higher_order_tools_manager import HigherOrderToolsManager
+from opus_agent_base.tools.meta_tools_manager import MetaToolsManager
 
 logger = logging.getLogger(__name__)
 
@@ -31,6 +32,7 @@ class AgentManager:
         self.model_manager = builder.model_manager
         self.custom_tools = builder.custom_tools
         self.higher_order_tools = builder.higher_order_tools
+        self.meta_tools = builder.meta_tools
         self.mcp_servers_config = builder.mcp_servers_config
 
     async def initialize_agent(self):
@@ -68,6 +70,12 @@ class AgentManager:
             self.config_manager, self.agent, self.fastmcp_client_context
         )
         await self.higher_order_tools_manager.initialize_tools(self.higher_order_tools)
+
+        # Add meta tools to Agent
+        self.meta_tools_manager = MetaToolsManager(
+            self.config_manager, self.fastmcp_client_context
+        )
+        await self.meta_tools_manager.initialize_tools(self.meta_tools)
         logger.info("Agent initialized")
 
     async def initialize_mcp_servers(self):
