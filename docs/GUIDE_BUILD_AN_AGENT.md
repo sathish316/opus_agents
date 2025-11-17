@@ -321,3 +321,10 @@ Test DeepWorkAgent with these prompts:
 > Schedule my top priority deep work task for today on calendar
 
 > Suggest timeslots between 9AM to 6PM for 90 minutes when i can do this task = "Foo". If a slot is available, schedule it on my calendar
+
+## Next Steps
+
+- Check out [Guide to Add custom tool](./GUIDE_ADD_CUSTOM_TOOL.md)
+- Check out [Guide to Add higher order tool](./GUIDE_ADD_HIGHER_ORDER_TOOL.md)
+
+---

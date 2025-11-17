@@ -20,11 +20,11 @@ Tech stacks used are:
 
 **Adding New Custom Tools:**
 
-Check TOLINK
+[GUIDE_ADD_CUSTOM_TOOL.md](docs/GUIDE_ADD_CUSTOM_TOOL.md)
 
 **Adding New Higher order Tools:**
 
-Check TOLINK
+[GUIDE_ADD_HIGHER_ORDER_TOOL.md](docs/GUIDE_ADD_HIGHER_ORDER_TOOL.md)
 
 **Adding Sub-Agents:**
 
@@ -33,4 +33,4 @@ Similar patterns are used in multiple places
 
 **Adding New Agent:**
 
-Check TOLINK
+[GUIDE_BUILD_AN_AGENT.md](docs/GUIDE_BUILD_AN_AGENT.md)
