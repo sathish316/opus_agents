@@ -12,24 +12,25 @@ Tech stacks used are:
 1. Language - Python
 2. uv
 3. Agent orchestration - PydanticAI
-4. CLI - PydanticAI CLI
-5. Admin CLI - Typer
-6. Vector store - Chromadb
-7. MCP servers and clients - PydanticAI and FastMCP
+4. CLI - PydanticAI CLI and Typer
+5. Vector store - Chromadb
+6. MCP servers and clients - FastMCP
 
 ## Development
 
 **Adding New Custom Tools:**
 
-Check custom_tools_manager.py for steps to add your own custom tools
+Check TOLINK
 
 **Adding New Higher order Tools:**
 
-Higher order tools are a special type of custom tools that add functionalities to existing MCP tools.
-Check higher_order_tools_manager.py for steps to add your own custom tools
+Check TOLINK
 
 **Adding Sub-Agents:**
 
-Check zoom_tools.py and zoom_assistant.py for patterns to add Sub-Agent with its own model, prompts etc.
+Check zoom_tools.py and zoom_assistant.py in opus_todo_agent for patterns to add Sub-Agent with its own model, prompts etc.
 Similar patterns are used in multiple places
 
+**Adding New Agent:**
+
+Check TOLINK

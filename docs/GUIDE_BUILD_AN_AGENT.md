@@ -72,7 +72,7 @@ packages = ["src/opus_deepwork_agent"]
 
 For the DeepWork agent, add Clockwise MCP server
 
-**File:** `src/opus_deepwork_agent/deepwork_mcp_server_registry.py`
+**File:** `<agent-src>/deepwork_mcp_server_registry.py`
 
 ```python
 class DeepWorkMCPServerRegistry:
@@ -100,8 +100,8 @@ class DeepWorkMCPServerRegistry:
 ## Step 3: Add custom tools
 
 Follow Custom tool guides to add Todoist tool and Clockwise tool to your Agent
-* GUIDE_ADD_CUSTOM_TOOL.md
-* GUIDE_ADD_HIGHER_ORDER_TOOL.md
+* [GUIDE_ADD_CUSTOM_TOOL.md](GUIDE_ADD_CUSTOM_TOOL.md)
+* [GUIDE_ADD_HIGHER_ORDER_TOOL.md](GUIDE_ADD_HIGHER_ORDER_TOOL.md)
 
 ---
 
@@ -150,7 +150,7 @@ Deep work requires uninterrupted focus. When scheduling:
 AgentBuilder configures all components: prompts, MCP servers, custom tools, and higher order tools.
 Extend AgentBuilder to create a DeepWorkAgentBuilder
 
-**File:** `src/opus_deepwork_agent/deepwork_agent_builder.py`
+**File:** `<agent-src>/deepwork_agent_builder.py`
 
 ```python
 class DeepWorkAgentBuilder(AgentBuilder):
@@ -161,10 +161,10 @@ class DeepWorkAgentBuilder(AgentBuilder):
 
     def build(self) -> AgentBuilder:
         """Build the DeepWork agent with all components"""
-        self._add_mcp_servers()
+        self._add_mcp_servers_config()
         return self
 
-    def _add_mcp_servers(self):
+    def _add_mcp_servers_config(self):
         """Add FastMCP servers (Clockwise for calendar)"""
         mcp_server_registry = MCPServerRegistry()
         deepwork_mcp_server_registry = DeepWorkMCPServerRegistry(self.config_manager)
@@ -172,12 +172,12 @@ class DeepWorkAgentBuilder(AgentBuilder):
             mcp_server_registry.get_datetime_mcp_server(),
             deepwork_mcp_server_registry.get_clockwise_fastmcp_server(),
         ]
-        self.mcp_manager.add_fastmcp_servers(mcp_servers_config)
+        self.add_mcp_servers_config(mcp_servers_config)
 ```
 
 AgentRunner runs your Agent.
 
-**File:** `opus_deepwork_agent/src/opus_deepwork_agent/deepwork_agent_runner.py`
+**File:** `<agent-src>/deepwork_agent_runner.py`
 
 ```python
 async def run_deepwork_agent():
@@ -192,7 +192,6 @@ async def run_deepwork_agent():
         .set_system_prompt_keys(["opus_agent_instruction", "deepwork_agent_instruction"])
         .add_instructions_manager()
         .add_model_manager()
-        .add_mcp_manager()
         .instruction(
             "opus_agent_instruction", "prompts/agent/OPUS_AGENT_INSTRUCTIONS.md"
         )
@@ -205,7 +204,7 @@ async def run_deepwork_agent():
     )
 
     # Run DeepWork Agent
-    agent_runner = AgentRunner(name="deepwork-agent", agent_deps=deepwork_agent)
+    agent_runner = AgentRunner(deepwork_agent)
     await agent_runner.run_agent()
 ```
 
@@ -214,36 +213,6 @@ If you need more control to define your Agent instead of the builder pattern, yo
 ```python
 class DeepWorkAgentBuilder:
     """Builder for DeepWork Agent"""
-
-    def __init__(
-        self, config_manager, instructions_manager, model_manager, mcp_manager
-    ):
-        super().__init__(config_manager)
-        self.name = "deepwork-agent"
-        self.system_prompt_keys = [
-            "opus_agent_instruction",
-            "deepwork_agent_instruction",
-        ]
-    
-    def build(self) -> AgentBuilder:
-        """Build the DeepWork agent with all components"""
-        self._add_instructions()
-        self._add_mcp_servers()
-        self._add_custom_tools()
-        self._add_higher_order_tools()
-        return self
-
-    def _add_instructions(self):
-        """Load agent instructions from markdown files"""
-        # System prompt
-        self.instructions_manager.put_from_file(
-            "opus_agent_instruction", 
-            "prompts/agent/OPUS_AGENT_INSTRUCTIONS.md"
-        )
-        self.instructions_manager.put_from_file(
-            "deepwork_agent_instruction", 
-            "prompts/agent/DEEPWORK_AGENT_INSTRUCTIONS.md"
-        )
 
     def _add_mcp_servers(self):
         """Add FastMCP servers (Clockwise for calendar)"""
@@ -312,21 +281,14 @@ mcp_config:
 ## Step 7: Create main to run DeepWorkAgent and run the agent
 
 ```python
-import logging
-import traceback
-
-from opus_agent_base.cli.cli import create_cli_app
-
-logger = logging.getLogger(__name__)
-
-
 def main():
     """Entry point for the Opus Agents CLI."""
     try:
         app = create_cli_app(
-            agent_name="Opus Agents",
-            agent_description="AI Agents framework with productivity and collaboration tools",
+            agent_name="Opus Deepwork Agent",
+            agent_description="Deepwork Scheduling Agent",
             agent_version="0.1.0",
+            agent_runner=run_deepwork_agent,
         )
         app()
     except Exception as e:
@@ -358,4 +320,4 @@ Test DeepWorkAgent with these prompts:
 
 > Schedule my top priority deep work task for today on calendar
 
-> Suggest timeslots between 9AM to 6PM for 90 minutes when i can do this task? If a slot is available, schedule it on my calendar
+> Suggest timeslots between 9AM to 6PM for 90 minutes when i can do this task = "Foo". If a slot is available, schedule it on my calendar

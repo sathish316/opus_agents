@@ -140,7 +140,7 @@ OpusCLI> Find open tasks in Test project (in Todoist)
 
 The power of OpusCLI is in the advanced workflows that it supports to suit your needs. For custom tools and workflows possible with Todoist, check Custom Tools and Prompt library section
 
-<gif_placeholder_claude_vs_opus>
+<img src="demo/opus/opus_todoist_2025-11-15 17.20.27.gif">
 
 ## Obsidian
 Obsidian is a notetaking tool.
@@ -181,7 +181,7 @@ OpusCLI> Ask notes - what is X?
 
 For advanced Obsidian workflows, check Custom Tools and Prompt library section
 
-<gif_placeholder_claude_vs_opus>
+<img src="demo/opus/opus_obsidian_2025-11-15 17.53.32.gif">
 
 # Collaboration tools Usage - Mail, Calendar, Chat, Meetings
 
@@ -223,9 +223,9 @@ OpusCLI> What meetings do i have tomorrow?
 
 6. Complete the OAuth handshake flow in your browser
 
-7. The power of OpusCLI is in the advanced and hackable Google Calendar workflows that it supports to suit your needs. For advanced tools and workflows possible with Google Calendar, check Custom Tools and Prompt library section
+7. The power of OpusCLI is in the advanced Google Calendar workflows that it supports to suit your needs. For advanced tools and workflows possible with Google Calendar, check Custom Tools and Prompt library section
 
-<gif_placeholder_claude_vs_opus>
+<img src="demo/opus/opus_calendar_1_success_2025-11-16 13.12.48.gif">
 
 ## Calendar - Clockwise
 
@@ -246,8 +246,6 @@ mcp_config.productivity.calendar.clockwise.higher_order_tools.enabled=true
 OpusCLI> What meetings do i have tomorrow?
 
 The power of OpusCLI is in the advanced and hackable Clockwise workflows that it supports to suit your needs. For advanced tools and workflows possible with Clockwise, check Custom Tools and Prompt library section
-
-<gif_placeholder_claude_vs_opus>
 
 ## Chat - Slack
 1. Enable Slack in ~/.opusai/opus-config.yml
@@ -305,7 +303,7 @@ chat.slack.use_local_model=true
 
 > Brief me about Test team's slack channels from last one week
 
-<gif_placeholder_claude_vs_opus>
+<img src="demo/opus/opus_slack_2025-11-16 13.34.44.gif">
 
 ## Meetings Recording and Transcript - Zoom and Loom
 
@@ -348,8 +346,6 @@ To download transcript: Go to loom.com > Sign-in > Click on meeting > View Recor
 6. Test Zoom or Loom on OpusAI
 
 > Ask question about meeting id 123 - Summarize the meeting
-
-<gif_placeholder_opus>
 
 # Custom Tools and Prompt Library
 

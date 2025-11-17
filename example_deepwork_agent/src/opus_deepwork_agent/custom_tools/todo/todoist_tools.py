@@ -18,10 +18,9 @@ class TodoistTools(CustomTool):
     def __init__(
         self, config_manager=None, instructions_manager=None, model_manager=None
     ):
-        # Initialize base class with tool name and config key
         super().__init__(
-            "todoist_deepwork",  # Tool name
-            "deepwork.todo.todoist",  # Config key path
+            "todoist_deepwork",
+            "deepwork.todo.todoist",
             config_manager,
             instructions_manager,
             model_manager,
