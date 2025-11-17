@@ -1,54 +1,50 @@
 import logging
 from abc import abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Dict
+
+from opus_agent_base.config.config_manager import ConfigManager
+from pydantic_ai.tools import Tool
 
 logger = logging.getLogger(__name__)
 
 
 class MetaTool:
     """
-    Base class for Meta tools that can dynamically create tools from specifications
+    Base class for Meta tools that can dynamically create tools 
+    for standard usecases like OpenAPI specs, Scrapers, Bash/Python scripts etc
     without writing code.
 
-    Meta tools are ideal when:
-    - You want to integrate APIs without writing custom code
-    - You have an API specification (like OpenAPI)
-    - You need to quickly prototype integrations
-    - You want to expose external APIs directly to the agent
-
-    Examples of Meta tools:
-    - OpenAPI spec-based tools
-    - GraphQL schema-based tools
-    - gRPC proto-based tools
+    Meta tools are ideal when you want to integrate APIs without writing custom code
+    or using an MCP server for a specific API.
     """
 
     def __init__(
         self,
         name: str,
+        config_manager: ConfigManager,
         config_key: str,
-        spec_source: str,
-        config_manager=None,
-        instructions_manager=None,
-        model_manager=None,
+        spec_properties: Dict[str, Any],
     ):
         """
         Initialize the MetaTool.
 
         Args:
             name: The name of the meta tool
+            config_manager: The configuration manager instance
             config_key: The configuration key path for this tool
-            spec_source: The source of the specification (URL, file path, etc.)
-            config_manager: Configuration manager instance
-            instructions_manager: Instructions manager instance
-            model_manager: Model manager instance
+            spec_properties: The properties of the specification (URL, file path, etc.)
         """
         self.name = name
-        self.config_key = config_key
-        self.spec_source = spec_source
         self.config_manager = config_manager
-        self.instructions_manager = instructions_manager
-        self.model_manager = model_manager
-        self.spec: Optional[Dict[str, Any]] = None
+        self.config_key = config_key
+        self.spec_properties = spec_properties
+
+    @abstractmethod
+    async def setup_tool(self) -> list[str]:
+        """
+        Setup the tool for use by the Agent.
+        """
+        raise NotImplementedError("Subclasses must implement this method")
 
     @abstractmethod
     async def load_spec(self) -> Dict[str, Any]:
@@ -72,24 +68,36 @@ class MetaTool:
         raise NotImplementedError("Subclasses must implement this method")
 
     @abstractmethod
-    async def initialize_tools(self, fastmcp_client_context):
+    async def create_mcp_client_and_initialize_tools(self):
         """
-        Initialize tools from the specification and register them with the agent.
+        Create an MCP client and initialize tools from the loaded specification.
+        This method should return a configured MCP client and initialized tools.
 
-        Args:
-            fastmcp_client_context: The FastMCP client context for tool integration
+        Returns:
+            A tuple of (MCP client, initialized tools)
         """
         raise NotImplementedError("Subclasses must implement this method")
 
-    def is_enabled(self) -> bool:
+    @abstractmethod
+    async def initialize_tools(self, agent):
         """
-        Check if this meta tool is enabled in the configuration.
+        Initialize the tool for use by the Agent.
+        """
+        raise NotImplementedError("Subclasses must implement this method")
 
-        Returns:
-            True if enabled, False otherwise
+    @abstractmethod
+    async def build_agent_tool(self) -> Tool:
         """
-        if self.config_manager:
-            return self.config_manager.get_setting(
-                f"mcp_config.{self.config_key}.enabled", False
-            )
-        return False
+        Build an agent tool from the loaded specification.
+        This method should return an agent tool instance.
+        """
+        raise NotImplementedError("Subclasses must implement this method")
+
+    @abstractmethod
+    async def call_dynamic_tool(self, tool_name: str, kwargs: dict):
+        """
+        Call a dynamic tool from the loaded specification.
+        This method should call a tool from the loaded specification.
+        """
+        raise NotImplementedError("Subclasses must implement this method")
+

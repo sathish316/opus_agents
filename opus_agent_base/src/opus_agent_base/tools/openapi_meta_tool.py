@@ -1,12 +1,16 @@
 import json
+import yaml
 import logging
 from pathlib import Path
 from typing import Any, Dict, Optional
 import httpx
-
-from fastmcp import FastMCP
+from pydantic_ai import RunContext
+from pydantic_ai.tools import Tool
+from fastmcp import FastMCP, Client
 from opus_agent_base.common.logging_config import console_log
+from opus_agent_base.config.config_manager import ConfigManager
 from opus_agent_base.tools.meta_tool import MetaTool
+
 
 logger = logging.getLogger(__name__)
 
@@ -23,23 +27,23 @@ class OpenAPIMetaTool(MetaTool):
         tool = OpenAPIMetaTool(
             name="hackernews_api",
             config_key="meta_tools.hackernews",
-            spec_source="https://api.example.com/openapi.json",
-            base_url="https://api.example.com",
-            config_manager=config_manager
+            spec_properties={
+                "spec_url": "https://api.example.com/openapi.json",
+                "base_url": "https://api.example.com",
+                "route_filters": [
+                    ("method": "GET", "route": "/api/v1/users"),
+                    ("method": "POST", "route": "/api/v1/users")
+                ]
+            }
         )
     """
 
     def __init__(
         self,
         name: str,
+        config_manager: ConfigManager,
         config_key: str,
-        spec_source: str,
-        base_url: str,
-        config_manager=None,
-        instructions_manager=None,
-        model_manager=None,
-        auth_headers: Optional[Dict[str, str]] = None,
-        route_filters: Optional[Dict[str, Any]] = None,
+        spec_properties: Dict[str, Any],
     ):
         """
         Initialize the OpenAPIMetaTool.
@@ -47,27 +51,30 @@ class OpenAPIMetaTool(MetaTool):
         Args:
             name: The name of the meta tool
             config_key: The configuration key path for this tool
-            spec_source: URL or file path to the OpenAPI specification
-            base_url: Base URL for the API
-            config_manager: Configuration manager instance
-            instructions_manager: Instructions manager instance
-            model_manager: Model manager instance
-            auth_headers: Optional authentication headers (e.g., {"Authorization": "Bearer token"})
-            route_filters: Optional filters for which routes to expose
+            spec_properties: The properties of the specification (URL, file path, etc.)
         """
         super().__init__(
             name=name,
-            config_key=config_key,
-            spec_source=spec_source,
             config_manager=config_manager,
-            instructions_manager=instructions_manager,
-            model_manager=model_manager,
+            config_key=config_key,
+            spec_properties=spec_properties,
         )
-        self.base_url = base_url
-        self.auth_headers = auth_headers or {}
-        self.route_filters = route_filters or {}
-        self.mcp_server: Optional[FastMCP] = None
+        self.spec_properties = spec_properties
         self.http_client: Optional[httpx.AsyncClient] = None
+        self.spec = None
+
+    async def setup_tool(self):
+        """
+        Setup the tool for use by the Agent.
+        """
+        logger.info("Setup OpenAPI MetaTool")
+        spec = await self.load_spec()
+        logger.info(f"OpenAPI spec loaded: {spec}") #debug
+        mcp_server = await self.create_mcp_server()
+        logger.info("OpenAPI MCP Server created for Spec") #debug
+        client, tools = await self.create_mcp_client_and_initialize_tools()
+        logger.info("OpenAPI MCP Client and tools created") #debug
+        logger.info(f"OpenAPI Tools: {tools}") #debug
 
     async def load_spec(self) -> Dict[str, Any]:
         """
@@ -78,32 +85,27 @@ class OpenAPIMetaTool(MetaTool):
         """
         try:
             # Check if spec_source is a URL
-            if self.spec_source.startswith(("http://", "https://")):
-                logger.info(f"Loading OpenAPI spec from URL: {self.spec_source}")
+            spec_url = self.spec_properties.get("spec_url")
+            if spec_url.startswith(("http://", "https://")):
+                logger.info(f"Setup OpenAPI MetaTool by loading spec from URL: {spec_url}")
                 async with httpx.AsyncClient() as client:
-                    response = await client.get(self.spec_source)
+                    response = await client.get(spec_url)
                     response.raise_for_status()
-                    self.spec = response.json()
-            else:
-                # Load from file
-                logger.info(f"Loading OpenAPI spec from file: {self.spec_source}")
-                spec_path = Path(self.spec_source)
-                if not spec_path.exists():
-                    raise FileNotFoundError(f"OpenAPI spec file not found: {self.spec_source}")
-
-                with open(spec_path, "r") as f:
-                    if spec_path.suffix in [".json"]:
-                        self.spec = json.load(f)
-                    elif spec_path.suffix in [".yaml", ".yml"]:
-                        import yaml
-                        self.spec = yaml.safe_load(f)
+                    # Get response content based on content type
+                    content_type = response.headers.get("content-type", "")
+                    if "application/json" in content_type:
+                        spec_data = response.json()
+                    elif "application/yaml" in content_type or "text/yaml" in content_type:
+                        spec_data = yaml.safe_load(response.text)
                     else:
-                        raise ValueError(
-                            f"Unsupported file format: {spec_path.suffix}. "
-                            "Supported formats: .json, .yaml, .yml"
-                        )
+                        # Try JSON first, fall back to YAML
+                        try:
+                            spec_data = response.json()
+                        except Exception:
+                            spec_data = yaml.safe_load(response.text)
+                    self.spec = spec_data
 
-            logger.info(f"Successfully loaded OpenAPI spec: {self.spec.get('info', {}).get('title', 'Unknown')}")
+            logger.info(f"Successfully loaded OpenAPI spec: {self.spec}")
             return self.spec
 
         except Exception as e:
@@ -122,9 +124,11 @@ class OpenAPIMetaTool(MetaTool):
 
         try:
             # Create HTTP client with auth headers
-            headers = self.auth_headers.copy()
+            # headers = self.auth_headers.copy()
+            base_url = self.spec_properties.get("base_url")
+            headers = {}
             self.http_client = httpx.AsyncClient(
-                base_url=self.base_url,
+                base_url=base_url,
                 headers=headers,
                 timeout=30.0
             )
@@ -148,28 +152,151 @@ class OpenAPIMetaTool(MetaTool):
             logger.error(f"Error creating MCP server: {e}")
             raise
 
-    async def initialize_tools(self, fastmcp_client_context):
+    async def create_mcp_client_and_initialize_tools(self):
+        """
+        Create an MCP client and initialize tools from the loaded specification.
+
+        Returns:
+            A tuple of (MCP client, initialized tools)
+        """
+        # Create MCP client and discover tools
+        async with Client(self.mcp_server) as client:
+            self.client = client
+            self.tools = await client.list_tools()
+            print("Tools:", [t.name for t in self.tools])
+            return self.client, self.tools
+
+
+    async def call_dynamic_tool(self, tool_name: str, kwargs: dict={}):
+        # Call one of the tools generated from OpenAPI
+        async with Client(self.mcp_server) as client:
+            result = await client.call_tool(tool_name, kwargs)
+            print("Result:", result)
+            return result
+
+    async def initialize_tools(self, agent):
         """
         Initialize tools from the OpenAPI specification.
 
         This method creates the MCP server and makes its tools available to the agent.
 
         Args:
-            fastmcp_client_context: The FastMCP client context for tool integration
+            agent: The agent instance to register tools with
         """
-        if not self.is_enabled():
-            logger.info(f"MetaTool {self.name} is disabled in configuration")
-            return
-
         try:
             logger.info(f"Initializing OpenAPI MetaTool: {self.name}")
             console_log(f"[MetaTool] Initializing OpenAPI MetaTool: {self.name}")
 
-            # Create the MCP server
-            await self.create_mcp_server()
+            # Add instructions to the Agent to use the tools
+            allowed_apis: Optional[list[str]] = self.config_manager.get_setting(f"meta_tools.{self.name}.allowed_apis", None)
+            dynamic_tool_name = f"call_dynamic_tool_{self.name}"
+
+            @agent.instructions
+            async def use_openapi_tool() -> str:
+                try:
+                    available_tools_usage_info = []
+                    for tool in self.tools:
+                        if allowed_apis is None or tool.name in allowed_apis:
+                            # Assumption: description describes input and output parameters
+                            tool_usage_info = f"""
+## {tool.name}
+
+API name: {tool.name}
+
+Description: {tool.description}"""
+                            available_tools_usage_info.append(tool_usage_info)
+                    tool_instructions = f"""
+# {self.name} APIs using OpenAPI MetaTool
+
+This is a meta-tool to call OpenAPI APIs of {self.name}. Call the tool `{dynamic_tool_name}` to call specific APIs.
+
+Available APIs of {self.name}:
+{"----------\n".join(available_tools_usage_info)}
+
+## Usage instructions:
+
+To Call a specific API, call the tool `{dynamic_tool_name}` with:
+1. api_name: The name of the API to call (required)
+2. Any additional parameters required by that specific API (pass them directly, not wrapped in a dict)
+
+IMPORTANT: Pass parameters directly to the function, not nested in a dictionary.
+
+Example:
+```
+call_dynamic_tool(api_name="topstories_json")
+call_dynamic_tool(api_name="getItem", id=45947810)
+```
+                    """
+                    logger.info(f"OpenAPI Tool Instructions for {self.name}: {tool_instructions}")
+                    return tool_instructions
+                except Exception as e:
+                    logger.error(f"Error calling use_openapi_tool: {e}")
+                    import traceback
+                    logger.error(traceback.format_exc())
+                    raise
 
             logger.info(f"Successfully initialized OpenAPI MetaTool: {self.name}")
             console_log(f"[MetaTool] Successfully initialized: {self.name}")
+
+        except Exception as e:
+            logger.error(f"Error initializing OpenAPI MetaTool {self.name}: {e}")
+            import traceback
+            logger.error(traceback.format_exc())
+            raise
+
+
+    async def build_agent_tool(self) -> Tool:
+        """
+        Build an agent tool from the OpenAPI specification.
+
+        Returns:
+            An agent tool instance
+        """
+        try:
+            logger.info(f"Building OpenAPI MetaTool: {self.name}")
+            console_log(f"[MetaTool] Building OpenAPI MetaTool: {self.name}")
+
+            dynamic_tool_name = f"call_dynamic_tool_{self.name}"
+            # Create dynamic tool with flexible schema to accept any parameters
+            async def call_dynamic_tool_impl(**kwargs) -> Any:
+                # Call one of the tools generated from OpenAPI
+                api_name = kwargs.pop('api_name')
+                logger.info(f"[OpenAPIMetaToolCall] Calling api_name: {api_name} with params: {kwargs}")
+                console_log(f"[OpenAPIMetaToolCall] Calling api_name: {api_name} with params: {kwargs}")
+                try:
+                    async with Client(self.mcp_server) as client:
+                        result = await client.call_tool(api_name, kwargs)
+                        return result
+                except Exception as e:
+                    logger.error(f"Error calling dynamic tool {api_name}: {e}")
+                    import traceback
+                    logger.error(traceback.format_exc())
+                    raise
+
+            # Create a flexible JSON schema that accepts tool_name and any additional parameters
+            dynamic_tool_schema = {
+                "type": "object",
+                "properties": {
+                    "api_name": {
+                        "type": "string",
+                        "description": f"The name of the {self.name} API to call"
+                    }
+                },
+                "required": ["api_name"],
+                "additionalProperties": True
+            }
+
+            # Register the tool using Tool.from_schema for flexible parameter handling
+            dynamic_tool = Tool.from_schema(
+                name=dynamic_tool_name,
+                description=f"Call any API from the {self.name} OpenAPI specification. Pass api_name and any required parameters.",
+                json_schema=dynamic_tool_schema,
+                function=call_dynamic_tool_impl
+            )
+
+            logger.info(f"Successfully built OpenAPI MetaTool: {self.name}")
+            console_log(f"[MetaTool] Successfully built OpenAPI MetaTool: {self.name}")
+            return dynamic_tool
 
         except Exception as e:
             logger.error(f"Error initializing OpenAPI MetaTool {self.name}: {e}")

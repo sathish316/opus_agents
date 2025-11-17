@@ -2,12 +2,13 @@ from opus_agent_base.agent.agent_builder import AgentBuilder
 from opus_agent_base.tools.custom_tool import CustomTool
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_agent_base.tools.mcp_server_registry import MCPServerRegistry
-
+from opus_agent_base.tools.meta_tool import MetaTool
 from opus_deepwork_agent.custom_tools.calendar.clockwise_tools import (
     ClockwiseHigherOrderTool,
 )
 from opus_deepwork_agent.custom_tools.todo.todoist_tools import TodoistTools
 from opus_deepwork_agent.deepwork_mcp_server_registry import DeepWorkMCPServerRegistry
+from opus_deepwork_agent.meta_tools.hackernews_meta_tool import HackerNewsMetaTool
 
 
 class DeepWorkAgentBuilderAlternate(AgentBuilder):
@@ -29,6 +30,7 @@ class DeepWorkAgentBuilderAlternate(AgentBuilder):
         self._add_mcp_servers()
         self._add_custom_tools()
         self._add_higher_order_tools()
+        self._add_meta_tools()
         return self
 
     def _add_instructions(self):
@@ -61,4 +63,10 @@ class DeepWorkAgentBuilderAlternate(AgentBuilder):
         """Add higher order tools (Clockwise for smart scheduling)"""
         self.higher_order_tools: list[HigherOrderTool] = [
             ClockwiseHigherOrderTool(),
+        ]
+
+    def _add_meta_tools(self):
+        """Add meta tools (HackerNews API)"""
+        self.meta_tools: list[MetaTool] = [
+            HackerNewsMetaTool(),
         ]

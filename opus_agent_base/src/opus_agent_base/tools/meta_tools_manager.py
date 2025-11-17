@@ -14,10 +14,11 @@ class MetaToolsManager:
     def __init__(
         self,
         config_manager,
-        fastmcp_client_context,
+        agent,
     ):
         self.config_manager = config_manager
-        self.fastmcp_client_context = fastmcp_client_context
+        self.agent = agent
+        self.agent_tools = []
 
     async def initialize_tools(self, meta_tools: list[MetaTool]):
         """
@@ -28,17 +29,15 @@ class MetaToolsManager:
         """
         enabled = []
         for tool in meta_tools:
-            if tool.is_enabled():
-                try:
-                    await tool.initialize_tools(self.fastmcp_client_context)
-                    logger.info(f"{tool.name} Meta tool initialized")
-                    enabled.append(tool.name)
-                except Exception as e:
-                    logger.error(f"Failed to initialize meta tool {tool.name}: {e}")
-                    import traceback
-                    logger.error(traceback.format_exc())
-            else:
-                logger.info(f"{tool.name} Meta tool not enabled")
+            try:
+                agent_tool = await tool.initialize_tools(self.agent)
+                self.agent_tools.append(agent_tool)
+                logger.info(f"{tool.name} Meta tool initialized")
+                enabled.append(tool.name)
+            except Exception as e:
+                logger.error(f"Failed to initialize meta tool {tool.name}: {e}")
+                import traceback
+                logger.error(traceback.format_exc())
 
         console_log(f"Enabled meta tool(s) for - {enabled}")
         logger.info("All Meta tools initialized")

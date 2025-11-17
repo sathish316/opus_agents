@@ -15,7 +15,6 @@ class DeepWorkAgentBuilder(AgentBuilder):
     def build(self) -> AgentBuilder:
         """Build the DeepWork agent with all components"""
         self._add_mcp_servers_config()
-        self._add_meta_tools()
         return self
 
     def _add_mcp_servers_config(self):
@@ -27,11 +26,3 @@ class DeepWorkAgentBuilder(AgentBuilder):
             deepwork_mcp_server_registry.get_clockwise_fastmcp_server(),
         ]
         self.add_mcp_servers_config(mcp_servers_config)
-
-    def _add_meta_tools(self):
-        """Add meta tools (HackerNews API)"""
-        self.meta_tools = [
-            HackerNewsMetaTool(
-                config_manager=self.config_manager,
-            ),
-        ]
