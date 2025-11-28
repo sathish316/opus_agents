@@ -31,4 +31,8 @@ model_config:
 
 3. Define the agent
 
+Follow the steps in [Guide to Build a new deepwork agent](./GUIDE_BUILD_NEW_DEEPWORK_AGENT.md) for defining an agent.
+
 4. Run the agent
+
+Follow the steps in [Guide to Build a new deepwork agent](./GUIDE_BUILD_NEW_DEEPWORK_AGENT.md) for running an agent that uses the AI Gateway.
