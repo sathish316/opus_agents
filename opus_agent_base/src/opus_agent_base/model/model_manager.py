@@ -31,6 +31,7 @@ class ModelManager:
         self.initialize_anthropic_model()
         self.initialize_bedrock_model()
         self.initialize_ollama_model()
+        self.initialize_ai_gateway_model()
         logger.info("Model initialized")
 
     def get_enabled_models(self):
