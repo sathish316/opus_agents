@@ -78,6 +78,6 @@ class ModelManager:
             if model_config["provider"] == "gateway" and model_config["enabled"]:
                 self.model = OpenAIChatModel(
                     model_name=model_config["model"],
-                    provider=OpenAIAIGatewayProvider(model_config=model_config),
+                    provider=OpenAIAIGatewayProvider(model_config),
                 )
                 logger.info(f"AI Gateway model initialized: {model_config['model']}")
