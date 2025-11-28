@@ -25,6 +25,9 @@ class AsyncOpenAIAIGatewayClient(AsyncOpenAI):
 
 
 class OpenAIAIGatewayProvider(OpenAIProvider):
+    """
+    Provider for OpenAI compatible AI Gateways
+    """
     def __init__(self, model_config: dict[str, str], *args, **kwargs):
         client = self._build_openai_compatible_client(model_config)
         super().__init__(*args, openai_client=client, **kwargs)
