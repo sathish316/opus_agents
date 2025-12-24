@@ -61,6 +61,9 @@ class MCPManager:
         return self.fastmcp_client_context
 
     async def inspect_fastmcp_client_tools(self):
+        if self.fastmcp_client_context is None:
+            return
+
         inspect_tools_enabled = self.config_manager.get_setting("debug.inspect_tools", False)
         inspect_tool_schema_enabled = self.config_manager.get_setting("debug.inspect_tool_schema", False)
         if inspect_tools_enabled:
