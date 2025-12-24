@@ -16,9 +16,13 @@ class ConfigManager:
     CONFIG_DIR = Path.home() / ".opusai"
     CONFIG_FILE = CONFIG_DIR / "opus-config.yml"
 
-    def __init__(self):
-        self.config_dir = ConfigManager.CONFIG_DIR
-        self.config_file = ConfigManager.CONFIG_FILE
+    def __init__(self, config_dir: str = None, config_file: str = None):
+        if config_dir is None or config_file is None:
+            self.config_dir = ConfigManager.CONFIG_DIR
+            self.config_file = ConfigManager.CONFIG_FILE
+        else:
+            self.config_dir = Path(config_dir)
+            self.config_file = self.config_dir / config_file
         self.nested_config_manager = NestedConfigManager()
         self.cached_config = None
         self._ensure_config_dir()
