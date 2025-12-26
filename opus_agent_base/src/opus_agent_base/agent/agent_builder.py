@@ -7,6 +7,10 @@ from opus_agent_base.tools.meta_tool import MetaTool
 from opus_agent_base.tools.fastmcp_server_config import FastMCPServerConfig
 from opus_agent_base.tools.mcp_manager import MCPManager
 
+from typing import Any
+from pydantic_ai import Agent
+
+
 class AgentBuilder:
     """Builder for the agent"""
 
@@ -25,7 +29,9 @@ class AgentBuilder:
         self.system_prompt_keys = system_prompt_keys
         return self
 
-    def add_instructions_manager(self, instructions_manager: InstructionsManager = None):
+    def add_instructions_manager(
+        self, instructions_manager: InstructionsManager = None
+    ):
         if instructions_manager is not None:
             self.instructions_manager = instructions_manager
         else:
@@ -59,3 +65,27 @@ class AgentBuilder:
     def add_mcp_servers_config(self, mcp_servers_config: list[FastMCPServerConfig]):
         self.mcp_servers_config.extend(mcp_servers_config)
         return self
+
+    def set_deps_type(self, deps_type: Any):
+        self.deps_type = deps_type
+        return self
+
+    def set_output_type(self, output_type: Any):
+        self.output_type = output_type
+        return self
+
+    def build_simple_agent(self) -> Agent:
+        system_prompt = "\n".join(
+            self.instructions_manager.get(key) for key in self.system_prompt_keys
+        )
+        agent_kwargs = {
+            "system_prompt": system_prompt,
+            "model": self.model_manager.get_model(),
+            "tools": [],
+        }
+
+        # Add output_type if set
+        if hasattr(self, "output_type") and self.output_type is not None:
+            agent_kwargs["output_type"] = self.output_type
+
+        return Agent(**agent_kwargs)
