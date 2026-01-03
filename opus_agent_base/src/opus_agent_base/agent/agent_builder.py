@@ -1,14 +1,15 @@
+from typing import Any
+
+from pydantic_ai import Agent
+
 from opus_agent_base.config.config_manager import ConfigManager
-from opus_agent_base.prompt.instructions_manager import InstructionsManager
 from opus_agent_base.model.model_manager import ModelManager
+from opus_agent_base.prompt.instructions_manager import InstructionsManager
 from opus_agent_base.tools.custom_tool import CustomTool
+from opus_agent_base.tools.custom_tools_manager import CustomToolsManager
+from opus_agent_base.tools.fastmcp_server_config import FastMCPServerConfig
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
 from opus_agent_base.tools.meta_tool import MetaTool
-from opus_agent_base.tools.fastmcp_server_config import FastMCPServerConfig
-from opus_agent_base.tools.mcp_manager import MCPManager
-
-from typing import Any
-from pydantic_ai import Agent
 
 
 class AgentBuilder:
@@ -74,6 +75,17 @@ class AgentBuilder:
         self.output_type = output_type
         return self
 
+    def build_agent(self) -> Agent:
+        agent = self.build_simple_agent()
+        custom_tools_manager = CustomToolsManager(
+            self.config_manager,
+            self.instructions_manager,
+            self.model_manager,
+            agent,
+        )
+        custom_tools_manager.initialize_tools(self.custom_tools)
+        return agent
+
     def build_simple_agent(self) -> Agent:
         system_prompt = "\n".join(
             self.instructions_manager.get(key) for key in self.system_prompt_keys
@@ -83,6 +95,10 @@ class AgentBuilder:
             "model": self.model_manager.get_model(),
             "tools": [],
         }
+
+        # Add deps_type if set
+        if hasattr(self, "deps_type") and self.deps_type is not None:
+            agent_kwargs["deps_type"] = self.deps_type
 
         # Add output_type if set
         if hasattr(self, "output_type") and self.output_type is not None:
