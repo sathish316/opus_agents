@@ -8,6 +8,7 @@ from pydantic_ai.providers.ollama import OllamaProvider
 from pydantic_ai.providers.openai import OpenAIProvider
 
 from opus_agent_base.common.logging_config import console_log
+from opus_agent_base.gateway.openai_compatible_gateway import OpenAIAIGatewayProvider
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class ModelManager:
         self.initialize_anthropic_model()
         self.initialize_bedrock_model()
         self.initialize_ollama_model()
+        self.initialize_ai_gateway_model()
         logger.info("Model initialized")
 
     def get_enabled_models(self):
@@ -70,3 +72,12 @@ class ModelManager:
                     provider=OllamaProvider(base_url=model_config["base_url"]),
                 )
                 logger.info(f"Ollama/OpenAI model initialized: {model_config['model']}")
+
+    def initialize_ai_gateway_model(self):
+        for model_config in self.models_config:
+            if model_config["provider"] == "gateway" and model_config["enabled"]:
+                self.model = OpenAIChatModel(
+                    model_name=model_config["model"],
+                    provider=OpenAIAIGatewayProvider(model_config),
+                )
+                logger.info(f"AI Gateway model initialized: {model_config['model']}")
