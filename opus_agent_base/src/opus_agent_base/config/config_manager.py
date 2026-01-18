@@ -1,7 +1,11 @@
 from pathlib import Path
 import yaml
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Type, TypeVar
 import logging
+
+from pydantic import BaseModel
+
+T = TypeVar("T", bound=BaseModel)
 from opus_agent_base.config.nested_config_manager import NestedConfigManager
 from opus_agent_base.common.logging_config import console_log
 
@@ -100,3 +104,28 @@ class ConfigManager:
         """Get all configuration settings as a flattened dictionary with dot notation keys."""
         config = self.load_config()
         return self.nested_config_manager.get_flattened_values(config)
+
+    def get_setting_as_model(self, key: str, model_class: Type[T], default: T = None) -> T:
+        """Get a configuration setting as a Pydantic BaseModel.
+
+        Args:
+            key: Dot-notation path to the config section (e.g., 'mcp_config.redis')
+            model_class: The Pydantic BaseModel class to instantiate
+            default: Default value if key not found (if None, returns model with defaults)
+
+        Returns:
+            Instance of model_class populated with config values
+        """
+        config_dict = self.get_setting(key, None)
+
+        if config_dict is None:
+            if default is not None:
+                return default
+            return model_class()
+
+        if not isinstance(config_dict, dict):
+            if default is not None:
+                return default
+            return model_class()
+
+        return model_class(**config_dict)
