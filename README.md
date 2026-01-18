@@ -85,6 +85,26 @@ Key features for Productivity & Collaboration tools are:
 
 If your favourite software or custom workflow is not present here, please see the [Contributing Guide](CONTRIBUTING_GUIDE.md) and raise a Pull request
 
+## Release
+
+To build opus_agent_base and release locally:
+
+```bash
+# build wheel file
+cd opus_agent_base
+uv run python -m build
+uv pip install -e
+
+# go to target project and install from wheel file
+uv add /path/to/dist/opus_agent_base-*.whl
+```
+
+To build opus_agent_base and release to PyPI:
+TODO
+
+To use opus_agent_base from another Python project:
+TODO
+
 ## License
 
 Opus Agents is designed to be a customizable and hackable framework.
