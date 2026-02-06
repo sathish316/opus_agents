@@ -85,6 +85,38 @@ Key features for Productivity & Collaboration tools are:
 
 If your favourite software or custom workflow is not present here, please see the [Contributing Guide](CONTRIBUTING_GUIDE.md) and raise a Pull request
 
+## Publishing to PyPI (opus-agent-base only)
+
+Only the `opus-agent-base` package is published to PyPI from this repo.
+
+### Manual publish for `v0.1.0`
+
+This is a one-time manual publish for the first release, after you have created the release branch and tag.
+
+1. Create the release branch and tag:
+   - `git checkout -b release/v0.1.0`
+   - Ensure `opus_agent_base/pyproject.toml` has `version = "0.1.0"`
+   - `git tag v0.1.0`
+   - `git push origin release/v0.1.0 --tags`
+1. Build and upload to PyPI from your machine:
+   - `python -m pip install --upgrade build twine`
+   - `rm -rf opus_agent_base/dist`
+   - `python -m build opus_agent_base`
+   - `twine upload opus_agent_base/dist/*`
+
+### Automated publish for `v0.1.1` and later
+
+Releases after `v0.1.0` are published automatically by GitHub Actions when you push a `v*` tag.
+
+1. In PyPI, configure a Trusted Publisher for this repo and project:
+   - Project: `opus-agent-base`
+   - Repository: `sathish316/opus_agents`
+   - Workflow: `publish-pypi.yml`
+   - Environment: leave empty
+1. For each release:
+   - Update `version` in `opus_agent_base/pyproject.toml`
+   - Create and push a tag, for example: `git tag v0.1.1 && git push origin v0.1.1`
+
 ## License
 
 Opus Agents is designed to be a customizable and hackable framework.
@@ -95,5 +127,3 @@ The project will remain open source under the [MIT LICENSE](LICENSE.md)
 Opinions on AI range from extremes that "AI will replace humans" or "AI in its current state is next token prediction and not intelligence". This project draws inspiration from Neil DeGrasse Tyson's balanced perspective on AI from his podcast (https://www.youtube.com/watch?v=BYizgB2FcAQ). He suggests that society is already living on an exponential curve, since the days of Industrial Revolution to Automobiles to Internet and AI will drive the next wave of exponential growth through human productivity. We are already seeing glimpses of this in AI Coding tools like Cursor and Coding CLIs. For this vision to become possible in all areas, AI has to be a Jarvis-like companion for most of the software/tools we use. OpusAgents is an attempt to make the interactions between AI and Software/Tools we use everyday as seamless, customizable, predictable/reliable and Jarvis-like as possible.
 
 The name is inspired by the latin phrase "magnum opus" that means "great work". 
-
-
