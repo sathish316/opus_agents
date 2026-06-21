@@ -58,7 +58,9 @@ class ZoomMeetingAssistant:
             transcript, max_size
         )
         # generate context for the agent
-        prompt_template = self.instructions_manager.get("zoom_meeting_assistant_prompt_template")
+        prompt_template = self.instructions_manager.get(
+            "zoom_meeting_assistant_prompt_template"
+        )
         prompt = SubagentAsTool.format_prompt(
             prompt_template, context=transcript, question=query
         )

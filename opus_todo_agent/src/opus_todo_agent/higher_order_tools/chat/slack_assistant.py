@@ -41,13 +41,15 @@ class SlackAssistant:
             channels: List of channel names
             channel_scope_type: Type of scope (team/project/channel)
             channel_scope_name: Name of the team/project or channel
-            time_limit: Time period for conversation history (e.g., "1d", "1w", "5d", "4w")
+            time_limit: Time period for conversation history
+                (e.g., "1d", "1w", "5d", "4w")
 
         Returns:
             Summarized messages grouped by channel
         """
         logger.info(
-            f"Calling SubAgent to summarize Slack messages for {channel_scope_type}: {channel_scope_name}, time_limit: {time_limit}"
+            "Calling SubAgent to summarize Slack messages for "
+            f"{channel_scope_type}: {channel_scope_name}, time_limit: {time_limit}"
         )
         # resolve channel scope and name to channel ids
         if channel_scope_type == "team":
@@ -61,13 +63,13 @@ class SlackAssistant:
         elif channel_scope_type == "channel":
             channels = [channel_scope_name]
         else:
-            raise ValueError(
-                f"Invalid channel scope type: {channel_scope_type}"
-            )
+            raise ValueError(f"Invalid channel scope type: {channel_scope_type}")
 
         channel_ids = self.slack_helper.get_channel_ids(channels)
         logging.info(
-            f"[SubAgent] Fetched channels for {channel_scope_type} : {channel_scope_name} as #{channels} with ids: {channel_ids}"
+            "[SubAgent] Fetched channels for "
+            f"{channel_scope_type} : {channel_scope_name} as #{channels} "
+            f"with ids: {channel_ids}"
         )
 
         # Fetch conversation history
@@ -85,7 +87,7 @@ class SlackAssistant:
             f"Retrieved conversation history: {len(str(conversation_history))} chars"
         )
 
-        # FIXME: if conversation history is too large, summarize per channel and truncate it if required
+        # FIXME: summarize per channel if the conversation history is too large.
 
         # Build channel ID to name mapping for the specific channels
         channel_mapping = "\n".join(
@@ -96,7 +98,9 @@ class SlackAssistant:
         )
 
         # Generate prompt
-        prompt_template = self.instructions_manager.get("slack_assistant_prompt_template")
+        prompt_template = self.instructions_manager.get(
+            "slack_assistant_prompt_template"
+        )
         prompt = SubagentAsTool.format_prompt(
             prompt_template,
             channel_scope_type=channel_scope_type,

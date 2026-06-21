@@ -16,7 +16,9 @@ class LoomMeetingAssistant:
 
     LOOM_TRANSCRIPT_FILE_EXTENSION = "srt"
 
-    def __init__(self, config_manager=None, instructions_manager=None, model_manager=None):
+    def __init__(
+        self, config_manager=None, instructions_manager=None, model_manager=None
+    ):
         self.config_manager = config_manager
         self.loom_storage_dir = config_manager.get_setting(
             "meeting_transcript.loom.storage_dir"
@@ -35,7 +37,8 @@ class LoomMeetingAssistant:
 
     def ask_loom_transcript(self, meeting_id: str, query: str) -> str:
         logger.info(
-            f"Calling SubAgent to Ask question about meeting transcript: {query} for meeting id: {meeting_id}"
+            "Calling SubAgent to Ask question about meeting transcript: "
+            f"{query} for meeting id: {meeting_id}"
         )
         transcript_file = os.path.join(
             self.loom_storage_dir,
@@ -56,7 +59,9 @@ class LoomMeetingAssistant:
             transcript, max_size
         )
         # generate context for the agent
-        prompt_template = self.instructions_manager.get("loom_meeting_assistant_prompt_template")
+        prompt_template = self.instructions_manager.get(
+            "loom_meeting_assistant_prompt_template"
+        )
         prompt = SubagentAsTool.format_prompt(
             prompt_template, context=transcript, question=query
         )

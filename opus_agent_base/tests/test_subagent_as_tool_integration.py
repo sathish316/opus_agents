@@ -1,8 +1,7 @@
 import pytest
+from opus_agent_base.tools.subagent_as_tool import SubagentAsTool
 from pydantic_ai import Agent, RunContext
 from pydantic_ai.models.test import TestModel
-
-from opus_agent_base.tools.subagent_as_tool import SubagentAsTool
 
 
 @pytest.mark.integration
@@ -33,7 +32,30 @@ class TestSubagentAsToolIntegration:
         result = await parent.run("Research the latest updates on SubagentAsTool.")
 
         assert "Finding A" in result.output
-        assert "run_subagent" in result.output or "Finding B" in result.output
+        assert "run_research_assistant" in result.output or "Finding B" in result.output
+
+    def test_parent_can_register_multiple_named_subagent_tools(self):
+        """Example: one parent exposes separate specialist subagents as tools."""
+        summarizer = SubagentAsTool.from_instructions(
+            name="summarizer",
+            instructions="Summarize long content.",
+            model=TestModel(custom_output_text="Short summary."),
+        )
+        classifier = SubagentAsTool.from_instructions(
+            name="classifier",
+            instructions="Classify incoming content.",
+            model=TestModel(custom_output_text="bug_report"),
+        )
+        parent = Agent(
+            model=TestModel(),
+            instructions="Choose the right specialist for each request.",
+        )
+
+        summarizer.register_prompt_tool(parent)
+        classifier.register_prompt_tool(parent)
+
+        assert "run_summarizer" in parent._function_toolset.tools
+        assert "run_classifier" in parent._function_toolset.tools
 
     @pytest.mark.asyncio
     async def test_custom_tool_pattern_with_context_prompt(self):
@@ -95,7 +117,7 @@ class TestSubagentAsToolIntegration:
         classifier.register_prompt_tool(parent, sync=True)
 
         tool_names = list(parent._function_toolset.tools.keys())
-        assert "run_subagent" in tool_names
+        assert "run_priority_classifier" in tool_names
 
         output = parent.run_sync("Classify: write docs for SubagentAsTool.")
         assert output.output

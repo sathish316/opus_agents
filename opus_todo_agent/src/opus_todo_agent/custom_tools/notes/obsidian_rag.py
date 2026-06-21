@@ -1,7 +1,7 @@
-import chromadb
 import logging
 import os
 
+import chromadb
 from opus_agent_base.tools.subagent_as_tool import SubagentAsTool
 
 logger = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ class ObsidianRAG:
         self.instructions_manager = instructions_manager
         self.model_manager = model_manager
         vault_config_list = self.config_manager.get_setting(
-            f"notes.obsidian.vault_configurations"
+            "notes.obsidian.vault_configurations"
         )
         self.vault_config = next(
             (

@@ -1,10 +1,9 @@
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
+from opus_agent_base.tools.subagent_as_tool import SubagentAsTool
 from pydantic_ai import Agent
 from pydantic_ai.models.test import TestModel
-
-from opus_agent_base.tools.subagent_as_tool import SubagentAsTool
 
 
 class TestSubagentAsToolUnit:
@@ -27,7 +26,19 @@ class TestSubagentAsToolUnit:
         )
 
         assert tool.name == "release_notes_writer"
+        assert tool.tool_name == "run_release_notes_writer"
         assert tool.subagent is not None
+
+    def test_from_instructions_allows_explicit_tool_name(self):
+        """Example: expose a short tool name for the parent agent."""
+        tool = SubagentAsTool.from_instructions(
+            name="release_notes_writer",
+            tool_name="draft_release_notes",
+            instructions="Write concise release notes.",
+            model=TestModel(custom_output_text="Added SubagentAsTool."),
+        )
+
+        assert tool.tool_name == "draft_release_notes"
 
     def test_run_sync_returns_subagent_output(self):
         response = MagicMock()
@@ -106,4 +117,21 @@ class TestSubagentAsToolUnit:
 
         SubagentAsTool(subagent, name="helper").register_prompt_tool(parent)
 
-        assert "run_subagent" in parent._function_toolset.tools
+        assert "run_helper" in parent._function_toolset.tools
+
+    def test_register_prompt_tool_allows_tool_name_override(self):
+        subagent = Agent(
+            model=TestModel(custom_output_text="done"),
+            instructions="You are a helper.",
+        )
+        parent = Agent(
+            model=TestModel(),
+            instructions="You delegate to helpers.",
+        )
+
+        SubagentAsTool(subagent, name="helper").register_prompt_tool(
+            parent,
+            tool_name="ask_helper",
+        )
+
+        assert "ask_helper" in parent._function_toolset.tools

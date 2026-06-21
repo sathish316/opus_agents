@@ -17,9 +17,16 @@ class SubagentAsTool:
     and returning ``response.output`` to the parent agent.
     """
 
-    def __init__(self, subagent: Agent, *, name: str = "subagent"):
+    def __init__(
+        self,
+        subagent: Agent,
+        *,
+        name: str = "subagent",
+        tool_name: str | None = None,
+    ):
         self.subagent = subagent
         self.name = name
+        self.tool_name = tool_name or f"run_{name}"
 
     @classmethod
     def from_instructions(
@@ -28,10 +35,11 @@ class SubagentAsTool:
         name: str,
         instructions: str,
         model: Any,
+        tool_name: str | None = None,
         **agent_kwargs: Any,
     ) -> "SubagentAsTool":
         subagent = Agent(instructions=instructions, model=model, **agent_kwargs)
-        return cls(subagent, name=name)
+        return cls(subagent, name=name, tool_name=tool_name)
 
     @classmethod
     def from_managers(
@@ -43,6 +51,7 @@ class SubagentAsTool:
         instructions_manager: Any,
         model_manager: Any,
         use_local_model_config_key: str | None = None,
+        tool_name: str | None = None,
         **agent_kwargs: Any,
     ) -> "SubagentAsTool":
         if use_local_model_config_key and config_manager.get_setting(
@@ -56,6 +65,7 @@ class SubagentAsTool:
             name=name,
             instructions=instructions,
             model=model,
+            tool_name=tool_name,
             **agent_kwargs,
         )
 
@@ -84,23 +94,25 @@ class SubagentAsTool:
         parent_agent: Agent,
         *,
         sync: bool = False,
+        tool_name: str | None = None,
     ) -> None:
         """
         Register a single ``prompt`` parameter tool on ``parent_agent`` that
         forwards the prompt to this subagent.
         """
         subagent_tool = self
+        registered_tool_name = tool_name or self.tool_name
 
         if sync:
 
-            @parent_agent.tool
+            @parent_agent.tool(name=registered_tool_name)
             def run_subagent(ctx: RunContext[Any], prompt: str) -> str:
                 """Run a subagent with the given prompt and return its response."""
                 return subagent_tool.run_sync(prompt)
 
         else:
 
-            @parent_agent.tool
+            @parent_agent.tool(name=registered_tool_name)
             async def run_subagent(ctx: RunContext[Any], prompt: str) -> str:
                 """Run a subagent with the given prompt and return its response."""
                 return await subagent_tool.run(prompt)
