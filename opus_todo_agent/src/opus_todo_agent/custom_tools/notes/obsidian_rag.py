@@ -1,10 +1,10 @@
 import chromadb
-from pydantic_ai import Agent
 import logging
+import os
+
+from opus_agent_base.tools.subagent_as_tool import SubagentAsTool
 
 logger = logging.getLogger(__name__)
-
-import os
 
 # Disable tokenizers parallelism to avoid warnings
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
@@ -38,7 +38,13 @@ class ObsidianRAG:
         ), f"Vault config not found for {self.obsidian_vault_name}"
         logger.info(f"Vault config: {self.vault_config}")
         self._init_vector_db()
-        self._init_agent()
+        self.subagent = SubagentAsTool.from_managers(
+            name="obsidian_notes",
+            instructions_key="obsidian_notes_instructions",
+            config_manager=self.config_manager,
+            instructions_manager=self.instructions_manager,
+            model_manager=self.model_manager,
+        )
 
     def _init_vector_db(self):
         vector_db_path = self.vault_config.get("vector_db_path")
@@ -47,12 +53,6 @@ class ObsidianRAG:
         self.client = chromadb.PersistentClient(path=vector_db_path)
         # init collection
         self.collection = self.client.get_or_create_collection(vector_db_collection)
-
-    def _init_agent(self):
-        self.agent = Agent(
-            instructions=self.instructions_manager.get("obsidian_notes_instructions"),
-            model=self.model_manager.get_model(),
-        )
 
     def retrieve_notes(self, query: str) -> str:
         """
@@ -97,6 +97,7 @@ class ObsidianRAG:
         prompt_template = self.instructions_manager.get(
             "obsidian_notes_prompt_template"
         )
-        prompt = prompt_template.format(context=notes, question=query)
-        response = self.agent.run_sync(prompt)
-        return response.output
+        prompt = SubagentAsTool.format_prompt(
+            prompt_template, context=notes, question=query
+        )
+        return self.subagent.run_sync(prompt)

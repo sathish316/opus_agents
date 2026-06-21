@@ -1,7 +1,6 @@
 import logging
 
-from pydantic_ai import Agent
-
+from opus_agent_base.tools.subagent_as_tool import SubagentAsTool
 from opus_todo_agent.helper.chat.slack_helper import SlackHelper
 
 logger = logging.getLogger(__name__)
@@ -17,16 +16,13 @@ class SlackAssistant:
         self.instructions_manager = instructions_manager
         self.model_manager = model_manager
         self.slack_helper = SlackHelper()
-        self._init_agent()
-
-    def _init_agent(self):
-        if self.config_manager.get_setting("chat.slack.use_local_model", False):
-            model = self.model_manager.get_local_model()
-        else:
-            model = self.model_manager.get_model()
-        self.agent = Agent(
-            instructions=self.instructions_manager.get("slack_assistant_instructions"),
-            model=model,
+        self.subagent = SubagentAsTool.from_managers(
+            name="slack_assistant",
+            instructions_key="slack_assistant_instructions",
+            config_manager=config_manager,
+            instructions_manager=instructions_manager,
+            model_manager=model_manager,
+            use_local_model_config_key="chat.slack.use_local_model",
         )
 
     async def fetch_and_summarize_messages_from_channels(
@@ -101,7 +97,8 @@ class SlackAssistant:
 
         # Generate prompt
         prompt_template = self.instructions_manager.get("slack_assistant_prompt_template")
-        prompt = prompt_template.format(
+        prompt = SubagentAsTool.format_prompt(
+            prompt_template,
             channel_scope_type=channel_scope_type,
             channel_scope_name=channel_scope_name,
             time_limit=time_limit,
@@ -111,6 +108,4 @@ class SlackAssistant:
 
         # Call agent to summarize
         logger.debug(f"Calling SubAgent with prompt: {prompt}")
-        response = await self.agent.run(prompt)
-        logger.info(f"Received summary from model: {len(response.output)} chars")
-        return response.output
+        return await self.subagent.run(prompt)

@@ -3,6 +3,8 @@ import logging
 import tiktoken
 from pydantic_ai import Agent
 
+from opus_agent_base.tools.subagent_as_tool import SubagentAsTool
+
 logger = logging.getLogger(__name__)
 
 class MeetingAssistantHelper:
@@ -32,6 +34,7 @@ class MeetingAssistantHelper:
         return transcript
 
     def ask_transcript(self, agent: Agent, prompt_template: str, transcript: str, query: str) -> str:
-        prompt = prompt_template.format(context=transcript, question=query)
-        response = agent.run_sync(prompt)
-        return response.output
+        prompt = SubagentAsTool.format_prompt(
+            prompt_template, context=transcript, question=query
+        )
+        return SubagentAsTool(agent, name="meeting_assistant").run_sync(prompt)
