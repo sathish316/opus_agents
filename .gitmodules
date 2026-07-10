@@ -1,0 +1,3 @@
+[submodule ".agents/skills-repos/skills"]
+	path = .agents/skills-repos/skills
+	url = git@github.com:sathish316/skills.git
