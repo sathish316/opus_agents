@@ -6,11 +6,22 @@ Give users a single YAML configuration to control which domains, tool categories
 ## Requirements
 
 ### Requirement: User Config File
-The system SHALL read its configuration from `~/.opusai/opus-config.yml`, seeded from a sample config shipped with the project.
+The system SHALL read its configuration from `~/.opusai/opus-config.yml` by default, seeded from a sample config shipped with the project, and SHALL accept a custom config directory and file path.
 
 #### Scenario: Config loaded at startup
 - **WHEN** the agent starts and `~/.opusai/opus-config.yml` exists
 - **THEN** managers initialize from its settings
+
+#### Scenario: Custom config path
+- **WHEN** a custom config directory and file are provided to the config manager
+- **THEN** configuration is read from that path instead of the default
+
+### Requirement: Typed Settings Access
+The config manager SHALL expose settings by dot-notation key, including retrieving a config section as a typed Pydantic model.
+
+#### Scenario: Section as model
+- **WHEN** a caller requests a config section with a model class
+- **THEN** the section is returned as a validated instance of that model
 
 ### Requirement: Hierarchical Enablement
 Configuration SHALL support enabling or disabling integrations at domain, category, and individual MCP-server level (e.g. `mcp_config.productivity.chat.slack`), and the agent SHALL only initialize what is enabled.
