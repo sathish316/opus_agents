@@ -60,6 +60,7 @@ Replay discipline: process oldest → newest so later units naturally supersede 
 ## Capability mapping
 
 - One kebab-case folder per capability under `openspec/specs/`, named for the domain behavior, not the code layout: `user-auth`, `todo-sync`, `config-management` — not `utils` or `src-refactor`.
+- Separate framework capabilities from domain-specific ones: reusable framework/platform behaviors live at the top level (`openspec/specs/<capability>/`), while behaviors specific to one product/agent/domain nest under `openspec/specs/domain/<product>/<capability>/` (e.g. `specs/domain/todo-agent/todo-management/`). Ask the user which bucket a capability belongs to when unclear.
 - Before inventing a capability, list existing ones (`ls openspec/specs/`) and reuse. Keep the taxonomy small and stable; split a capability only when its spec grows past roughly 10 requirements.
 - A unit may touch multiple capabilities; update each affected spec.
 
@@ -147,21 +148,13 @@ code2spec applies these *semantics* directly to final specs; it never writes del
 
 When a forward-workflow change is complete, its delta specs are synced into the main specs and the entire change folder is **moved** to `openspec/changes/archive/YYYY-MM-DD-<change-name>/` (date of archiving, `.openspec.yaml` preserved). Archived changes are therefore a historical record — if the target repo has them, read them: they are high-quality ground truth for what its specs should contain. code2spec never creates or modifies archives.
 
-## State & resumability
+## Checkpoint file (resume only)
 
-After each batch, write `openspec/.code2spec.json` in the target repo:
+Track the last commit that was reversed to spec in a checkpoint file at `openspec/.reverse-open-spec-commit` in the target repo. It contains exactly one line: the full SHA of the head commit of the last processed unit. Nothing else — it exists only so a run can resume from where the previous one stopped.
 
-```json
-{
-  "strategy": "pr",
-  "rev": "HEAD",
-  "last_processed_unit": "unit-0042-add-user-auth",
-  "last_processed_sha": "<head sha of that unit>",
-  "updated_at": "<ISO timestamp>"
-}
-```
-
-On start, read this file if present and offer to resume from `last_processed_sha` (pass `--since` or filter units past it) instead of reprocessing from the beginning.
+- After each batch of processed units, overwrite the file with the new SHA.
+- On start, if the file exists, resume from the commit after it (skip units whose head is an ancestor of the checkpoint SHA) instead of reprocessing from the beginning.
+- Commit the checkpoint alongside spec updates so resume points survive across machines.
 
 ## Validation
 
