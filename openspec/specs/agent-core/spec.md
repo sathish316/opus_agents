@@ -20,7 +20,7 @@ The CLI SHALL provide admin commands, including help and status, alongside the c
 - **THEN** the CLI reports the current agent configuration state
 
 ### Requirement: Multi-Agent Framework
-The system SHALL separate a reusable agent framework package (`opus_agent_base`) from concrete agent packages (e.g. todo agent, SDE agent). Each agent package SHALL assemble its agent through a builder that adds instructions, prompt templates, MCP servers, custom tools, and higher-order tools, backed by its own MCP server registry.
+The system SHALL separate a reusable agent framework package (`opus_agent_base`) from concrete agent packages (e.g. the todo agent). The framework SHALL provide a generic `AgentBuilder` that assembles an agent from instructions, prompt templates, MCP servers, custom tools, higher-order tools, and meta tools; each agent package extends it with its own MCP server registry and tools. An example agent package SHALL demonstrate the pattern alongside guides for adding custom and higher-order tools.
 
 #### Scenario: New agent built on the framework
 - **WHEN** an agent package defines its builder and MCP server registry
