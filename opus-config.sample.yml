@@ -62,6 +62,9 @@ debug:
   inspect_tools: true
   log_level: "ERROR"  # DEBUG, INFO, WARNING, ERROR, CRITICAL
 mcp_config:
+  framework:
+    lambda:
+      enabled: true
   general:
     filesystem:
       enabled: true

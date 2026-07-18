@@ -96,6 +96,10 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+asyncio_mode = "auto"
+markers = [
+    "integration: marks tests that require a running local LLM server",
+]
 
 # UV workspace configuration
 [tool.uv.workspace]

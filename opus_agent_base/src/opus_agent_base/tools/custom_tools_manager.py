@@ -20,7 +20,7 @@ class CustomToolsManager:
     def initialize_tools(self, custom_tools: list[CustomTool]):
         enabled = []
         for custom_tool in custom_tools:
-            if self._is_mcp_enabled(custom_tool.config_key):
+            if self._is_tool_enabled(custom_tool):
                 custom_tool.initialize_tools(self.agent)
                 logger.info(f"{custom_tool.name} Custom tool initialized")
                 enabled.append(custom_tool.name)
@@ -28,6 +28,11 @@ class CustomToolsManager:
                 logger.info(f"{custom_tool.name} Custom tool not enabled")
         console_log(f"Enabled custom tool(s) for - {enabled}")
         logger.info("All Custom tools initialized")
+
+    def _is_tool_enabled(self, custom_tool: CustomTool) -> bool:
+        if getattr(custom_tool, "always_enabled", False):
+            return True
+        return self._is_mcp_enabled(custom_tool.config_key)
 
     def _is_mcp_enabled(self, config_key: str):
         """
