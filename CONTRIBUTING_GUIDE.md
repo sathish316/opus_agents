@@ -28,8 +28,7 @@ Tech stacks used are:
 
 **Adding Sub-Agents:**
 
-Check zoom_tools.py and zoom_assistant.py in opus_todo_agent for patterns to add Sub-Agent with its own model, prompts etc.
-Similar patterns are used in multiple places
+Use `SubagentAsTool` from `opus_agent_base.tools.subagent_as_tool` to wrap a PydanticAI subagent and call it from a parent agent tool. See existing usages in `zoom_meeting_assistant.py`, `slack_assistant.py`, and `obsidian_rag.py`.
 
 **Adding New Agent:**
 
