@@ -2,5 +2,11 @@ uv.lock
 node_modules
 skip
 *.json
+!**/package.json
+!**/package-lock.json
+!**/tsconfig.json
+!**/tsconfig.*.json
+!**/.oxlintrc.json
 __pycache__
 .DS_Store
+dist
