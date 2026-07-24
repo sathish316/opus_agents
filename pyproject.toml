@@ -96,6 +96,9 @@ python_files = ["test_*.py"]
 python_classes = ["Test*"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short"
+markers = [
+    "integration: tests that require a locally running model or external service",
+]
 
 # UV workspace configuration
 [tool.uv.workspace]

@@ -1,3 +1,4 @@
+from collections.abc import Callable
 from typing import Any
 
 from pydantic_ai import Agent
@@ -9,6 +10,7 @@ from opus_agent_base.tools.custom_tool import CustomTool
 from opus_agent_base.tools.custom_tools_manager import CustomToolsManager
 from opus_agent_base.tools.fastmcp_server_config import FastMCPServerConfig
 from opus_agent_base.tools.higher_order_tool import HigherOrderTool
+from opus_agent_base.tools.lambda_as_tool import lambda_as_tool
 from opus_agent_base.tools.meta_tool import MetaTool
 
 
@@ -49,6 +51,19 @@ class AgentBuilder:
 
     def custom_tool(self, custom_tool: CustomTool):
         self.custom_tools.append(custom_tool)
+        return self
+
+    def lambda_tool(
+        self,
+        function: Callable[..., Any],
+        *,
+        name: str | None = None,
+        description: str | None = None,
+    ):
+        """Add a plain function or lambda as an always-enabled tool."""
+        self.custom_tools.append(
+            lambda_as_tool(function, name=name, description=description)
+        )
         return self
 
     def higher_order_tool(self, higher_order_tool: HigherOrderTool):

@@ -41,6 +41,25 @@ OpusAgents framework can be used to build your own Tools or build your own Agent
 * **[Build a Meta tool](docs/GUIDE_ADD_META_TOOL.md)** - Meta tools are re-usable tools on top of existing patterns like OpenAPI specs, which can be built with minimal code.
 * **[Build an agent](docs/GUIDE_BUILD_AN_AGENT.md)** - A Complete Agent demonstrating how to use all aspects of the framework
 
+### Create a tool from a lambda
+
+Use `lambda_tool` when a tool only needs a small function and does not need its
+own `CustomTool` class. Lambdas need an explicit name and description so the
+model receives useful tool metadata.
+
+```python
+agent = (
+    AgentBuilder(config_manager)
+    # Configure instructions and a model as usual.
+    .lambda_tool(
+        lambda celsius: (celsius * 9 / 5) + 32,
+        name="celsius_to_fahrenheit",
+        description="Convert a Celsius temperature to Fahrenheit.",
+    )
+    .build_agent()
+)
+```
+
 The framework is built on top of [PydanticAI](https://ai.pydantic.dev/) and [FastMCP](https://gofastmcp.com/)
 
 ## OpusTodoAgent - Getting started
@@ -85,6 +104,26 @@ Key features for Productivity & Collaboration tools are:
 
 If your favourite software or custom workflow is not present here, please see the [Contributing Guide](CONTRIBUTING_GUIDE.md) and raise a Pull request
 
+### Tests
+
+Run unit tests without external model dependencies:
+
+```bash
+uv run --extra dev pytest -m "not integration"
+```
+
+The LambdaAsTool integration test uses a local `gpt-oss` model through its
+OpenAI-compatible endpoint. Start the model server, then opt in to the test:
+
+```bash
+llama-server -hf ggml-org/gpt-oss-20b-GGUF -c 32768
+RUN_GPT_OSS_INTEGRATION=1 uv run --extra dev pytest \
+  opus_agent_base/tests/integration/test_lambda_as_tool_gpt_oss.py
+```
+
+Set `GPT_OSS_BASE_URL` or `GPT_OSS_MODEL` if your local endpoint uses different
+values. Integration tests are skipped unless `RUN_GPT_OSS_INTEGRATION=1` is set.
+
 ## Release
 
 To build opus_agent_base and release locally:
@@ -115,5 +154,4 @@ The project will remain open source under the [MIT LICENSE](LICENSE.md)
 Opinions on AI range from extremes that "AI will replace humans" or "AI in its current state is next token prediction and not intelligence". This project draws inspiration from Neil DeGrasse Tyson's balanced perspective on AI from his podcast (https://www.youtube.com/watch?v=BYizgB2FcAQ). He suggests that society is already living on an exponential curve, since the days of Industrial Revolution to Automobiles to Internet and AI will drive the next wave of exponential growth through human productivity. We are already seeing glimpses of this in AI Coding tools like Cursor and Coding CLIs. For this vision to become possible in all areas, AI has to be a Jarvis-like companion for most of the software/tools we use. OpusAgents is an attempt to make the interactions between AI and Software/Tools we use everyday as seamless, customizable, predictable/reliable and Jarvis-like as possible.
 
 The name is inspired by the latin phrase "magnum opus" that means "great work". 
-
 
