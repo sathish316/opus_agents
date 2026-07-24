@@ -1,7 +1,7 @@
 import logging
 
-from opus_agent_base.tools.custom_tool import CustomTool
 from opus_agent_base.common.logging_config import console_log
+from opus_agent_base.tools.custom_tool import CustomTool
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,9 @@ class CustomToolsManager:
     def initialize_tools(self, custom_tools: list[CustomTool]):
         enabled = []
         for custom_tool in custom_tools:
-            if self._is_mcp_enabled(custom_tool.config_key):
+            if getattr(custom_tool, "always_enabled", False) or self._is_mcp_enabled(
+                custom_tool.config_key
+            ):
                 custom_tool.initialize_tools(self.agent)
                 logger.info(f"{custom_tool.name} Custom tool initialized")
                 enabled.append(custom_tool.name)
